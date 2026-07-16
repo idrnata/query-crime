@@ -721,17 +721,41 @@ export default function App() {
           setQueryString('');
         } else if (nextIdx === 3) {
           setPopup({
-            title: 'NEW LESSON',
-            message: 'LEFT JOIN Unlocked. Digunakan untuk menampilkan semua data di tabel kiri, meskipun tidak ada pasangan di tabel kanan. NULL artinya tidak ditemukan.',
+            title: 'SUPERVISOR RAKA',
+            message: 'Bandingkan keduanya (Visitors dan Footage).',
             onClose: () => {
-              setPopup(null);
-              showSupervisorPopup('Bandingkan data pengunjung (visitors) dengan rekaman CCTV (footage) menggunakan LEFT JOIN.');
-              setAppState('TERM');
-              setQueryString('');
-              if (!unlockedApps.includes('TIMELINE')) {
-                setUnlockedApps(prev => [...prev, 'TIMELINE']);
-                triggerBlink('TIMELINE');
-              }
+              // Wait a few seconds to let the player "think" or try manually
+              setTimeout(() => {
+                setNotebookContent(prev => prev + '\n\nData mulai banyak.\nSulit dibandingkan.');
+                triggerBlink('NOTEBOOK');
+                
+                setPopup({
+                  title: 'SUPERVISOR RAKA',
+                  message: '*Supervisor tersenyum*\n\nAda satu teknik lagi.\nTidak semua data memiliki pasangan.',
+                  onClose: () => {
+                    setPopup({
+                      title: 'NEW LESSON',
+                      message: 'LEFT JOIN\n\nUnlocked',
+                      onClose: () => {
+                        setPopup({
+                          title: 'TUTORIAL',
+                          message: 'Supervisor memberikan contoh sederhana.\n\nINNER JOIN hanya menampilkan data yang cocok di kedua tabel.\nTapi bagaimana jika kamu ingin mencari siapa yang tidak muncul di CCTV?\n\n(Pemain belum pernah memikirkan itu...)',
+                          onClose: () => {
+                            setPopup(null);
+                            showSupervisorPopup('Gunakan LEFT JOIN untuk membandingkan tabel visitors dengan tabel footage.');
+                            setAppState('TERM');
+                            setQueryString('');
+                            if (!unlockedApps.includes('TIMELINE')) {
+                              setUnlockedApps(prev => [...prev, 'TIMELINE']);
+                              triggerBlink('TIMELINE');
+                            }
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              }, 4000);
             }
           });
         } else {
@@ -818,40 +842,47 @@ export default function App() {
           }
         });
       } else if (currentLevelId === 5) {
-        // CCTV Technician mail
-        const techMsg = {
-          id: 'cctv_tech_msg',
-          sender: 'Teknisi CCTV',
-          subject: 'Kamera Main Gate',
-          body: 'Maaf Pak.\nSaya baru ingat.\nKamera Main Gate sempat mati selama enam menit.\nTepat sebelum Rizky keluar.',
-          timestamp: formatTime(currentTime),
-          read: false
-        };
-        const updatedMessages = [...messages, techMsg];
-        setMessages(updatedMessages);
-        triggerBlink('INBOX');
-
-        // Update Notebook
-        const newNotebook = notebookContent + '\n\n06 minutes\nNo Footage';
-        setNotebookContent(newNotebook);
-
-        // Make sure EVIDENCE is in unlockedApps
-        let newApps = [...unlockedApps];
-        if (!newApps.includes('EVIDENCE')) {
-          newApps.push('EVIDENCE');
-          triggerBlink('EVIDENCE');
-        }
-        setUnlockedApps(newApps);
-
-        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, newNotebook, contacts, witnesses, updatedMessages);
-
         setPopup({
-          title: 'INBOX UPDATE',
-          message: 'Pesan baru masuk dari Teknisi CCTV di Kotak Masuk (Inbox) Anda.',
+          title: 'PLAYER',
+          message: '"Hah?"\nKenapa NULL?',
           onClose: () => {
-            setPopup(null);
-            showSupervisorPopup('Ada pesan baru dari Teknisi CCTV. Dan data dari LEFT JOIN menunjukkan kejanggalan pada Andi. Sekarang, buatlah laporan fakta investigasimu segera.', () => {
-              setAppState('REPORT');
+            setPopup({
+              title: 'SUPERVISOR RAKA',
+              message: 'NULL juga merupakan petunjuk.',
+              onClose: () => {
+                const newNote = notebookContent + '\n\nAndi\nTidak pernah muncul\ndi CCTV.';
+                setNotebookContent(newNote);
+                triggerBlink('NOTEBOOK');
+                
+                setTimeout(() => {
+                  setPopup({
+                    title: 'PLAYER',
+                    message: '*Player mulai curiga*\nKalau Andi tidak muncul...\nSiapa yang membawa mobilnya?',
+                    onClose: () => {
+                      setPopup({
+                        title: 'SUPERVISOR RAKA',
+                        message: 'Tepat.\nKita selama ini menganggap Andi mengemudi.\nTapi database tidak pernah mengatakan itu.\nItu hanya asumsi kita.',
+                        onClose: () => {
+                          setAppState('HOME');
+                          
+                          const techMsg = {
+                            id: 'cctv_tech_msg',
+                            sender: 'Teknisi CCTV',
+                            subject: 'Kamera Main Gate',
+                            body: 'Maaf Pak.\nSaya baru ingat.\nKamera Main Gate sempat mati selama enam menit.',
+                            timestamp: formatTime(currentTime),
+                            read: false
+                          };
+                          const updatedMessages = [...messages, techMsg];
+                          setMessages(updatedMessages);
+                          triggerBlink('INBOX');
+                          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, newNote, contacts, witnesses, updatedMessages);
+                        }
+                      });
+                    }
+                  });
+                }, 2000);
+              }
             });
           }
         });
@@ -1049,6 +1080,38 @@ export default function App() {
     } else if (appState === 'TERM') {
       setAppState('DB_LIST');
     } else if (appState === 'INBOX' && selectedMessageId) {
+      if (selectedMessageId === 'cctv_tech_msg' && currentLevelId === 5) {
+        setPopup({
+          title: 'SUPERVISOR RAKA',
+          message: 'Tepat sebelum Rizky keluar.',
+          onClose: () => {
+            setPopup(null);
+            setNotebookContent(prev => prev + '\n\n06 minutes\nNo Footage');
+            triggerBlink('NOTEBOOK');
+            triggerBlink('TIMELINE');
+            
+            setTimeout(() => {
+              let newApps = [...unlockedApps];
+              if (!newApps.includes('EVIDENCE')) {
+                newApps.push('EVIDENCE');
+              }
+              setUnlockedApps(newApps);
+              setAppState('EVIDENCE');
+              
+              setPopup({
+                title: 'SYSTEM',
+                message: 'NEW EVIDENCE ADDED:\n- Camera Offline\n- Missing Footage\n- Visitor Without Match\n- Timeline Updated',
+                onClose: () => {
+                  setPopup(null);
+                  showSupervisorPopup('✔ Budi hanya terlihat masuk.\n✔ Rizky terlihat keluar.\n✔ Kamera mati selama enam menit.\n✔ Andi tidak pernah muncul di CCTV.\n✔ Ada kemungkinan orang lain mengemudikan kendaraan.\n\nSekarang buat laporan.', () => {
+                    setAppState('REPORT');
+                  });
+                }
+              });
+            }, 1500);
+          }
+        });
+      }
       setSelectedMessageId(null);
     } else if (appState === 'CALLING') {
       setCallStatus('IDLE');

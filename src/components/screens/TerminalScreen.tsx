@@ -81,7 +81,31 @@ export const TerminalScreen: React.FC<TerminalScreenProps> = ({
               baseKeywords.push('LEFT', 'JOIN');
             }
             
-            const tables = Object.keys(currentLevel.database);
+            const getRelatedTablesForLevel = (levelId: number): string[] => {
+              switch (levelId) {
+                case 1:
+                  return ['vehicles', 'owners', 'parking'];
+                case 2:
+                  return ['citizens', 'visitors', 'patients'];
+                case 3:
+                  return ['patients', 'visitors', 'vehicles', 'parking'];
+                case 4:
+                  return ['visitors', 'patients', 'citizens', 'parking', 'vehicles'];
+                case 5:
+                  return ['cameras', 'footage', 'visitors'];
+                case 6:
+                  return ['articles', 'companies'];
+                case 7:
+                  return ['locations', 'routes', 'checkpoints'];
+                case 8:
+                  return ['accounts', 'transactions', 'branches'];
+                default:
+                  return [];
+              }
+            };
+
+            const relatedTables = getRelatedTablesForLevel(currentLevelId);
+            const tables = Object.keys(currentLevel.database).filter(t => relatedTables.includes(t));
             const columns = new Set<string>();
             tables.forEach(t => {
               if (currentLevel.database[t] && currentLevel.database[t].length > 0) {
