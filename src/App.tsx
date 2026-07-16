@@ -244,6 +244,49 @@ export default function App() {
     });
   };
 
+  const handleJumpToChapter = (chapterId: number) => {
+    setCurrentLevelId(chapterId);
+    setCurrentObjectiveIndex(0);
+    setHasAcceptedMission(false);
+    setQueryString('');
+    setQueryResult(null);
+    setIsObjectiveMet(false);
+    
+    let baseApps = ['INBOX', 'CASE_FILES', 'DB_LIST', 'NOTEBOOK', 'RANK', 'SETTINGS'];
+    if (chapterId >= 4) baseApps.push('TIMELINE');
+    if (chapterId >= 6) baseApps.push('BROWSER');
+    if (chapterId >= 7) baseApps.push('MAP');
+    if (chapterId >= 5) baseApps.push('EVIDENCE');
+    
+    setUnlockedApps(baseApps);
+    
+    let initialContacts = [
+      { name: 'Raka (Supervisor)', role: 'MCD Commander', phone: '911-SUPER', id: 'raka' },
+      { name: 'Budi Santoso', role: 'Warga Sipil', phone: '08124444', id: 'budi' }
+    ];
+    setContacts(initialContacts);
+    setWitnesses([]);
+    
+    const activeLevel = LEVELS.find(l => l.id === chapterId);
+    const initialMsgId = `initial_${chapterId}`;
+    const initialMessages = [
+      {
+        id: initialMsgId,
+        sender: activeLevel?.mail.sender || 'Supervisor Raka',
+        subject: activeLevel?.mail.subject || 'Mission',
+        body: activeLevel?.mail.body || '',
+        timestamp: '08:15',
+        read: false
+      }
+    ];
+    setMessages(initialMessages);
+    setSelectedMessageId(initialMsgId);
+    
+    saveProgress(chapterId, 0, unlockedLevelIds, false, baseApps, notebookContent, initialContacts, [], initialMessages);
+    setAppState('HOME');
+    showSupervisorPopup(`Chapter ${chapterId} berhasil di-reset. Silakan buka Inbox untuk membaca instruksi misi.`);
+  };
+
   const markMessageAsRead = (id: string) => {
     const msg = messages.find(m => m.id === id);
     if (msg && !msg.read) {
@@ -535,14 +578,19 @@ export default function App() {
           setAppState('TERM');
           setQueryString('');
         } else if (nextIdx === 2) {
-          showSupervisorPopup('Sekarang cari siapa pemilik kendaraan yang keluar sekitar pukul 11:30. Kamu butuh triple JOIN: parking, vehicles, dan citizens.');
+          showSupervisorPopup('Bagus. Sekarang cari identitas Rudi Hartono di tabel citizens.');
           setAppState('TERM');
           setQueryString('');
         } else if (nextIdx === 3) {
-          if (!unlockedApps.includes('TIMELINE')) {
-            setUnlockedApps(prev => [...prev, 'TIMELINE']);
-            triggerBlink('TIMELINE');
-          }
+          showSupervisorPopup('Rudi Hartono terdaftar sebagai warga. Sekarang periksa apakah Rudi memiliki kendaraan terdaftar.');
+          setAppState('TERM');
+          setQueryString('');
+        } else if (nextIdx === 4) {
+          showSupervisorPopup('Rudi tidak memiliki kendaraan. Sekarang cari semua kendaraan yang keluar dari tempat parkir rumah sakit sekitar pukul 11:30.');
+          setAppState('TERM');
+          setQueryString('');
+        } else if (nextIdx === 5) {
+          showSupervisorPopup('Ada tiga kendaraan. Sekarang hubungkan data parkir, kendaraan, dan warga menggunakan triple JOIN untuk mengetahui siapa pemilik kendaraan-kendaraan tersebut.');
           setAppState('TERM');
           setQueryString('');
         } else {
@@ -769,12 +817,18 @@ export default function App() {
       newApps.push('BROWSER');
       triggerBlink('BROWSER');
     }
+    if (currentLevelId === 4 && !newApps.includes('TIMELINE')) {
+      newApps.push('TIMELINE');
+      triggerBlink('TIMELINE');
+    }
     setUnlockedApps(newApps);
     saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, true, newApps, notebookContent, contacts, witnesses, messages, stats);
     setPopup({
       title: 'SYSTEM',
       message: currentLevelId === 3 
         ? 'Mission Accepted. NEW TABLE: Hospital Parking Unlocked.'
+        : currentLevelId === 4
+        ? 'Mission Accepted. NEW FEATURE: Timeline Unlocked.'
         : currentLevelId === 6
         ? 'Mission Accepted. NEW APP: Browser Unlocked.'
         : currentLevelId === 8
@@ -1071,6 +1125,10 @@ export default function App() {
               setStats(prev => ({ ...prev, battery: 100 }));
               showSupervisorPopup("Battery fully charged. Power is now 100%.");
             }}
+            levels={LEVELS}
+            currentLevelId={currentLevelId}
+            unlockedLevelIds={unlockedLevelIds}
+            onJumpToChapter={handleJumpToChapter}
           />
         );
       default:

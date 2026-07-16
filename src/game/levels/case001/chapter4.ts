@@ -10,7 +10,7 @@ export const chapter4: Level = {
   },
   files: {
     title: 'Log Parkir RS',
-    content: 'Kunjungan Budi: 09:20\nTarget: Cari siapa saja yang di RS pada waktu yang sama.',
+    content: 'Kunjungan Budi: 09:20\nTarget:\n- Susun kronologi kunjungan Budi.\n- Cari siapa saja yang berada di RS pada waktu yang sama.\n- Tentukan siapa yang mungkin bertemu Budi.',
   },
   database: {
     visitors: [
@@ -27,11 +27,13 @@ export const chapter4: Level = {
     citizens: [
       { id: 1, name: 'Andi Prasetyo', nik: '317101' },
       { id: 2, name: 'Rudi Hartono', nik: '317102' },
-      { id: 3, name: 'Linda Wijaya', nik: '317103' }
+      { id: 3, name: 'Linda Wijaya', nik: '317103' },
+      { id: 4, name: 'PT Medika Nusantara', nik: '317104' }
     ],
     vehicles: [
       { plate_number: 'B2841PT', owner_id: 1 },
-      { plate_number: 'B9921KD', owner_id: 3 }
+      { plate_number: 'B9921KD', owner_id: 3 },
+      { plate_number: 'B1182AA', owner_id: 4 }
     ],
     parking: [
       { plate_number: 'B2841PT', entry_time: '09:15', exit_time: '11:34' },
@@ -43,23 +45,58 @@ export const chapter4: Level = {
     {
       id: 1,
       story: 'Cari siapa saja yang berada di rumah sakit antara pukul 09:00 dan 09:30.',
-      goal: 'Gunakan BETWEEN pada visit_time.',
+      goal: "Gunakan BETWEEN untuk mencari pengunjung di rentang waktu '09:00' dan '09:30' pada tabel visitors.",
       availableTokens: ['SELECT', '*', 'FROM', 'visitors', 'WHERE', 'visit_time', 'BETWEEN', "'09:00'", 'AND', "'09:30'"],
-      validateResult: (res) => res && res.length === 3
+      validateResult: (res) => res && res.length === 3 && res.some(r => r.visitor_name === 'Budi Santoso')
     },
     {
       id: 2,
-      story: 'Tentukan siapa yang mungkin bertemu Budi dengan melihat pasien yang dikunjungi.',
-      goal: 'Gunakan JOIN antara visitors dan patients.',
-      availableTokens: ['SELECT', 'v.visitor_name', ',', 'p.name', ',', 'v.visit_time', 'FROM', 'visitors', 'v', 'JOIN', 'patients', 'p', 'ON', 'v.patient_id', '=', 'p.id', 'WHERE', 'visit_time', 'BETWEEN', "'09:00'", 'AND', "'09:30'"],
-      validateResult: (res) => res && res.length === 3 && res.filter(r => r.name === 'Rizky Hidayat').length === 2
+      story: 'Supervisor: "Jangan fokus ke orangnya. Fokus ke pasien yang mereka kunjungi. Masih ingat JOIN?"',
+      goal: 'Hubungkan tabel visitors (alias v) dan patients (alias p) berdasarkan patient_id untuk melihat siapa menemui siapa di rentang waktu tersebut.',
+      availableTokens: [
+        'SELECT', 'v.visitor_name', ',', 'p.name', ',', 'v.visit_time', 
+        'FROM', 'visitors', 'v', 'JOIN', 'patients', 'p', 'ON', 'v.patient_id', '=', 'p.id', 
+        'WHERE', 'visit_time', 'BETWEEN', "'09:00'", 'AND', "'09:30'"
+      ],
+      validateResult: (res) => res && res.length === 3 && res.filter(r => r['p.name'] === 'Rizky Hidayat' || r['name'] === 'Rizky Hidayat').length === 2
     },
     {
       id: 3,
-      story: 'Cari tahu siapa pemilik kendaraan yang keluar sekitar pukul 11:30.',
-      goal: 'Gunakan triple JOIN: parking, vehicles, dan citizens.',
-      availableTokens: ['SELECT', 'c.name', ',', 'v.plate_number', ',', 'p.exit_time', 'FROM', 'parking', 'p', 'JOIN', 'vehicles', 'v', 'ON', 'p.plate_number', '=', 'v.plate_number', 'JOIN', 'citizens', 'c', 'ON', 'v.owner_id', '=', 'c.id', 'WHERE', 'p.exit_time', 'BETWEEN', "'11:25'", 'AND', "'11:40'"],
-      validateResult: (res) => res && res.length >= 1 && res.some(r => r.name === 'Andi Prasetyo')
+      story: 'Rudi Hartono ternyata mengunjungi pasien yang sama dengan Budi (Rizky Hidayat). Sekarang, cari identitas Rudi Hartono.',
+      goal: "Cari data Rudi Hartono di tabel citizens.",
+      availableTokens: ['SELECT', '*', 'FROM', 'citizens', 'WHERE', 'name', '=', "'Rudi Hartono'"],
+      validateResult: (res) => res && res.length === 1 && res[0].name === 'Rudi Hartono'
+    },
+    {
+      id: 4,
+      story: 'Data Rudi sangat minim. Supervisor: "Bagaimana kalau Rudi memiliki kendaraan terdaftar? Coba periksa."',
+      goal: 'Hubungkan citizens (alias c) dan vehicles (alias v) untuk mencari plat nomor kendaraan Rudi Hartono.',
+      availableTokens: [
+        'SELECT', 'c.name', ',', 'v.plate_number', 
+        'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id', 
+        'WHERE', 'c.name', '=', "'Rudi Hartono'"
+      ],
+      validateResult: (res) => res && res.length === 0
+    },
+    {
+      id: 5,
+      story: 'Rudi tidak memiliki kendaraan pribadi terdaftar. Supervisor: "Atau dia memakai kendaraan orang lain. Cari semua kendaraan yang keluar sekitar pukul 11:30."',
+      goal: "Query tabel parking untuk mencari semua kendaraan yang keluar antara pukul '11:25' dan '11:40'.",
+      availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'exit_time', 'BETWEEN', "'11:25'", 'AND', "'11:40'"],
+      validateResult: (res) => res && res.length === 3
+    },
+    {
+      id: 6,
+      story: 'Ada tiga kendaraan. Sekarang hubungkan semuanya untuk mengetahui siapa pemilik dari kendaraan-kendaraan tersebut.',
+      goal: 'Lakukan triple JOIN antara parking (alias p), vehicles (alias v), dan citizens (alias c) untuk menampilkan nama pemilik, plat nomor, dan waktu keluar untuk kendaraan yang keluar di rentang waktu tersebut.',
+      availableTokens: [
+        'SELECT', 'c.name', ',', 'v.plate_number', ',', 'p.exit_time', 
+        'FROM', 'parking', 'p', 
+        'JOIN', 'vehicles', 'v', 'ON', 'p.plate_number', '=', 'v.plate_number', 
+        'JOIN', 'citizens', 'c', 'ON', 'v.owner_id', '=', 'c.id', 
+        'WHERE', 'p.exit_time', 'BETWEEN', "'11:25'", 'AND', "'11:40'"
+      ],
+      validateResult: (res) => res && res.length === 3 && res.some(r => r.name === 'Andi Prasetyo' || r['c.name'] === 'Andi Prasetyo')
     }
   ],
   report: {
