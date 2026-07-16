@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { LEVELS } from './game/levels';
 import { executeSql } from './game/engine';
 import { saveGame, loadGame } from './game/saveSystem';
@@ -108,7 +108,7 @@ export default function App() {
          };
          return [...prev, newMsg];
        });
-       setSelectedMessageId(initialMsgId);
+       setSelectedMessageId(null);
     }
   }, [currentLevelId]);
 
@@ -379,7 +379,7 @@ export default function App() {
       });
     }
     setMessages(reconstructedMessages);
-    setSelectedMessageId(initialMsgId);
+    setSelectedMessageId(null);
 
     const initialNotebook = getInitialNotebookForChapter(chapterId);
     setNotebookContent(initialNotebook);
@@ -389,34 +389,32 @@ export default function App() {
     showSupervisorPopup(`Chapter ${chapterId} berhasil di-reset. Silakan buka Inbox untuk membaca instruksi misi.`);
   };
 
-  const markMessageAsRead = (id: string) => {
+  const markMessageAsRead = useCallback((id: string) => {
     setMessages(prev => {
       const msgIndex = prev.findIndex(m => m.id === id);
       if (msgIndex !== -1 && !prev[msgIndex].read) {
         const updated = [...prev];
         updated[msgIndex] = { ...updated[msgIndex], read: true };
         
-        // Use a slight timeout to save progress after state update is queued
-        setTimeout(() => {
-          saveProgress(
-            currentLevelId,
-            currentObjectiveIndex,
-            unlockedLevelIds,
-            hasAcceptedMission,
-            unlockedApps,
-            notebookContent,
-            contacts,
-            witnesses,
-            updated,
-            stats
-          );
-        }, 0);
+        // Save progress immediately with the updated messages
+        saveProgress(
+          currentLevelId,
+          currentObjectiveIndex,
+          unlockedLevelIds,
+          hasAcceptedMission,
+          unlockedApps,
+          notebookContent,
+          contacts,
+          witnesses,
+          updated,
+          stats
+        );
         
         return updated;
       }
       return prev;
     });
-  };
+  }, [currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, stats]);
 
   useEffect(() => {
     if (appState === 'HOME' && !playerName && !showNameInput && !popup && currentLevelId === 1 && currentObjectiveIndex === 0) {
@@ -652,7 +650,7 @@ export default function App() {
             saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, newContacts, witnesses, newMessages);
             return newMessages;
           });
-          setSelectedMessageId('call_dina');
+          setSelectedMessageId(null);
         }
         else if (nextIdx === 4) {
           showSupervisorPopup('Cari tahu siapa pasien yang dikunjungi.');
