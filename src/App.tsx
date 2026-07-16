@@ -244,6 +244,26 @@ export default function App() {
     });
   };
 
+  const markMessageAsRead = (id: string) => {
+    const msg = messages.find(m => m.id === id);
+    if (msg && !msg.read) {
+      const updated = messages.map(m => m.id === id ? { ...m, read: true } : m);
+      setMessages(updated);
+      saveProgress(
+        currentLevelId,
+        currentObjectiveIndex,
+        unlockedLevelIds,
+        hasAcceptedMission,
+        unlockedApps,
+        notebookContent,
+        contacts,
+        witnesses,
+        updated,
+        stats
+      );
+    }
+  };
+
   useEffect(() => {
     if (appState === 'HOME' && !playerName && !showNameInput && !popup && currentLevelId === 1 && currentObjectiveIndex === 0) {
       showSupervisorPopup(
@@ -860,6 +880,7 @@ export default function App() {
             currentLevel={currentLevel} 
             hasAcceptedMission={hasAcceptedMission} 
             setHasAcceptedMission={setHasAcceptedMission} 
+            markMessageAsRead={markMessageAsRead}
           />
         );
       case 'CASE_FILES':

@@ -9,6 +9,7 @@ interface InboxScreenProps {
   currentLevel: any;
   hasAcceptedMission: boolean;
   setHasAcceptedMission: (val: boolean) => void;
+  markMessageAsRead: (id: string) => void;
 }
 
 export const InboxScreen: React.FC<InboxScreenProps> = ({
@@ -18,9 +19,16 @@ export const InboxScreen: React.FC<InboxScreenProps> = ({
   setAppState,
   currentLevel,
   hasAcceptedMission,
-  setHasAcceptedMission
+  setHasAcceptedMission,
+  markMessageAsRead
 }) => {
   const selectedMessage = messages.find(m => m.id === selectedMessageId);
+
+  React.useEffect(() => {
+    if (selectedMessageId) {
+      markMessageAsRead(selectedMessageId);
+    }
+  }, [selectedMessageId, markMessageAsRead]);
 
   return (
     <div className="flex flex-col h-full bg-[#1b2118]/5 select-none relative">
