@@ -4,21 +4,24 @@ import { TrendingUp } from 'lucide-react';
 interface TimelineScreenProps {
   currentLevelId: number;
   setAppState: (state: any) => void;
+  notebookContent: string;
 }
 
-export const TimelineScreen: React.FC<TimelineScreenProps> = ({ currentLevelId, setAppState }) => {
-  const events = [
-    { time: '8 Years Ago', event: 'Kecelakaan lalu lintas tragis melibatkan PT Arunika Logistics.', level: 6 },
-    { time: '8 Years Ago', event: 'Rizky Hidayat selamat, sopir truk menghilang misterius.', level: 6 },
-    { time: '8 Years Ago', event: 'PT Arunika Logistics menyalurkan dana rutin bulanan ke rekening terhapus (Unknown Account).', level: 8 },
-    { time: '08:00', event: 'Seseorang memarkir mobil B 1734 QAZ di RS.', level: 1 },
-    { time: '09:20', event: 'Budi Santoso terdeteksi masuk rumah sakit.', level: 2 },
-    { time: '09:24', event: 'Rudi Hartono terdeteksi masuk rumah sakit.', level: 4 },
-    { time: '11:20', event: 'Andi Prasetyo masuk area rumah sakit (Parkir).', level: 3 },
-    { time: '11:25', event: 'Kamera CAM-03 (Main Gate) mati selama 6 menit.', level: 5 },
-    { time: '11:31', event: 'Rizky Hidayat terdeteksi keluar dari lobby.', level: 5 },
-    { time: '11:34', event: 'Mobil Andi (B 2841 PT) keluar dari area parkir.', level: 4 }
-  ].filter(e => e.level <= currentLevelId);
+export const TimelineScreen: React.FC<TimelineScreenProps> = ({ currentLevelId, setAppState, notebookContent }) => {
+  const allEvents = [
+    { time: '8 Years Ago', event: 'Kecelakaan lalu lintas tragis melibatkan PT Arunika Logistics.', condition: () => currentLevelId >= 6 },
+    { time: '8 Years Ago', event: 'Rizky Hidayat selamat, sopir truk menghilang misterius.', condition: () => currentLevelId >= 6 },
+    { time: '8 Years Ago', event: 'PT Arunika Logistics menyalurkan dana rutin bulanan ke rekening terhapus (Unknown Account).', condition: () => currentLevelId >= 8 },
+    { time: '08:00', event: 'Seseorang memarkir mobil B 1734 QAZ di RS.', condition: () => currentLevelId >= 1 },
+    { time: '09:20', event: 'Budi Santoso terdeteksi masuk rumah sakit.', condition: () => currentLevelId >= 2 },
+    { time: '09:24', event: 'Rudi Hartono terdeteksi masuk rumah sakit.', condition: () => currentLevelId >= 4 },
+    { time: '11:20', event: 'Andi Prasetyo masuk area rumah sakit (Parkir).', condition: () => currentLevelId >= 3 },
+    { time: '11:25', event: 'Kamera CAM-03 (Main Gate) mati selama 6 menit.', condition: () => currentLevelId >= 5 && notebookContent.includes('06 minutes') },
+    { time: '11:31', event: 'Rizky Hidayat terdeteksi keluar dari lobby.', condition: () => currentLevelId >= 5 && notebookContent.includes('Data mulai banyak') },
+    { time: '11:34', event: 'Mobil Andi (B 2841 PT) keluar dari area parkir.', condition: () => currentLevelId >= 4 }
+  ];
+
+  const events = allEvents.filter(e => e.condition());
 
   return (
     <div className="flex flex-col h-full bg-[#1b2118]/5">

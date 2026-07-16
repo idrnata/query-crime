@@ -1276,7 +1276,7 @@ export default function App() {
           />
         );
       case 'TIMELINE':
-        return <TimelineScreen currentLevelId={currentLevelId} setAppState={setAppState} />;
+        return <TimelineScreen currentLevelId={currentLevelId} setAppState={setAppState} notebookContent={notebookContent} />;
       case 'CONTACTS':
         return (
           <ContactsScreen 
