@@ -53,6 +53,7 @@ export default function App() {
   const [isHacked, setIsHacked] = useState<boolean>(false);
   const [isHackedMap, setIsHackedMap] = useState<boolean>(false);
   const [isObjectiveMet, setIsObjectiveMet] = useState<boolean>(false);
+  const [hasShownCCTVWarning, setHasShownCCTVWarning] = useState<boolean>(false);
   
   const [activeTable, setActiveTable] = useState<string>('');
   
@@ -453,6 +454,21 @@ export default function App() {
       setIsBrowsingTable(false);
     }
   }, [appState]);
+
+  // Show Supervisor CCTV metadata warning when opening DB_LIST in Chapter 5
+  useEffect(() => {
+    if (appState === 'DB_LIST' && currentLevelId === 5 && !hasShownCCTVWarning) {
+      setHasShownCCTVWarning(true);
+      showSupervisorPopup('Jangan berharap ada video. Sistem lama hanya menyimpan metadata.');
+    }
+  }, [appState, currentLevelId, hasShownCCTVWarning]);
+
+  // Reset the warning when changing levels
+  useEffect(() => {
+    if (currentLevelId !== 5) {
+      setHasShownCCTVWarning(false);
+    }
+  }, [currentLevelId]);
 
   const currentLevel = LEVELS.find(l => l.id === currentLevelId) || LEVELS[0];
   const currentObjective = currentLevel.objectives[currentObjectiveIndex] || currentLevel.objectives[0];
@@ -964,6 +980,8 @@ export default function App() {
         ? 'Mission Accepted. NEW TABLE: Parking Unlocked.'
         : currentLevelId === 4
         ? 'Mission Accepted. NEW FEATURE: Timeline Unlocked.'
+        : currentLevelId === 5
+        ? 'NEW DATABASE\nCCTV Database\nUnlocked'
         : currentLevelId === 6
         ? 'Mission Accepted. NEW APP: Browser Unlocked.'
         : currentLevelId === 8
