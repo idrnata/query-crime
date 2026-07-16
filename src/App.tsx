@@ -964,29 +964,59 @@ export default function App() {
     setHasAcceptedMission(true);
     triggerBlink('CASE_FILES');
     let newApps = [...unlockedApps];
-    if (currentLevelId === 6 && !newApps.includes('BROWSER')) {
-      newApps.push('BROWSER');
-      triggerBlink('BROWSER');
+    
+    if (currentLevelId === 2 && !newApps.includes('CONTACTS')) {
+      newApps.push('CONTACTS');
+      triggerBlink('CONTACTS');
     }
     if (currentLevelId === 4 && !newApps.includes('TIMELINE')) {
       newApps.push('TIMELINE');
       triggerBlink('TIMELINE');
     }
+    if (currentLevelId === 6 && !newApps.includes('BROWSER')) {
+      newApps.push('BROWSER');
+      triggerBlink('BROWSER');
+    }
+    if (currentLevelId === 7 && !newApps.includes('MAP')) {
+      newApps.push('MAP');
+      triggerBlink('MAP');
+    }
+    
     setUnlockedApps(newApps);
     saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, true, newApps, notebookContent, contacts, witnesses, messages, stats);
+    
+    let popupTitle = 'SYSTEM';
+    let popupMessage = 'Mission Accepted. Objective updated in Case Files.';
+    
+    if (currentLevelId === 1) {
+      popupTitle = 'MISSION ACCEPTED';
+      popupMessage = 'ACCESS GRANTED TO:\n- VEHICLES DATABASE\n- OWNERS DATABASE\n- PARKING LOGS\n\nAnalyze the tables to identify the owner of vehicle B1734QAZ.';
+    } else if (currentLevelId === 2) {
+      popupTitle = 'NEW DATABASE ACCESS';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CITIZENS DATABASE (citizens, visitors, patients)\n- CONTACTS APP UNLOCKED\n\nVerify if Budi Santoso\'s address matches citizens registration data.';
+    } else if (currentLevelId === 3) {
+      popupTitle = 'HOSPITAL DATABASE GRANTED';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- HOSPITAL DATABASE\n- HOSPITAL PARKING EXTENDED LOGS\n\nNew query capabilities unlocked: SQL JOIN';
+    } else if (currentLevelId === 4) {
+      popupTitle = 'NEW INVESTIGATION TOOL';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW FEATURE UNLOCKED:\n- CHRONOLOGICAL TIMELINE SCREEN\n\nNew query capabilities unlocked: BETWEEN, Multi-Table JOINs';
+    } else if (currentLevelId === 5) {
+      popupTitle = 'CCTV SYSTEM GRANTED';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CCTV DATABASE (cameras, footage)\n\nNew query capabilities unlocked: SQL LEFT JOIN';
+    } else if (currentLevelId === 6) {
+      popupTitle = 'DIGITAL ARCHIVE ACCESS';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- POLICE SECURE BROWSER\n- COMPANIES DATABASE\n\nNew query capabilities unlocked: LIKE with % wildcards';
+    } else if (currentLevelId === 7) {
+      popupTitle = 'GPS TRACKING INTERFACE';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- GPS MAPS TRACKER\n  (locations, routes, checkpoints)\n\nNew query capabilities unlocked: ORDER BY, LIMIT';
+    } else if (currentLevelId === 8) {
+      popupTitle = 'FINANCIAL AUDIT GRANTED';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- FINANCIAL BANK DATABASE\n  (accounts, transactions, branches)\n\nNew query capabilities unlocked: GROUP BY, COUNT(*), HAVING';
+    }
+    
     setPopup({
-      title: 'SYSTEM',
-      message: currentLevelId === 3 
-        ? 'Mission Accepted. NEW TABLE: Parking Unlocked.'
-        : currentLevelId === 4
-        ? 'Mission Accepted. NEW FEATURE: Timeline Unlocked.'
-        : currentLevelId === 5
-        ? 'NEW DATABASE\nCCTV Database\nUnlocked'
-        : currentLevelId === 6
-        ? 'Mission Accepted. NEW APP: Browser Unlocked.'
-        : currentLevelId === 8
-        ? 'Mission Accepted. NEW DATABASE: Bank Unlocked.'
-        : 'Mission Accepted. Objective updated in Case Files.',
+      title: popupTitle,
+      message: popupMessage,
       onClose: () => {
         setPopup(null);
         setAppState('HOME');
@@ -1236,7 +1266,15 @@ export default function App() {
                 
                 triggerBlink('WITNESSES');
                 saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent, contacts, newWitnesses, messages, stats);
-                showSupervisorPopup("Bagus! Informasi dari Dina Santoso sangat penting. Sekarang periksa database rumah sakit.");
+                
+                setPopup({
+                  title: 'NEW APP UNLOCKED',
+                  message: 'WITNESS REPORT DATABASE UNLOCKED\n\nAccess the Witnesses database to read statements and follow up on clues.',
+                  onClose: () => {
+                    setPopup(null);
+                    showSupervisorPopup("Bagus! Informasi dari Dina Santoso sangat penting. Sekarang periksa database rumah sakit.");
+                  }
+                });
               }
             }} 
           />
