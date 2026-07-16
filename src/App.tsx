@@ -269,7 +269,7 @@ export default function App() {
       content += '\n\nRudi tidak memiliki kendaraan.';
       content += '\n\nAda tiga kendaraan.';
     }
-    if (chapterId >= 6) {
+    if (chapterId > 6) {
       content += '\n\nRizky pernah mengalami kecelakaan.';
       content += '\n\nAndi tidak pernah muncul di berita.';
       content += '\n\nArunika -> Kecelakaan -> Rizky';
@@ -391,12 +391,10 @@ export default function App() {
 
   const markMessageAsRead = useCallback((id: string) => {
     setMessages(prev => {
-      const msgIndex = prev.findIndex(m => m.id === id);
-      if (msgIndex !== -1 && !prev[msgIndex].read) {
-        const updated = [...prev];
-        updated[msgIndex] = { ...updated[msgIndex], read: true };
+      const hasUnread = prev.some(m => m.id === id && !m.read);
+      if (hasUnread) {
+        const updated = prev.map(m => m.id === id ? { ...m, read: true } : m);
         
-        // Save progress immediately with the updated messages
         saveProgress(
           currentLevelId,
           currentObjectiveIndex,
@@ -638,6 +636,7 @@ export default function App() {
           triggerBlink('CONTACTS');
           setAppState('INBOX');
           setMessages(prev => {
+            if (prev.find(m => m.id === 'call_dina')) return prev;
             const newMsg = {
                id: 'call_dina',
                sender: 'Supervisor Raka',
@@ -782,24 +781,41 @@ export default function App() {
         }
       } else if (currentLevelId === 6) {
         if (nextIdx === 1) {
-          setNotebookContent(prev => prev + '\n\nRizky pernah mengalami kecelakaan.');
-          showSupervisorPopup('Rizky ternyata pernah mengalami kecelakaan 8 tahun lalu. Sekarang, coba cari apakah Andi Prasetyo pernah disebut publik di berita.');
-          setAppState('TERM');
-          setQueryString('');
-        } else if (nextIdx === 2) {
-          setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul di berita.');
+          setNotebookContent(prev => prev + '\n\nTidak ditemukan.');
           setPopup({
-            title: 'NEW LESSON',
-            message: 'LIKE Unlocked. Digunakan untuk pencarian teks fleksibel menggunakan wildcard % (mewakili karakter apa saja). Contoh: LIKE \'%Rizky%\'',
+            title: 'Supervisor Raka',
+            message: 'Apakah dia memang tidak pernah diberitakan?\nAtau...\nKamu mencari dengan cara yang salah.',
             onClose: () => {
-              setPopup(null);
-              showSupervisorPopup('Andi tidak pernah disebut publik. Tapi coba perhatikan artikel kecelakaan Rizky tadi, ada nama perusahaan "PT Arunika Logistics". Coba cari berita terkait perusahaan itu.', () => {
-                setAppState('TERM');
-                setQueryString('');
+              setPopup({
+                title: 'Supervisor Raka',
+                message: 'Tidak semua orang ditulis dengan nama lengkap.\nKadang hanya nama depan.\nKadang hanya nama belakang.\nGunakan pencarian yang lebih fleksibel.',
+                onClose: () => {
+                  setPopup({
+                    title: 'NEW LESSON',
+                    message: 'LIKE\n\nUnlocked\n\nContoh:\nSELECT * FROM articles\nWHERE title\nLIKE \'%Rizky%\';',
+                    onClose: () => {
+                      setPopup(null);
+                      setAppState('TERM');
+                      setQueryString('');
+                    }
+                  });
+                }
               });
             }
           });
+        } else if (nextIdx === 2) {
+          setNotebookContent(prev => prev + '\n\nRizky pernah mengalami kecelakaan.');
+          showSupervisorPopup('Rizky ternyata pernah mengalami kecelakaan 8 tahun lalu. Sekarang, coba cari apakah Andi Prasetyo pernah disebut publik di berita.', () => {
+            setAppState('TERM');
+            setQueryString('');
+          });
         } else if (nextIdx === 3) {
+          setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul di berita.');
+          showSupervisorPopup('Andi tidak pernah disebut publik. Tapi coba perhatikan artikel kecelakaan Rizky tadi, ada nama perusahaan "PT Arunika Logistics". Coba cari berita terkait perusahaan itu.', () => {
+            setAppState('TERM');
+            setQueryString('');
+          });
+        } else if (nextIdx === 4) {
           setNotebookContent(prev => prev + '\n\nArunika -> Kecelakaan -> Rizky');
           setPopup({
             title: 'NEW DATABASE',
@@ -830,6 +846,7 @@ export default function App() {
             setPopup(null);
             
             setMessages(prev => {
+              if (prev.find(m => m.id === 'anon_msg_6')) return prev;
               const anonMsg = {
                 id: 'anon_msg_6',
                 sender: 'Unknown Number',
@@ -886,6 +903,7 @@ export default function App() {
                         setPopup(null);
                         
                         setMessages(prev => {
+                          if (prev.find(m => m.id === 'cctv_tech_msg')) return prev;
                           const techMsg = {
                             id: 'cctv_tech_msg',
                             sender: 'Teknisi CCTV',
@@ -959,8 +977,11 @@ export default function App() {
       setStats(newStats);
       
       setMessages(prev => {
+        const closingId = `closing_${currentLevelId}`;
+        if (prev.find(m => m.id === closingId)) return prev;
+        
         const closingMsg = {
-          id: `closing_${currentLevelId}`,
+          id: closingId,
           sender: 'Supervisor Raka',
           subject: `RE: ${currentLevel.title} - SELESAI`,
           body: currentLevel.report.conclusion,
@@ -970,7 +991,7 @@ export default function App() {
         
         let newMessages = [...prev, closingMsg];
         
-        if (currentLevelId === 3) {
+        if (currentLevelId === 3 && !prev.find(m => m.id === 'anon_msg')) {
           // Unknown Number message
           const anonMsg = {
             id: 'anon_msg',

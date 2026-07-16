@@ -6,11 +6,11 @@ export const chapter6: Level = {
   mail: {
     sender: 'Supervisor Raka',
     subject: 'Arsip Digital Nasional',
-    body: 'Kamera memang mati selama enam menit.\nTapi orang tidak bisa menghapus semua jejaknya.\nSetiap orang meninggalkan jejak digital.\nSaya membuka akses ke Arsip Digital Nasional.\n\nNEW APP: Browser Unlocked',
+    body: 'Kamera memang mati selama enam menit.\nTapi orang tidak bisa menghapus semua jejaknya.\nSetiap orang meninggalkan jejak digital.\nSaya membuka akses ke Arsip Digital Nasional. Coba cari nama target di tabel Articles.\n\nNEW APP: Browser Unlocked',
   },
   files: {
     title: 'Digital Archive Online',
-    content: 'POLICE BROWSER SECURE ACCESS\n\nIndeks database terbuka:\n- Articles\n- Public Records\n- News\n- Announcements',
+    content: 'POLICE BROWSER SECURE ACCESS\n\nIndeks database terbuka:\n- Articles (id, title, content, publish_date)\n- Public Records\n- News\n- Announcements',
   },
   database: {
     articles: [
@@ -63,13 +63,28 @@ export const chapter6: Level = {
   objectives: [
     {
       id: 1,
-      story: 'Cari apakah Rizky pernah muncul di berita.',
-      goal: 'Query tabel articles menggunakan LIKE \'%Rizky%\'.',
-      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'title', 'LIKE', "'%Rizky%'"],
-      validateResult: (res) => res && res.length === 1 && res[0].title.includes('Rizky')
+      story: 'Mulai penyelidikan dengan mencari nama "Rizky Hidayat" di database artikel.',
+      goal: "SELECT * FROM articles WHERE title='Rizky Hidayat';",
+      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'title', '=', "'Rizky Hidayat'"],
+      validateResult: (res, query) => {
+        if (!query) return false;
+        const q = query.toLowerCase().replace(/\s+/g, ' ');
+        return q.includes("where title = 'rizky hidayat'") && res && res.length === 0;
+      }
     },
     {
       id: 2,
+      story: 'Coba pencarian yang lebih fleksibel untuk menemukan berita tentang Rizky.',
+      goal: "SELECT * FROM articles WHERE title LIKE '%Rizky%';",
+      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'title', 'LIKE', "'%Rizky%'"],
+      validateResult: (res, query) => {
+        if (!query) return false;
+        const q = query.toLowerCase().replace(/\s+/g, ' ');
+        return q.includes('like') && q.includes('%rizky%') && res && res.length > 0;
+      }
+    },
+    {
+      id: 3,
       story: 'Cari apakah Andi pernah disebut publik.',
       goal: 'Query tabel articles menggunakan LIKE untuk mencari Andi atau Prasetyo di content.',
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Andi%'", "'%Prasetyo%'"],
@@ -80,14 +95,14 @@ export const chapter6: Level = {
       }
     },
     {
-      id: 3,
+      id: 4,
       story: 'Temukan hubungan yang tidak terlihat dengan mencari PT Arunika Logistics di database artikel.',
       goal: 'Query tabel articles menggunakan LIKE \'%Arunika%\'.',
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Arunika%'"],
       validateResult: (res) => res && res.length === 5 && res.every(r => r.content.includes('Arunika') || r.title.includes('Arunika'))
     },
     {
-      id: 4,
+      id: 5,
       story: 'Cari data perusahaan PT Arunika Logistics di database perusahaan.',
       goal: 'Query tabel companies menggunakan LIKE \'%Arunika%\'.',
       availableTokens: ['SELECT', '*', 'FROM', 'companies', 'WHERE', 'company_name', 'LIKE', "'%Arunika%'"],

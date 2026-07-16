@@ -80,6 +80,9 @@ export const TerminalScreen: React.FC<TerminalScreenProps> = ({
             if (currentLevelId >= 5) {
               baseKeywords.push('LEFT', 'JOIN');
             }
+            if (currentLevelId >= 6) {
+              baseKeywords.push('LIKE', '%');
+            }
             
             const getRelatedTablesForLevel = (levelId: number): string[] => {
               switch (levelId) {
