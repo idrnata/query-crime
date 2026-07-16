@@ -10,6 +10,7 @@ interface InboxScreenProps {
   hasAcceptedMission: boolean;
   setHasAcceptedMission: (val: boolean) => void;
   markMessageAsRead: (id: string) => void;
+  handleCloseMessage?: () => void;
 }
 
 export const InboxScreen: React.FC<InboxScreenProps> = ({
@@ -20,7 +21,8 @@ export const InboxScreen: React.FC<InboxScreenProps> = ({
   currentLevel,
   hasAcceptedMission,
   setHasAcceptedMission,
-  markMessageAsRead
+  markMessageAsRead,
+  handleCloseMessage
 }) => {
   const selectedMessage = messages.find(m => m.id === selectedMessageId);
 
@@ -104,7 +106,7 @@ export const InboxScreen: React.FC<InboxScreenProps> = ({
       {selectedMessage && (
         <div 
           className="absolute inset-0 bg-[#1b2118]/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-in fade-in duration-200"
-          onClick={() => setSelectedMessageId(null)}
+          onClick={() => handleCloseMessage ? handleCloseMessage() : setSelectedMessageId(null)}
         >
           <div 
             className="bg-[#fcfdfa] border-3 border-[#1b2118] w-full max-w-2xl rounded shadow-2xl flex flex-col max-h-[90%] overflow-hidden animate-in zoom-in-95 duration-150"
@@ -117,7 +119,7 @@ export const InboxScreen: React.FC<InboxScreenProps> = ({
                 <span className="text-xs font-black tracking-wider uppercase font-mono">MESSAGE LOG PREVIEW</span>
               </div>
               <button 
-                onClick={() => setSelectedMessageId(null)}
+                onClick={() => handleCloseMessage ? handleCloseMessage() : setSelectedMessageId(null)}
                 className="text-[#8cb07d] hover:text-white p-1 rounded-sm transition-colors"
                 aria-label="Close"
               >
@@ -161,7 +163,7 @@ export const InboxScreen: React.FC<InboxScreenProps> = ({
               {selectedMessage.id === `initial_${currentLevel.id}` && !hasAcceptedMission ? (
                 <button 
                   onClick={() => {
-                    setSelectedMessageId(null);
+                    handleCloseMessage ? handleCloseMessage() : setSelectedMessageId(null);
                     setHasAcceptedMission(true);
                   }}
                   className="w-full bg-[#1b2118] text-[#8cb07d] py-3.5 font-bold uppercase text-xs flex items-center justify-center gap-2 hover:bg-[#252c21] transition-all"
@@ -170,7 +172,7 @@ export const InboxScreen: React.FC<InboxScreenProps> = ({
                 </button>
               ) : (
                 <button 
-                  onClick={() => setSelectedMessageId(null)}
+                  onClick={() => handleCloseMessage ? handleCloseMessage() : setSelectedMessageId(null)}
                   className="w-full bg-[#1b2118] text-[#8cb07d] py-3 font-bold uppercase text-xs flex items-center justify-center gap-2 hover:bg-[#252c21] transition-all"
                 >
                   BACK TO INBOX
