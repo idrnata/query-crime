@@ -244,6 +244,32 @@ export default function App() {
     });
   };
 
+  const getInitialNotebookForChapter = (chapterId: number): string => {
+    let content = 'Kemungkinan pemilik kendaraan...';
+    if (chapterId >= 3) {
+      content += '\n\nDina Santoso: Kemungkinan anggota keluarga.';
+    }
+    if (chapterId >= 4) {
+      content += '\n\nSemua data saling terhubung. Cari hubungan antar tabel.';
+    }
+    if (chapterId >= 5) {
+      content += '\n\nData terlalu banyak. Perlu difilter.\nAda dua orang lain yang berada di lokasi hampir bersamaan.';
+      content += '\n\nRudi juga mengunjungi Rizky.';
+      content += '\n\nData Rudi tidak lengkap.';
+      content += '\n\nRudi tidak memiliki kendaraan.';
+      content += '\n\nAda tiga kendaraan.';
+    }
+    if (chapterId >= 6) {
+      content += '\n\nRizky pernah mengalami kecelakaan.';
+      content += '\n\nAndi tidak pernah muncul di berita.';
+      content += '\n\nArunika -> Kecelakaan -> Rizky';
+    }
+    if (chapterId >= 7) {
+      content += '\n\nSeseorang menghapus sebagian data perusahaan.';
+    }
+    return content;
+  };
+
   const handleJumpToChapter = (chapterId: number) => {
     setCurrentLevelId(chapterId);
     setCurrentObjectiveIndex(0);
@@ -253,10 +279,11 @@ export default function App() {
     setIsObjectiveMet(false);
     
     let baseApps = ['INBOX', 'CASE_FILES', 'DB_LIST', 'NOTEBOOK', 'RANK', 'SETTINGS'];
+    if (chapterId >= 3) baseApps.push('WITNESSES');
     if (chapterId >= 4) baseApps.push('TIMELINE');
+    if (chapterId >= 5) baseApps.push('EVIDENCE');
     if (chapterId >= 6) baseApps.push('BROWSER');
     if (chapterId >= 7) baseApps.push('MAP');
-    if (chapterId >= 5) baseApps.push('EVIDENCE');
     
     setUnlockedApps(baseApps);
     
@@ -264,25 +291,61 @@ export default function App() {
       { name: 'Raka (Supervisor)', role: 'MCD Commander', phone: '911-SUPER', id: 'raka' },
       { name: 'Budi Santoso', role: 'Warga Sipil', phone: '08124444', id: 'budi' }
     ];
+    if (chapterId >= 3) {
+      initialContacts.push({ name: 'Dina Santoso', role: 'Anggota Keluarga', phone: '08125555', id: 'dina' });
+    }
     setContacts(initialContacts);
-    setWitnesses([]);
+
+    let initialWitnesses: any[] = [];
+    if (chapterId >= 3) {
+      initialWitnesses.push({ name: 'Dina Santoso', statement: 'Budi (kakaknya) pergi menemui seseorang di RS Harapan Bangsa 3 hari lalu.' });
+    }
+    setWitnesses(initialWitnesses);
+    
+    const reconstructedMessages: any[] = [];
+    for (let c = 1; c < chapterId; c++) {
+      const lvl = LEVELS.find(l => l.id === c);
+      if (lvl) {
+        reconstructedMessages.push({
+          id: `initial_${c}`,
+          sender: lvl.mail.sender,
+          subject: lvl.mail.subject,
+          body: lvl.mail.body,
+          timestamp: '08:15',
+          read: true
+        });
+      }
+      if (c === 2) {
+        reconstructedMessages.push({
+          id: 'call_dina',
+          sender: 'Supervisor Raka',
+          subject: 'Hubungi Dina',
+          body: 'Bagus. Hubungi Dina.',
+          timestamp: '08:20',
+          read: true
+        });
+      }
+    }
     
     const activeLevel = LEVELS.find(l => l.id === chapterId);
     const initialMsgId = `initial_${chapterId}`;
-    const initialMessages = [
-      {
+    if (activeLevel) {
+      reconstructedMessages.push({
         id: initialMsgId,
-        sender: activeLevel?.mail.sender || 'Supervisor Raka',
-        subject: activeLevel?.mail.subject || 'Mission',
-        body: activeLevel?.mail.body || '',
+        sender: activeLevel.mail.sender,
+        subject: activeLevel.mail.subject,
+        body: activeLevel.mail.body,
         timestamp: '08:15',
         read: false
-      }
-    ];
-    setMessages(initialMessages);
+      });
+    }
+    setMessages(reconstructedMessages);
     setSelectedMessageId(initialMsgId);
+
+    const initialNotebook = getInitialNotebookForChapter(chapterId);
+    setNotebookContent(initialNotebook);
     
-    saveProgress(chapterId, 0, unlockedLevelIds, false, baseApps, notebookContent, initialContacts, [], initialMessages);
+    saveProgress(chapterId, 0, unlockedLevelIds, false, baseApps, initialNotebook, initialContacts, initialWitnesses, reconstructedMessages);
     setAppState('HOME');
     showSupervisorPopup(`Chapter ${chapterId} berhasil di-reset. Silakan buka Inbox untuk membaca instruksi misi.`);
   };
@@ -574,22 +637,27 @@ export default function App() {
         }
       } else if (currentLevelId === 4) {
         if (nextIdx === 1) {
+          setNotebookContent(prev => prev + '\n\nData terlalu banyak. Perlu difilter.\nAda dua orang lain yang berada di lokasi hampir bersamaan.');
           showSupervisorPopup('Fokus ke pasien yang mereka kunjungi. Gunakan JOIN antara visitors dan patients.');
           setAppState('TERM');
           setQueryString('');
         } else if (nextIdx === 2) {
+          setNotebookContent(prev => prev + '\n\nRudi juga mengunjungi Rizky.');
           showSupervisorPopup('Bagus. Sekarang cari identitas Rudi Hartono di tabel citizens.');
           setAppState('TERM');
           setQueryString('');
         } else if (nextIdx === 3) {
+          setNotebookContent(prev => prev + '\n\nData Rudi tidak lengkap.');
           showSupervisorPopup('Rudi Hartono terdaftar sebagai warga. Sekarang periksa apakah Rudi memiliki kendaraan terdaftar.');
           setAppState('TERM');
           setQueryString('');
         } else if (nextIdx === 4) {
+          setNotebookContent(prev => prev + '\n\nRudi tidak memiliki kendaraan.');
           showSupervisorPopup('Rudi tidak memiliki kendaraan. Sekarang cari semua kendaraan yang keluar dari tempat parkir rumah sakit sekitar pukul 11:30.');
           setAppState('TERM');
           setQueryString('');
         } else if (nextIdx === 5) {
+          setNotebookContent(prev => prev + '\n\nAda tiga kendaraan.');
           showSupervisorPopup('Ada tiga kendaraan. Sekarang hubungkan data parkir, kendaraan, dan warga menggunakan triple JOIN untuk mengetahui siapa pemilik kendaraan-kendaraan tersebut.');
           setAppState('TERM');
           setQueryString('');

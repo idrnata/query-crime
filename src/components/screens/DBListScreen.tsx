@@ -64,6 +64,7 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
                              (t === 'Companies' && (currentLevelId < 6 || currentObjectiveIndex < 3));
             
             const tableName = t.toLowerCase().replace(/\s+/g, '_');
+            
             const exists = currentLevel.database[tableName] !== undefined;
             if (!exists && !isLocked) return null;
 

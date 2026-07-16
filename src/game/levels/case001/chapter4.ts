@@ -35,7 +35,7 @@ export const chapter4: Level = {
       { plate_number: 'B9921KD', owner_id: 3 },
       { plate_number: 'B1182AA', owner_id: 4 }
     ],
-    parking: [
+    hospital_parking: [
       { plate_number: 'B2841PT', entry_time: '09:15', exit_time: '11:34' },
       { plate_number: 'B9921KD', entry_time: '10:00', exit_time: '11:31' },
       { plate_number: 'B1182AA', entry_time: '09:30', exit_time: '11:36' }
@@ -81,20 +81,20 @@ export const chapter4: Level = {
     {
       id: 5,
       story: 'Rudi tidak memiliki kendaraan pribadi terdaftar. Supervisor: "Atau dia memakai kendaraan orang lain. Cari semua kendaraan yang keluar sekitar pukul 11:30."',
-      goal: "Query tabel parking untuk mencari semua kendaraan yang keluar antara pukul '11:25' dan '11:40'.",
-      availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'exit_time', 'BETWEEN', "'11:25'", 'AND', "'11:40'"],
+      goal: "Query tabel hospital_parking untuk mencari semua kendaraan yang keluar antara pukul '11:25' dan '11:40'.",
+      availableTokens: ['SELECT', '*', 'FROM', 'hospital_parking', 'WHERE', 'exit_time', 'BETWEEN', "'11:25'", 'AND', "'11:40'"],
       validateResult: (res) => res && res.length === 3
     },
     {
       id: 6,
       story: 'Ada tiga kendaraan. Sekarang hubungkan semuanya untuk mengetahui siapa pemilik dari kendaraan-kendaraan tersebut.',
-      goal: 'Lakukan triple JOIN antara parking (alias p), vehicles (alias v), dan citizens (alias c) untuk menampilkan nama pemilik, plat nomor, dan waktu keluar untuk kendaraan yang keluar di rentang waktu tersebut.',
+      goal: 'Lakukan triple JOIN antara hospital_parking (alias hp), vehicles (alias v), dan citizens (alias c) untuk menampilkan nama pemilik, plat nomor, dan waktu keluar untuk kendaraan yang keluar di rentang waktu tersebut.',
       availableTokens: [
-        'SELECT', 'c.name', ',', 'v.plate_number', ',', 'p.exit_time', 
-        'FROM', 'parking', 'p', 
-        'JOIN', 'vehicles', 'v', 'ON', 'p.plate_number', '=', 'v.plate_number', 
+        'SELECT', 'c.name', ',', 'v.plate_number', ',', 'hp.exit_time', 
+        'FROM', 'hospital_parking', 'hp', 
+        'JOIN', 'vehicles', 'v', 'ON', 'hp.plate_number', '=', 'v.plate_number', 
         'JOIN', 'citizens', 'c', 'ON', 'v.owner_id', '=', 'c.id', 
-        'WHERE', 'p.exit_time', 'BETWEEN', "'11:25'", 'AND', "'11:40'"
+        'WHERE', 'hp.exit_time', 'BETWEEN', "'11:25'", 'AND', "'11:40'"
       ],
       validateResult: (res) => res && res.length === 3 && res.some(r => r.name === 'Andi Prasetyo' || r['c.name'] === 'Andi Prasetyo')
     }
