@@ -51,6 +51,7 @@ export default function App() {
   const [isFlickering, setIsFlickering] = useState<boolean>(false);
   const [showUnknownMessage, setShowUnknownMessage] = useState<boolean>(false);
   const [isHacked, setIsHacked] = useState<boolean>(false);
+  const [isHackedMap, setIsHackedMap] = useState<boolean>(false);
   const [isObjectiveMet, setIsObjectiveMet] = useState<boolean>(false);
   
   const [activeTable, setActiveTable] = useState<string>('');
@@ -184,11 +185,38 @@ export default function App() {
     }
   }, [currentLevelId, currentObjectiveIndex, contacts.length, unlockedApps.length, witnesses.length]);
 
+  // State Healer for Chapter 7: Ensure Maps is unlocked
+  useEffect(() => {
+    if (currentLevelId === 7) {
+      if (!unlockedApps.includes('MAP')) {
+        const newApps = [...unlockedApps, 'MAP'];
+        setUnlockedApps(newApps);
+        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent);
+      }
+    }
+  }, [currentLevelId, unlockedApps.length]);
+
   useEffect(() => {
     if (appState === 'BOOT') {
+      const isChapter7Reboot = currentLevelId === 7 && currentObjectiveIndex >= 4;
+      const duration = isChapter7Reboot ? 6000 : 2500;
       const timer = setTimeout(() => {
-        setAppState('HOME');
-      }, 2500);
+        if (isChapter7Reboot) {
+          setIsHacked(false);
+          setPopup({
+            title: 'SYSTEM SECURITY ALERT',
+            message: 'SECURITY OVERRIDE TERMINATED. LOCAL DEVICE SECURED.',
+            onClose: () => {
+              setPopup(null);
+              showSupervisorPopup('YA AMPUN! Perangkat penyelidikanmu baru saja diretas secara langsung!\nSeseorang menimpa peta kepolisian dengan rute merah misterius dan pesan "YOU ARE LOOKING AT THE WRONG DESTINATION".\n\nMereka mengawasi perangkat kita secara real-time! Kirimkan laporan fakta analisismu segera sekarang sebelum mereka mematikan sistem kita!', () => {
+                setAppState('REPORT');
+              });
+            }
+          });
+        } else {
+          setAppState('HOME');
+        }
+      }, duration);
       return () => clearTimeout(timer);
     }
 
@@ -739,6 +767,10 @@ export default function App() {
   };
 
   const handleBack = () => {
+    if (appState === 'MAP' && currentLevelId === 7 && currentObjectiveIndex >= 4) {
+      setIsHackedMap(true);
+      return;
+    }
     if (appState === 'MENU') {
       setAppState('HOME');
     } else if (appState === 'RESULT' || appState === 'ERROR') {
@@ -867,6 +899,8 @@ export default function App() {
             setIsBrowsing={setIsBrowsing} 
             setAppState={setAppState} 
             isObjectiveMet={isObjectiveMet} 
+            handleObjectiveComplete={handleObjectiveComplete}
+            hasNextObjective={currentObjectiveIndex < currentLevel.objectives.length - 1}
           />
         );
       case 'REPORT':
@@ -949,13 +983,41 @@ export default function App() {
             handleHangUp={() => {
               setCallStatus('IDLE');
               setAppState('CONTACTS');
+              
+              if (activeCallContact?.id === 'dina' && currentLevelId === 2 && currentObjectiveIndex === 3) {
+                // Unlock WITNESSES app and add testimony
+                const newWitnesses = [{ name: 'Dina Santoso', statement: 'Budi (kakaknya) pergi menemui seseorang di RS Harapan Bangsa 3 hari lalu.' }];
+                setWitnesses(newWitnesses);
+                
+                let newApps = [...unlockedApps];
+                if (!newApps.includes('WITNESSES')) {
+                  newApps.push('WITNESSES');
+                  setUnlockedApps(newApps);
+                }
+                
+                triggerBlink('WITNESSES');
+                saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent, contacts, newWitnesses, messages, stats);
+                showSupervisorPopup("Bagus! Informasi dari Dina Santoso sangat penting. Sekarang periksa database rumah sakit.");
+              }
             }} 
           />
         );
       case 'BROWSER':
         return <BrowserScreen currentLevel={currentLevel} setAppState={setAppState} />;
       case 'MAP':
-        return <MapScreen setAppState={setAppState} />;
+        return (
+          <MapScreen 
+            currentLevelId={currentLevelId}
+            currentObjectiveIndex={currentObjectiveIndex}
+            isHackedMap={isHackedMap}
+            setAppState={setAppState} 
+            onRebootDevice={() => {
+              setIsHackedMap(false);
+              setIsHacked(true);
+              setAppState('BOOT');
+            }}
+          />
+        );
       case 'RANK':
         return <RankScreen stats={stats} setAppState={setAppState} />;
       case 'SETTINGS':

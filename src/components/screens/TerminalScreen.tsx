@@ -70,7 +70,7 @@ export const TerminalScreen: React.FC<TerminalScreenProps> = ({
         <div className="mt-6 text-xs font-bold mb-2 opacity-70">Shorthands:</div>
         <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-wrap gap-2 content-start pb-4">
           {(() => {
-            const baseKeywords = ['SELECT', '*', 'FROM', 'WHERE', '=', '>', '<', 'AND', 'OR', 'IS', 'NULL', 'ORDER', 'BY', 'ASC', 'DESC'];
+            const baseKeywords = ['SELECT', '*', 'FROM', 'WHERE', '=', '>', '<', 'AND', 'OR', 'IS', 'NULL', 'ORDER', 'BY', 'ASC', 'DESC', ',', '.'];
             if (currentLevelId > 1 || unlockedLevelIds.includes(2)) {
               baseKeywords.push('JOIN', 'ON');
             }

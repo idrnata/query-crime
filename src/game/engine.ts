@@ -1,18 +1,92 @@
 export function executeSql(query: string, db: Record<string, any[]>): any[] {
-  let safeQuery = query.replace(/,/g, ' , ').replace(/=/g, ' = ').replace(/;/g, ' ');
-  const tokens = safeQuery.split(/\s+/).filter(Boolean);
+  const tokens: string[] = [];
+  let i = 0;
+  while (i < query.length) {
+    // Skip whitespace
+    if (/\s/.test(query[i])) {
+      i++;
+      continue;
+    }
+    
+    // Handle single quotes
+    if (query[i] === "'") {
+      let start = i;
+      i++; // skip quote
+      while (i < query.length && query[i] !== "'") {
+        i++;
+      }
+      if (i < query.length) i++; // skip end quote
+      tokens.push(query.substring(start, i));
+      continue;
+    }
+    
+    // Handle double quotes
+    if (query[i] === '"') {
+      let start = i;
+      i++; // skip quote
+      while (i < query.length && query[i] !== '"') {
+        i++;
+      }
+      if (i < query.length) i++; // skip end quote
+      tokens.push(query.substring(start, i));
+      continue;
+    }
+    
+    // Handle symbols and operators (comma, equals, semicolon, etc.)
+    if (/[=,;<>!]/.test(query[i])) {
+      let start = i;
+      i++;
+      while (i < query.length && /[=,;<>!]/.test(query[i])) {
+        i++;
+      }
+      const symbol = query.substring(start, i);
+      // Skip statement terminator semicolon if it's separate, but keep operators and commas
+      if (symbol !== ';') {
+        tokens.push(symbol);
+      }
+      continue;
+    }
+    
+    // Handle words, numbers, fields with aliases (e.g. c.name), and asterisk (*)
+    let start = i;
+    while (i < query.length && !/\s/.test(query[i]) && !/[=,;'"<>]/.test(query[i])) {
+      i++;
+    }
+    tokens.push(query.substring(start, i));
+  }
   
   let selectIdx = tokens.findIndex(t => t.toUpperCase() === 'SELECT');
   let fromIdx = tokens.findIndex(t => t.toUpperCase() === 'FROM');
-  let joinIdx = tokens.findIndex(t => t.toUpperCase() === 'JOIN');
-  let leftJoinIdx = tokens.findIndex((t, i) => t.toUpperCase() === 'LEFT' && tokens[i+1] && tokens[i+1].toUpperCase() === 'JOIN');
   let whereIdx = tokens.findIndex(t => t.toUpperCase() === 'WHERE');
   let orderIdx = tokens.findIndex((t, i) => t.toUpperCase() === 'ORDER' && tokens[i+1] && tokens[i+1].toUpperCase() === 'BY');
+  let limitIdx = tokens.findIndex(t => t.toUpperCase() === 'LIMIT');
   
   if (selectIdx === -1 || fromIdx === -1) throw new Error("SYNTAX ERROR: SELECT atau FROM tidak ditemukan");
   
-  let effectiveJoinIdx = leftJoinIdx !== -1 ? leftJoinIdx : joinIdx;
-  let mainTableEnd = [effectiveJoinIdx, whereIdx, orderIdx, tokens.length].filter(x => x !== -1).sort((a,b)=>a-b)[0];
+  // Find all JOIN positions
+  const joinStarts: { index: number; isLeft: boolean }[] = [];
+  for (let k = fromIdx + 1; k < tokens.length; k++) {
+    if (tokens[k].toUpperCase() === 'JOIN') {
+      if (k > 0 && tokens[k-1].toUpperCase() === 'LEFT') {
+        continue; // Already handled when LEFT was checked
+      }
+      joinStarts.push({ index: k, isLeft: false });
+    } else if (tokens[k].toUpperCase() === 'LEFT' && tokens[k+1]?.toUpperCase() === 'JOIN') {
+      joinStarts.push({ index: k, isLeft: true });
+    }
+  }
+  
+  let mainTableEnd = tokens.length;
+  if (joinStarts.length > 0) {
+    mainTableEnd = joinStarts[0].index;
+  } else if (whereIdx !== -1) {
+    mainTableEnd = whereIdx;
+  } else if (orderIdx !== -1) {
+    mainTableEnd = orderIdx;
+  } else if (limitIdx !== -1) {
+    mainTableEnd = limitIdx;
+  }
+  
   let mainTableTokens = tokens.slice(fromIdx + 1, mainTableEnd);
   let mainTable = mainTableTokens[0];
   let mainAlias = mainTableTokens.length > 1 ? mainTableTokens[1] : null;
@@ -32,22 +106,26 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
     });
   }
 
-  if (effectiveJoinIdx !== -1) {
-    let onIdx = tokens.findIndex(t => t.toUpperCase() === 'ON');
-    if (onIdx === -1) throw new Error("SYNTAX ERROR: JOIN membutuhkan ON");
+  // Process sequential JOINs
+  for (let j = 0; j < joinStarts.length; j++) {
+    const { index: start, isLeft } = joinStarts[j];
+    const nextBoundary = (j + 1 < joinStarts.length) 
+      ? joinStarts[j+1].index 
+      : ([whereIdx, orderIdx, limitIdx, tokens.length].filter(x => x !== -1).sort((a,b)=>a-b)[0]);
+      
+    const joinBlock = tokens.slice(start, nextBoundary);
+    const onRelIdx = joinBlock.findIndex(t => t.toUpperCase() === 'ON');
+    if (onRelIdx === -1) throw new Error("SYNTAX ERROR: JOIN membutuhkan ON");
     
-    let joinTableTokens = tokens.slice(effectiveJoinIdx + (leftJoinIdx !== -1 ? 2 : 1), onIdx);
-    let joinTable = joinTableTokens[0];
-    let joinAlias = joinTableTokens.length > 1 ? joinTableTokens[1] : null;
-
+    const joinTableIdx = isLeft ? 2 : 1;
+    const joinTable = joinBlock[joinTableIdx];
+    const joinAlias = (onRelIdx > joinTableIdx + 1) ? joinBlock[joinTableIdx + 1] : null;
+    
     if (!db[joinTable]) throw new Error(`TABLE NOT FOUND: ${joinTable}`);
     
-    let onConditionEnd = [whereIdx, orderIdx, tokens.length].filter(x => x !== -1).sort((a,b)=>a-b)[0];
-    let onTokens = tokens.slice(onIdx + 1, onConditionEnd);
-    
+    const onTokens = joinBlock.slice(onRelIdx + 1);
     let joined = [];
-    let isLeftJoin = leftJoinIdx !== -1;
-
+    
     for (let r1 of results) {
       let matched = false;
       for (let r2 of db[joinTable]) {
@@ -63,7 +141,7 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
 
          let combined = {...r1, ...r2Prefixed};
          let left = onTokens[0];
-         let op = onTokens[1]; // should be '='
+         let op = onTokens[1]; // '='
          let right = onTokens[2];
          if (combined[left] == combined[right]) {
             joined.push(combined);
@@ -71,10 +149,9 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
          }
       }
 
-      if (!matched && isLeftJoin) {
+      if (!matched && isLeft) {
         // For LEFT JOIN, if no match found, add row with null values for join table columns
         let r2Null: any = {};
-        // Sample a row from the join table to get its keys
         let sampleRow = db[joinTable][0] || {};
         for (let k in sampleRow) {
            if (joinAlias) r2Null[`${joinAlias}.${k}`] = null;
@@ -87,7 +164,7 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
   }
   
   if (whereIdx !== -1) {
-    let whereEnd = [orderIdx, tokens.length].filter(x => x !== -1).sort((a,b)=>a-b)[0];
+    let whereEnd = [orderIdx, limitIdx, tokens.length].filter(x => x !== -1).sort((a,b)=>a-b)[0];
     let whereTokens = tokens.slice(whereIdx + 1, whereEnd);
     
     // Simple parser that handles AND but respects BETWEEN ... AND
@@ -127,7 +204,12 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
          results = results.filter(row => row[col] === null || row[col] === undefined);
        } else {
          results = results.filter(row => {
-            if (op === '=') return String(row[col]) === String(val);
+            if (op === '=') {
+              const sRow = String(row[col]);
+              const sVal = String(val);
+              if (sRow === sVal) return true;
+              return sRow.replace(/\s+/g, '').toUpperCase() === sVal.replace(/\s+/g, '').toUpperCase();
+            }
             if (op === '>') return Number(row[col]) > Number(val);
             if (op === '<') return Number(row[col]) < Number(val);
             if (op === 'LIKE') return String(row[col]).includes(String(val).replace(/%/g, ''));
@@ -139,11 +221,29 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
   
   if (orderIdx !== -1) {
       let orderCol = tokens[orderIdx + 2];
+      let orderDir = tokens[orderIdx + 3]?.toUpperCase();
+      let isDesc = orderDir === 'DESC';
       results.sort((a, b) => {
-          if (a[orderCol] < b[orderCol]) return -1;
-          if (a[orderCol] > b[orderCol]) return 1;
+          let valA = a[orderCol];
+          let valB = b[orderCol];
+          
+          let numA = Number(valA);
+          let numB = Number(valB);
+          if (!isNaN(numA) && !isNaN(numB)) {
+              return isDesc ? numB - numA : numA - numB;
+          }
+          
+          if (valA < valB) return isDesc ? 1 : -1;
+          if (valA > valB) return isDesc ? -1 : 1;
           return 0;
       });
+  }
+
+  if (limitIdx !== -1) {
+      let limitVal = parseInt(tokens[limitIdx + 1], 10);
+      if (!isNaN(limitVal)) {
+          results = results.slice(0, limitVal);
+      }
   }
 
   let selectTokens = tokens.slice(selectIdx + 1, fromIdx).filter(t => t !== ',');

@@ -60,7 +60,7 @@ export const InboxScreen: React.FC<InboxScreenProps> = ({
                 {selectedMessage.body}
               </div>
               
-              {selectedMessage.sender === currentLevel.mail.sender && !hasAcceptedMission && (
+              {selectedMessage.id === `initial_${currentLevel.id}` && !hasAcceptedMission && (
                 <button 
                   onClick={() => {
                     setHasAcceptedMission(true);

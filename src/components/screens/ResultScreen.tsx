@@ -9,6 +9,8 @@ interface ResultScreenProps {
   setIsBrowsing: (val: boolean) => void;
   setAppState: (state: any) => void;
   isObjectiveMet: boolean;
+  handleObjectiveComplete: () => void;
+  hasNextObjective: boolean;
 }
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
@@ -18,7 +20,9 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   queryResult,
   setIsBrowsing,
   setAppState,
-  isObjectiveMet
+  isObjectiveMet,
+  handleObjectiveComplete,
+  hasNextObjective
 }) => {
   return (
     <div className="flex flex-col h-full">
@@ -107,10 +111,14 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             
             {isObjectiveMet && (
               <button 
-                onClick={() => setAppState('REPORT')}
+                onClick={() => hasNextObjective ? handleObjectiveComplete() : setAppState('REPORT')}
                 className="w-full bg-[#1b2118] text-[#8cb07d] py-3 font-bold uppercase text-xs flex items-center justify-center gap-2 animate-bounce mt-2 shadow-md hover:bg-[#8cb07d] hover:text-[#1b2118] transition-colors"
               >
-                PROCEED TO REPORT <ArrowRight size={16} />
+                {hasNextObjective ? (
+                  <>CONTINUE <ArrowRight size={16} /></>
+                ) : (
+                  <>PROCEED TO REPORT <ArrowRight size={16} /></>
+                )}
               </button>
             )}
           </div>
