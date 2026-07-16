@@ -10,6 +10,7 @@ export const TimelineScreen: React.FC<TimelineScreenProps> = ({ currentLevelId, 
   const events = [
     { time: '8 Years Ago', event: 'Kecelakaan lalu lintas tragis melibatkan PT Arunika Logistics.', level: 6 },
     { time: '8 Years Ago', event: 'Rizky Hidayat selamat, sopir truk menghilang misterius.', level: 6 },
+    { time: '8 Years Ago', event: 'PT Arunika Logistics menyalurkan dana rutin bulanan ke rekening terhapus (Unknown Account).', level: 8 },
     { time: '08:00', event: 'Seseorang memarkir mobil B 1734 QAZ di RS.', level: 1 },
     { time: '09:20', event: 'Budi Santoso terdeteksi masuk rumah sakit.', level: 2 },
     { time: '09:24', event: 'Rudi Hartono terdeteksi masuk rumah sakit.', level: 4 },

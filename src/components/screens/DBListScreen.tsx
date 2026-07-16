@@ -22,7 +22,11 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
   showSupervisorPopup,
   currentObjectiveIndex
 }) => {
-  const tableNames = ['Vehicles', 'Owners', 'Parking Logs', 'Citizens', 'Visitors', 'Patients', 'Hospital Parking', 'Cameras', 'Footage', 'Articles', 'Companies'];
+  const tableNames = [
+    'Vehicles', 'Owners', 'Parking Logs', 'Citizens', 'Visitors', 
+    'Patients', 'Hospital Parking', 'Cameras', 'Footage', 'Articles', 
+    'Companies', 'Accounts', 'Transactions', 'Branches'
+  ];
 
   return (
     <div className="flex flex-col h-full">

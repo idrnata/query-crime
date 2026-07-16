@@ -56,7 +56,7 @@ export const InboxScreen: React.FC<InboxScreenProps> = ({
           </div>
 
           {messages.length > 0 ? (
-            messages.map((msg) => (
+            [...messages].reverse().map((msg) => (
               <button
                 key={msg.id}
                 onClick={() => setSelectedMessageId(msg.id)}

@@ -58,6 +58,8 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
   let selectIdx = tokens.findIndex(t => t.toUpperCase() === 'SELECT');
   let fromIdx = tokens.findIndex(t => t.toUpperCase() === 'FROM');
   let whereIdx = tokens.findIndex(t => t.toUpperCase() === 'WHERE');
+  let groupByIdx = tokens.findIndex((t, i) => t.toUpperCase() === 'GROUP' && tokens[i+1]?.toUpperCase() === 'BY');
+  let havingIdx = tokens.findIndex(t => t.toUpperCase() === 'HAVING');
   let orderIdx = tokens.findIndex((t, i) => t.toUpperCase() === 'ORDER' && tokens[i+1] && tokens[i+1].toUpperCase() === 'BY');
   let limitIdx = tokens.findIndex(t => t.toUpperCase() === 'LIMIT');
   
@@ -81,6 +83,10 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
     mainTableEnd = joinStarts[0].index;
   } else if (whereIdx !== -1) {
     mainTableEnd = whereIdx;
+  } else if (groupByIdx !== -1) {
+    mainTableEnd = groupByIdx;
+  } else if (havingIdx !== -1) {
+    mainTableEnd = havingIdx;
   } else if (orderIdx !== -1) {
     mainTableEnd = orderIdx;
   } else if (limitIdx !== -1) {
@@ -174,7 +180,7 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
   }
   
   if (whereIdx !== -1) {
-    let whereEnd = [orderIdx, limitIdx, tokens.length].filter(x => x !== -1).sort((a,b)=>a-b)[0];
+    let whereEnd = [groupByIdx, havingIdx, orderIdx, limitIdx, tokens.length].filter(x => x !== -1).sort((a,b)=>a-b)[0];
     let whereTokens = tokens.slice(whereIdx + 1, whereEnd);
     
     // Simple parser that handles AND but respects BETWEEN ... AND
@@ -235,6 +241,66 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
        }
     }
   }
+
+  if (groupByIdx !== -1) {
+    let groupByCol = tokens[groupByIdx + 2];
+    const groups: Record<string, any[]> = {};
+    for (let row of results) {
+      const val = getRowVal(row, groupByCol);
+      const key = val === undefined || val === null ? 'NULL' : String(val);
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      groups[key].push(row);
+    }
+    
+    let groupedResults = [];
+    for (let key in groups) {
+      const groupRows = groups[key];
+      const representative = { ...groupRows[0] };
+      representative['count(*)'] = groupRows.length;
+      representative['COUNT(*)'] = groupRows.length;
+      representative['count'] = groupRows.length;
+      representative['Count'] = groupRows.length;
+      representative['COUNT'] = groupRows.length;
+      groupedResults.push(representative);
+    }
+    results = groupedResults;
+  }
+
+  if (havingIdx !== -1) {
+    let havingEnd = [orderIdx, limitIdx, tokens.length].filter(x => x !== -1).sort((a,b)=>a-b)[0];
+    let havingTokens = tokens.slice(havingIdx + 1, havingEnd);
+    let havingCol = havingTokens[0];
+    let havingOp = havingTokens[1];
+    let havingVal = havingTokens[2];
+    
+    let isCountHaving = havingTokens.some(t => t.toUpperCase().includes('COUNT'));
+    if (isCountHaving) {
+      let opIdx = havingTokens.findIndex(t => ['>', '<', '=', '!='].includes(t));
+      if (opIdx !== -1) {
+        havingOp = havingTokens[opIdx];
+        havingVal = havingTokens[opIdx + 1]?.replace(/['"]/g, '');
+      }
+      results = results.filter(row => {
+        const countVal = row['COUNT(*)'] || row['count(*)'] || row['count'] || 0;
+        if (havingOp === '>') return Number(countVal) > Number(havingVal);
+        if (havingOp === '<') return Number(countVal) < Number(havingVal);
+        if (havingOp === '=') return Number(countVal) === Number(havingVal);
+        if (havingOp === '!=') return Number(countVal) !== Number(havingVal);
+        return false;
+      });
+    } else {
+      results = results.filter(row => {
+        const valCol = getRowVal(row, havingCol);
+        const cleanVal = havingVal?.replace(/['"]/g, '');
+        if (havingOp === '=') return String(valCol) === String(cleanVal);
+        if (havingOp === '>') return Number(valCol) > Number(cleanVal);
+        if (havingOp === '<') return Number(valCol) < Number(cleanVal);
+        return false;
+      });
+    }
+  }
   
   if (orderIdx !== -1) {
       let orderCol = tokens[orderIdx + 2];
@@ -281,7 +347,10 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
     let newRow: any = {};
     for (let f of fields) {
       const keys = Object.keys(row);
-      const exactKey = keys.find(k => k.toLowerCase() === f.toLowerCase());
+      let exactKey = keys.find(k => k.toLowerCase() === f.toLowerCase());
+      if (!exactKey && f.toUpperCase().includes('COUNT')) {
+        exactKey = keys.find(k => k.toUpperCase() === 'COUNT(*)');
+      }
       if (!exactKey) throw new Error(`COLUMN NOT FOUND: ${f}`);
       // output exactly what the user typed in select e.g. v.plate_number or plate_number
       newRow[f] = row[exactKey];

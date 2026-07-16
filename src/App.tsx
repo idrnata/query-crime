@@ -777,6 +777,8 @@ export default function App() {
         ? 'Mission Accepted. NEW TABLE: Hospital Parking Unlocked.'
         : currentLevelId === 6
         ? 'Mission Accepted. NEW APP: Browser Unlocked.'
+        : currentLevelId === 8
+        ? 'Mission Accepted. NEW DATABASE: Bank Unlocked.'
         : 'Mission Accepted. Objective updated in Case Files.',
       onClose: () => {
         setPopup(null);
