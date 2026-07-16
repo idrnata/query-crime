@@ -120,7 +120,7 @@ export const CallingScreen: React.FC<CallingScreenProps> = ({
             {isDina && DINA_DIALOGUE[dinaStep] && (
               <div className="flex flex-col gap-2 mt-2 w-full text-left animate-in fade-in-50 duration-500">
                 <div className="text-[10px] uppercase tracking-widest opacity-60 font-bold mb-1 flex items-center gap-1.5 px-1">
-                  <MessageSquare size={10} /> PILIH PERCAKAPAN:
+                  <MessageSquare size={10} /> SELECT DIALOGUE:
                 </div>
                 {DINA_DIALOGUE[dinaStep].choices.map((choice, index) => (
                   <button

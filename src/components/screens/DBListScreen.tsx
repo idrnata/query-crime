@@ -34,7 +34,7 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
           <button 
             onClick={() => {
               if (!hasAcceptedMission) {
-                showSupervisorPopup('Terima misi dari Inbox terlebih dahulu.');
+                showSupervisorPopup('Please accept the mission from the Inbox first.');
                 return;
               }
               setAppState('TERM');
@@ -72,7 +72,7 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
                 key={t}
                 onClick={() => {
                   if (!hasAcceptedMission) {
-                    showSupervisorPopup('Terima misi dari Inbox terlebih dahulu.');
+                    showSupervisorPopup('Please accept the mission from the Inbox first.');
                     return;
                   }
                   setActiveTable(tableName);

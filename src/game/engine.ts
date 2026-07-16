@@ -61,7 +61,7 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
   let orderIdx = tokens.findIndex((t, i) => t.toUpperCase() === 'ORDER' && tokens[i+1] && tokens[i+1].toUpperCase() === 'BY');
   let limitIdx = tokens.findIndex(t => t.toUpperCase() === 'LIMIT');
   
-  if (selectIdx === -1 || fromIdx === -1) throw new Error("SYNTAX ERROR: SELECT atau FROM tidak ditemukan");
+  if (selectIdx === -1 || fromIdx === -1) throw new Error("SYNTAX ERROR: SELECT or FROM not found");
   
   // Find all JOIN positions
   const joinStarts: { index: number; isLeft: boolean }[] = [];
@@ -123,7 +123,7 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
       
     const joinBlock = tokens.slice(start, nextBoundary);
     const onRelIdx = joinBlock.findIndex(t => t.toUpperCase() === 'ON');
-    if (onRelIdx === -1) throw new Error("SYNTAX ERROR: JOIN membutuhkan ON");
+    if (onRelIdx === -1) throw new Error("SYNTAX ERROR: JOIN requires ON");
     
     const joinTableIdx = isLeft ? 2 : 1;
     const joinTable = joinBlock[joinTableIdx];

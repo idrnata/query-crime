@@ -29,10 +29,10 @@ export const BrowserScreen: React.FC<BrowserScreenProps> = ({ currentLevel, setA
             <div className="space-y-4">
               <div>
                 <div className="text-xs font-bold uppercase flex items-center gap-2">
-                  <span>▶</span> ARTICLES (Indeks Artikel Berita)
+                  <span>▶</span> ARTICLES (News Article Index)
                 </div>
                 <div className="text-[10px] pl-4 opacity-70">
-                  Status: ONLINE | Terkoneksi ke database utama.
+                  Status: ONLINE | Connected to primary database.
                   <br />
                   Query table: <code className="bg-[#1b2118]/10 px-1 font-bold">articles</code> (Columns: <code className="bg-[#1b2118]/10 px-1">id</code>, <code className="bg-[#1b2118]/10 px-1">title</code>, <code className="bg-[#1b2118]/10 px-1">content</code>, <code className="bg-[#1b2118]/10 px-1">publish_date</code>)
                 </div>
@@ -40,34 +40,34 @@ export const BrowserScreen: React.FC<BrowserScreenProps> = ({ currentLevel, setA
 
               <div>
                 <div className="text-xs font-bold uppercase flex items-center gap-2">
-                  <span>▶</span> PUBLIC RECORDS (Arsip Publik Nasional)
+                  <span>▶</span> PUBLIC RECORDS (National Public Archives)
                 </div>
                 <div className="text-[10px] pl-4 opacity-40">
-                  Status: SECURED BY LAW-77 | Akses dibatasi.
+                  Status: SECURED BY LAW-77 | Restricted access.
                 </div>
               </div>
 
               <div>
                 <div className="text-xs font-bold uppercase flex items-center gap-2">
-                  <span>▶</span> NEWS (Arsip Siaran Pers)
+                  <span>▶</span> NEWS (Press Release Archives)
                 </div>
                 <div className="text-[10px] pl-4 opacity-40">
-                  Status: SECURED BY LAW-77 | Akses dibatasi.
+                  Status: SECURED BY LAW-77 | Restricted access.
                 </div>
               </div>
 
               <div>
                 <div className="text-xs font-bold uppercase flex items-center gap-2">
-                  <span>▶</span> ANNOUNCEMENTS (Arsip Pengumuman Resmi)
+                  <span>▶</span> ANNOUNCEMENTS (Official Announcement Archives)
                 </div>
                 <div className="text-[10px] pl-4 opacity-40">
-                  Status: SECURED BY LAW-77 | Akses dibatasi.
+                  Status: SECURED BY LAW-77 | Restricted access.
                 </div>
               </div>
             </div>
 
             <div className="mt-8 pt-4 border-t-2 border-dashed border-[#1b2118]/20 text-[10px] italic opacity-80 uppercase font-bold text-center">
-              "Semua berita telah diindeks ke database Kepolisian. Gunakan SQL Terminal di menu Police Database untuk melakukan pencarian terperinci."
+              "All news has been indexed to the Police Database. Use the SQL Terminal in the Police Database menu to perform detailed searches."
             </div>
           </div>
         ) : currentLevel.web ? Object.entries(currentLevel.web).map(([url, content]: [string, any], idx) => (

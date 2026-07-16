@@ -167,14 +167,14 @@ export const InboxScreen: React.FC<InboxScreenProps> = ({
                   }}
                   className="w-full bg-[#1b2118] text-[#8cb07d] py-3.5 font-bold uppercase text-xs flex items-center justify-center gap-2 hover:bg-[#252c21] transition-all"
                 >
-                  TERIMA MISI INI <ArrowRight size={16} />
+                  ACCEPT THIS MISSION <ArrowRight size={16} />
                 </button>
               ) : (
                 <button 
                   onClick={() => setSelectedMessageId(null)}
                   className="w-full bg-[#1b2118] text-[#8cb07d] py-3 font-bold uppercase text-xs flex items-center justify-center gap-2 hover:bg-[#252c21] transition-all"
                 >
-                  KEMBALI KE INBOX
+                  BACK TO INBOX
                 </button>
               )}
             </div>

@@ -33,7 +33,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                <Settings size={20} />
              </div>
              <div className="text-left">
-                <div className="text-sm">ISI DAYA BATERAI</div>
+                <div className="text-sm">CHARGE BATTERY</div>
                 <div className="text-[8px] opacity-60 uppercase">Restore device power to 100%</div>
              </div>
           </button>

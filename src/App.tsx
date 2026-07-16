@@ -754,8 +754,8 @@ export default function App() {
       }
     } else {
       setPopup({
-        title: 'ANALISIS KELIRU',
-        message: 'KESIMPULAN SALAH. SILAKAN PERIKSA KEMBALI FAKTA-FAKTA DI DATABASE ATAU LAPORAN SAKSI SEBELUM MELAPORKAN KESIMPULAN.',
+        title: 'WRONG ANALYSIS',
+        message: 'INCORRECT CONCLUSION. PLEASE DOUBLE-CHECK THE FACTS IN THE DATABASE OR WITNESS REPORTS BEFORE REPORTING YOUR CONCLUSION.',
         onClose: () => setPopup(null)
       });
     }
@@ -1057,17 +1057,17 @@ export default function App() {
             setAppState={setAppState} 
             handleSaveGame={() => {
                saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent);
-               showSupervisorPopup("Data penyelidikan telah disimpan ke dalam memori lokal.");
+               showSupervisorPopup("Investigation data has been saved to local memory.");
             }} 
             handleResetGame={() => {
-              if (confirm("Reset seluruh penyelidikan? Ini tidak bisa dibatalkan.")) {
+              if (confirm("Reset all investigation progress? This cannot be undone.")) {
                 localStorage.removeItem('query_crime_save');
                 window.location.reload();
               }
             }} 
             handleChargeBattery={() => {
               setStats(prev => ({ ...prev, battery: 100 }));
-              showSupervisorPopup("Baterai telah diisi penuh. Daya sekarang 100%.");
+              showSupervisorPopup("Battery fully charged. Power is now 100%.");
             }}
           />
         );

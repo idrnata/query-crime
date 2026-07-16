@@ -219,19 +219,19 @@ export const MapScreen: React.FC<MapScreenProps> = ({
                 <span>GPS STATUS REPORT:</span>
               </div>
               {currentObjectiveIndex === 0 && (
-                <div>• Cari ID lokasi dari Arunika Warehouse terlebih dahulu melalui Database Locations.</div>
+                <div>• Find the Arunika Warehouse location ID first through the Locations Database.</div>
               )}
               {currentObjectiveIndex === 1 && (
-                <div>• ID Gudang ditemukan: 56. Sekarang cari kendaraan paling terakhir yang mengunjungi gudang di routes.</div>
+                <div>• Warehouse ID found: 56. Now search for the most recent vehicle that visited the warehouse in the routes database.</div>
               )}
               {currentObjectiveIndex === 2 && (
-                <div>• Kendaraan teridentifikasi: B 2841 PT (Mobil Andi). Lacak semua data perjalanan mobil itu di routes.</div>
+                <div>• Vehicle identified: B 2841 PT (Andi's car). Trace all travel history of this vehicle in the routes database.</div>
               )}
               {currentObjectiveIndex === 3 && (
-                <div>• Menampilkan rute perjalanan Andi. Mengapa berhenti di SPBU 57 menit? Sangat mencurigakan. Cari kendaraan lain yang juga mengunjungi gudang ini.</div>
+                <div>• Displaying Andi's travel route. Why did he stop at the fuel station for 57 minutes? Highly suspicious. Search for other vehicles that also visited this warehouse.</div>
               )}
               {currentObjectiveIndex >= 4 && !isHackedMap && (
-                <div className="text-amber-400 font-bold animate-pulse">• Semua data rute berhasil disusun! Tekan BACK di bagian bawah untuk menyusun laporan penyelidikan.</div>
+                <div className="text-amber-400 font-bold animate-pulse">• All route data successfully compiled! Press BACK at the bottom to compile the investigation report.</div>
               )}
               {isHackedMap && (
                 <div className="text-red-500 font-bold animate-glitch">• WARNING: EXTERNAL OVERRIDE DETECTED. DEVICE INTEGRITY COMPROMISED!</div>

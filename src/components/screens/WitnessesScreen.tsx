@@ -66,7 +66,7 @@ export const WitnessesScreen: React.FC<WitnessesScreenProps> = ({
                 <span>TRANSCRIPT LOG // IMPORTANT CLUE:</span>
               </div>
               <p className="text-xs font-bold text-gray-800 leading-relaxed pl-1 border-l-2 border-[#8cb07d]">
-                "{witness.statement || witness.clue || 'Keterangan saksi belum tercatat atau kosong.'}"
+                "{witness.statement || witness.clue || 'Witness statement not recorded or empty.'}"
               </p>
             </div>
           </div>
