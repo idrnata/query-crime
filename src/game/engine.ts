@@ -87,11 +87,19 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
     mainTableEnd = limitIdx;
   }
   
+  const getRowVal = (row: any, colName: string) => {
+    if (!row) return undefined;
+    const keys = Object.keys(row);
+    const exactKey = keys.find(k => k.toLowerCase() === colName.toLowerCase());
+    return exactKey ? row[exactKey] : undefined;
+  };
+
   let mainTableTokens = tokens.slice(fromIdx + 1, mainTableEnd);
   let mainTable = mainTableTokens[0];
   let mainAlias = mainTableTokens.length > 1 ? mainTableTokens[1] : null;
   
-  let results = db[mainTable] ? [...db[mainTable]] : null;
+  const exactTableName = Object.keys(db).find(k => k.toLowerCase() === mainTable.toLowerCase());
+  let results = exactTableName ? [...db[exactTableName]] : null;
   if (!results) throw new Error(`TABLE NOT FOUND: ${mainTable}`);
   
   // give fields alias prefix if alias exists
@@ -121,14 +129,16 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
     const joinTable = joinBlock[joinTableIdx];
     const joinAlias = (onRelIdx > joinTableIdx + 1) ? joinBlock[joinTableIdx + 1] : null;
     
-    if (!db[joinTable]) throw new Error(`TABLE NOT FOUND: ${joinTable}`);
+    const exactJoinTableName = Object.keys(db).find(k => k.toLowerCase() === joinTable.toLowerCase());
+    if (!exactJoinTableName) throw new Error(`TABLE NOT FOUND: ${joinTable}`);
+    const joinRows = db[exactJoinTableName];
     
     const onTokens = joinBlock.slice(onRelIdx + 1);
     let joined = [];
     
     for (let r1 of results) {
       let matched = false;
-      for (let r2 of db[joinTable]) {
+      for (let r2 of joinRows) {
          let r2Prefixed: any = {};
          if (joinAlias) {
              for(let k in r2) {
@@ -152,7 +162,7 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
       if (!matched && isLeft) {
         // For LEFT JOIN, if no match found, add row with null values for join table columns
         let r2Null: any = {};
-        let sampleRow = db[joinTable][0] || {};
+        let sampleRow = joinRows[0] || {};
         for (let k in sampleRow) {
            if (joinAlias) r2Null[`${joinAlias}.${k}`] = null;
            r2Null[k] = null;
@@ -199,20 +209,27 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
        const { col, op, val, start, end } = cond;
        
        if (op === 'BETWEEN') {
-         results = results.filter(row => String(row[col]) >= String(start) && String(row[col]) <= String(end));
+         results = results.filter(row => {
+           const valCol = getRowVal(row, col);
+           return String(valCol) >= String(start) && String(valCol) <= String(end);
+         });
        } else if (op === 'IS NULL') {
-         results = results.filter(row => row[col] === null || row[col] === undefined);
+         results = results.filter(row => {
+           const valCol = getRowVal(row, col);
+           return valCol === null || valCol === undefined;
+         });
        } else {
          results = results.filter(row => {
+            const valCol = getRowVal(row, col);
             if (op === '=') {
-              const sRow = String(row[col]);
+              const sRow = String(valCol);
               const sVal = String(val);
               if (sRow === sVal) return true;
               return sRow.replace(/\s+/g, '').toUpperCase() === sVal.replace(/\s+/g, '').toUpperCase();
             }
-            if (op === '>') return Number(row[col]) > Number(val);
-            if (op === '<') return Number(row[col]) < Number(val);
-            if (op === 'LIKE') return String(row[col]).includes(String(val).replace(/%/g, ''));
+            if (op === '>') return Number(valCol) > Number(val);
+            if (op === '<') return Number(valCol) < Number(val);
+            if (op === 'LIKE') return String(valCol).includes(String(val).replace(/%/g, ''));
             return false;
          });
        }
@@ -224,8 +241,8 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
       let orderDir = tokens[orderIdx + 3]?.toUpperCase();
       let isDesc = orderDir === 'DESC';
       results.sort((a, b) => {
-          let valA = a[orderCol];
-          let valB = b[orderCol];
+          let valA = getRowVal(a, orderCol);
+          let valB = getRowVal(b, orderCol);
           
           let numA = Number(valA);
           let numB = Number(valB);
@@ -263,9 +280,11 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
   return results.map(row => {
     let newRow: any = {};
     for (let f of fields) {
-      if (!(f in row)) throw new Error(`COLUMN NOT FOUND: ${f}`);
+      const keys = Object.keys(row);
+      const exactKey = keys.find(k => k.toLowerCase() === f.toLowerCase());
+      if (!exactKey) throw new Error(`COLUMN NOT FOUND: ${f}`);
       // output exactly what the user typed in select e.g. v.plate_number or plate_number
-      newRow[f] = row[f];
+      newRow[f] = row[exactKey];
     }
     return newRow;
   });

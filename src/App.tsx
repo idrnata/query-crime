@@ -333,13 +333,15 @@ export default function App() {
         battery: Math.max(0, (prev.battery || 100) - 1)
       }));
       setQueryResult(res);
+      setErrorMessage('');
       setIsBrowsing(true);
       setIsBrowsingTable(true);
       setIsObjectiveMet(false);
       setAppState('RESULT');
     } catch (e: any) {
       setErrorMessage(e.message || "ERROR LOADING TABLE");
-      setAppState('ERROR');
+      setQueryResult(null);
+      setAppState('RESULT');
     }
   };
 
@@ -350,6 +352,7 @@ export default function App() {
       setIsBrowsingTable(false);
       const res = executeSql(query, currentLevel.database);
       setQueryResult(res);
+      setErrorMessage('');
       const met = currentObjective.validateResult(res, query);
       setIsObjectiveMet(met);
       setAppState('RESULT');
@@ -375,7 +378,9 @@ export default function App() {
       }
     } catch (e: any) {
       setErrorMessage(e.message || "SYNTAX ERROR");
-      setAppState('ERROR');
+      setQueryResult(null);
+      setIsObjectiveMet(false);
+      setAppState('RESULT');
       
       const newStats = { ...stats };
       newStats.queriesRun += 1;
@@ -728,8 +733,11 @@ export default function App() {
         saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent, contacts, witnesses, newMessages, newStats);
       }
     } else {
-      setErrorMessage("KESIMPULAN SALAH. CEK KEMBALI FAKTA.");
-      setAppState('ERROR');
+      setPopup({
+        title: 'ANALISIS KELIRU',
+        message: 'KESIMPULAN SALAH. SILAKAN PERIKSA KEMBALI FAKTA-FAKTA DI DATABASE ATAU LAPORAN SAKSI SEBELUM MELAPORKAN KESIMPULAN.',
+        onClose: () => setPopup(null)
+      });
     }
   };
 
