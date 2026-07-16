@@ -279,6 +279,7 @@ export default function App() {
     setIsObjectiveMet(false);
     
     let baseApps = ['INBOX', 'CASE_FILES', 'DB_LIST', 'NOTEBOOK', 'RANK', 'SETTINGS'];
+    if (chapterId >= 2) baseApps.push('CONTACTS');
     if (chapterId >= 3) baseApps.push('WITNESSES');
     if (chapterId >= 4) baseApps.push('TIMELINE');
     if (chapterId >= 5) baseApps.push('EVIDENCE');
