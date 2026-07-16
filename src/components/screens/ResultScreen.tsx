@@ -11,6 +11,7 @@ interface ResultScreenProps {
   isObjectiveMet: boolean;
   handleObjectiveComplete: () => void;
   hasNextObjective: boolean;
+  isBrowsingTable: boolean;
 }
 
 export const ResultScreen: React.FC<ResultScreenProps> = ({
@@ -22,7 +23,8 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
   setAppState,
   isObjectiveMet,
   handleObjectiveComplete,
-  hasNextObjective
+  hasNextObjective,
+  isBrowsingTable
 }) => {
   return (
     <div className="flex flex-col h-full">
@@ -100,7 +102,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
           </div>
 
           <div className="p-4 bg-white/30 border-t-2 border-[#1b2118] flex flex-col gap-2">
-            {queryResult && queryResult.length > 0 && (
+            {isBrowsingTable && queryResult && queryResult.length > 0 && (
               <button 
                 onClick={() => setIsBrowsing(true)}
                 className="w-full bg-[#1b2118] text-[#8cb07d] py-3 font-bold uppercase text-xs flex items-center justify-center gap-2"

@@ -909,6 +909,7 @@ export default function App() {
             isObjectiveMet={isObjectiveMet} 
             handleObjectiveComplete={handleObjectiveComplete}
             hasNextObjective={currentObjectiveIndex < currentLevel.objectives.length - 1}
+            isBrowsingTable={isBrowsingTable}
           />
         );
       case 'REPORT':
