@@ -29,7 +29,11 @@ export const chapter3: Level = {
       { id: 10, plate_number: 'B 2841 PT', brand: 'Toyota', model: 'Avanza', color: 'Silver', owner_id: 7 }
     ],
     hospital_parking: [
-      { id: 100, plate_number: 'B 2841 PT', entry_time: '11:26', exit_time: '11:34' }
+      { id: 1, plate_number: 'C2222CC', entry_time: '2026-07-15 07:00', exit_time: null, location: 'RS Harapan Bangsa' },
+      { id: 2, plate_number: 'B1734QAZ', entry_time: '2026-07-12 08:00', exit_time: null, location: 'RS Harapan Bangsa' },
+      { id: 3, plate_number: 'D5555XX', entry_time: '2026-07-14 09:00', exit_time: '2026-07-14 10:00', location: 'RS Harapan Bangsa' },
+      { id: 4, plate_number: 'A1111BB', entry_time: '2026-07-13 12:00', exit_time: null, location: 'RS Harapan Bangsa' },
+      { id: 100, plate_number: 'B 2841 PT', entry_time: '11:26', exit_time: '11:34', location: 'RS Harapan Bangsa' }
     ]
   },
   objectives: [

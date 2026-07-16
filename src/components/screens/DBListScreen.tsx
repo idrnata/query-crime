@@ -23,7 +23,7 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
   currentObjectiveIndex
 }) => {
   const tableNames = [
-    'Vehicles', 'Owners', 'Parking Logs', 'Citizens', 'Visitors', 
+    'Vehicles', 'Owners', 'Citizens', 'Visitors', 
     'Patients', 'Hospital Parking', 'Cameras', 'Footage', 'Articles', 
     'Companies', 'Accounts', 'Transactions', 'Branches'
   ];
@@ -58,7 +58,6 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
           {tableNames.map(t => {
             const isLocked = (t === 'Citizens' && currentLevelId < 2) || 
                              ((t === 'Visitors' || t === 'Patients') && currentLevelId < 2) ||
-                             (t === 'Hospital Parking' && currentLevelId < 3) ||
                              ((t === 'Cameras' || t === 'Footage') && currentLevelId < 5) ||
                              (t === 'Articles' && currentLevelId < 6) ||
                              (t === 'Companies' && (currentLevelId < 6 || currentObjectiveIndex < 3));

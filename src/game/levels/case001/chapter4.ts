@@ -36,9 +36,13 @@ export const chapter4: Level = {
       { plate_number: 'B1182AA', owner_id: 4 }
     ],
     hospital_parking: [
-      { plate_number: 'B2841PT', entry_time: '09:15', exit_time: '11:34' },
-      { plate_number: 'B9921KD', entry_time: '10:00', exit_time: '11:31' },
-      { plate_number: 'B1182AA', entry_time: '09:30', exit_time: '11:36' }
+      { id: 1, plate_number: 'C2222CC', entry_time: '2026-07-15 07:00', exit_time: null, location: 'RS Harapan Bangsa' },
+      { id: 2, plate_number: 'B1734QAZ', entry_time: '2026-07-12 08:00', exit_time: null, location: 'RS Harapan Bangsa' },
+      { id: 3, plate_number: 'D5555XX', entry_time: '2026-07-14 09:00', exit_time: '2026-07-14 10:00', location: 'RS Harapan Bangsa' },
+      { id: 4, plate_number: 'A1111BB', entry_time: '2026-07-13 12:00', exit_time: null, location: 'RS Harapan Bangsa' },
+      { id: 100, plate_number: 'B2841PT', entry_time: '09:15', exit_time: '11:34', location: 'RS Harapan Bangsa' },
+      { id: 101, plate_number: 'B9921KD', entry_time: '10:00', exit_time: '11:31', location: 'RS Harapan Bangsa' },
+      { id: 102, plate_number: 'B1182AA', entry_time: '09:30', exit_time: '11:36', location: 'RS Harapan Bangsa' }
     ]
   },
   objectives: [
