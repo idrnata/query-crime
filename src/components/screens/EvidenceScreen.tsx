@@ -29,10 +29,9 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ currentLevelId, 
     { level: 5, label: 'Visitor Without Match', value: 'Andi Prasetyo has no CCTV record' },
     { level: 5, label: 'Timeline Updated', value: 'Timeline sequence adjusted' },
     // Level 6
-    { level: 6, label: 'Old Accident', value: '8 Years Ago Traffic' },
-    { level: 6, label: 'PT Arunika Logistics', value: 'Associated with Accident' },
-    { level: 6, label: 'Missing Driver', value: 'Sopir Truk Menghilang' },
-    { level: 6, label: 'Corrupted Company Record', value: 'Owner Data Deleted' }
+    { level: 6, id: 'accident_survivor', label: 'Evidence', value: 'Accident Survivor' },
+    { level: 6, id: 'arunika_assoc', label: 'Company', value: 'PT Arunika Logistics' },
+    { level: 6, id: 'corrupted', label: 'Status', value: 'Corrupted Company Record' }
   ];
   
   const evidenceItems = allEvidence.filter(e => {
@@ -42,7 +41,11 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ currentLevelId, 
     // For the current level, check if evidence is actually unlocked yet
     if (e.level === 1) return unlockedApps.includes('EVIDENCE');
     if (e.level === 5) return notebookContent.includes('06 minutes\nNo Footage');
-    if (e.level === 6) return notebookContent.includes('Seseorang menghapus sebagian data perusahaan.');
+    if (e.level === 6) {
+      if (e.id === 'accident_survivor') return notebookContent.includes('Penyintas Tunggal');
+      if (e.id === 'arunika_assoc') return notebookContent.includes('Arunika');
+      return isLevelComplete;
+    }
     
     // For other levels, evidence unlocks when the level is marked as complete
     return isLevelComplete;

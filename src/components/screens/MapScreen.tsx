@@ -212,30 +212,37 @@ export const MapScreen: React.FC<MapScreenProps> = ({
               </svg>
             </div>
 
+            {/* GPS Coordinates Overlay */}
+            <div className="absolute top-12 right-4 bg-[#1b2118]/80 border border-[#8cb07d]/40 p-1.5 text-[#8cb07d] text-[8px] font-bold uppercase font-mono z-20 backdrop-blur-sm">
+              GPS: 6.1751° S, 106.8272° E
+            </div>
+
             {/* Bottom Coordinates & Objective Helper */}
-            <div className="bg-[#1b2118]/95 border border-[#8cb07d]/40 p-2.5 rounded text-[#8cb07d] text-[10px] font-mono leading-relaxed mt-auto z-10 backdrop-blur-sm">
-              <div className="flex items-center gap-1.5 font-bold mb-0.5 text-xs">
+            <div className="bg-[#1b2118]/95 border border-[#8cb07d]/40 p-3 rounded text-[#8cb07d] text-[10px] font-mono leading-relaxed mt-auto mx-4 mb-4 z-10 backdrop-blur-sm shadow-xl">
+              <div className="flex items-center gap-1.5 font-bold mb-1 text-xs text-[#10b981]">
                 <Navigation size={12} className="animate-pulse" />
-                <span>GPS STATUS REPORT:</span>
+                <span>TACTICAL GPS STATUS REPORT</span>
               </div>
-              {currentObjectiveIndex === 0 && (
-                <div>• Find the Arunika Warehouse location ID first through the Locations Database.</div>
-              )}
-              {currentObjectiveIndex === 1 && (
-                <div>• Warehouse ID found: 56. Now search for the most recent vehicle that visited the warehouse in the routes database.</div>
-              )}
-              {currentObjectiveIndex === 2 && (
-                <div>• Vehicle identified: B 2841 PT (Andi's car). Trace all travel history of this vehicle in the routes database.</div>
-              )}
-              {currentObjectiveIndex === 3 && (
-                <div>• Displaying Andi's travel route. Why did he stop at the fuel station for 57 minutes? Highly suspicious. Search for other vehicles that also visited this warehouse.</div>
-              )}
-              {currentObjectiveIndex >= 4 && !isHackedMap && (
-                <div className="text-amber-400 font-bold animate-pulse">• All route data successfully compiled! Press BACK at the bottom to compile the investigation report.</div>
-              )}
-              {isHackedMap && (
-                <div className="text-red-500 font-bold animate-glitch">• WARNING: EXTERNAL OVERRIDE DETECTED. DEVICE INTEGRITY COMPROMISED!</div>
-              )}
+              <div className="pl-3 border-l border-[#8cb07d]/30 space-y-1">
+                {currentObjectiveIndex === 0 && (
+                  <div>• Find the Arunika Warehouse location ID first through the Locations Database.</div>
+                )}
+                {currentObjectiveIndex === 1 && (
+                  <div>• Warehouse ID found: 56. Now search for the most recent vehicle that visited the warehouse in the routes database.</div>
+                )}
+                {currentObjectiveIndex === 2 && (
+                  <div>• Vehicle identified: B 2841 PT (Andi's car). Trace all travel history of this vehicle in the routes database.</div>
+                )}
+                {currentObjectiveIndex === 3 && (
+                  <div>• Displaying Andi's travel route. Why did he stop at the fuel station for 57 minutes? Highly suspicious. Search for other vehicles that also visited this warehouse.</div>
+                )}
+                {currentObjectiveIndex >= 4 && !isHackedMap && (
+                  <div className="text-amber-400 font-bold animate-pulse">• All route data successfully compiled! Press BACK at the bottom to compile the investigation report.</div>
+                )}
+                {isHackedMap && (
+                  <div className="text-red-500 font-bold animate-glitch">• WARNING: EXTERNAL OVERRIDE DETECTED. DEVICE INTEGRITY COMPROMISED!</div>
+                )}
+              </div>
             </div>
           </div>
         ) : (
@@ -256,10 +263,6 @@ export const MapScreen: React.FC<MapScreenProps> = ({
             </div>
           </div>
         )}
-
-        <div className="absolute bottom-4 right-4 bg-[#1b2118] border-2 border-[#8cb07d] p-1.5 text-[#8cb07d] text-[8px] font-bold uppercase font-mono z-20">
-          GPS: 6.1751° S, 106.8272° E
-        </div>
       </div>
     </div>
   );

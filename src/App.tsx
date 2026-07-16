@@ -486,6 +486,8 @@ export default function App() {
 
   const currentLevel = LEVELS.find(l => l.id === currentLevelId) || LEVELS[0];
   const currentObjective = currentLevel.objectives[currentObjectiveIndex] || currentLevel.objectives[0];
+  
+  const firstName = playerName ? playerName.split(' ')[0] : 'Detective';
 
   const triggerBlink = (appId: string) => {
     if (!blinkingApps.includes(appId)) {
@@ -497,13 +499,13 @@ export default function App() {
     setBlinkingApps(prev => prev.filter(a => a !== appId));
   };
 
-  const showSupervisorPopup = (msg: string, onClose?: () => void) => {
+  const showSupervisorPopup = (message: string, onConfirm?: () => void) => {
     setPopup({
       title: 'Supervisor Raka',
-      message: msg,
+      message,
       onClose: () => {
         setPopup(null);
-        if (onClose) onClose();
+        if (onConfirm) onConfirm();
       }
     });
   };
@@ -794,9 +796,15 @@ export default function App() {
                     title: 'NEW LESSON',
                     message: 'LIKE\n\nUnlocked\n\nContoh:\nSELECT * FROM articles\nWHERE title\nLIKE \'%Rizky%\';',
                     onClose: () => {
-                      setPopup(null);
-                      setAppState('TERM');
-                      setQueryString('');
+                      setPopup({
+                        title: `${firstName} Tersenyum`,
+                        message: 'Saya mengerti.',
+                        onClose: () => {
+                          setPopup(null);
+                          setAppState('TERM');
+                          setQueryString('');
+                        }
+                      });
                     }
                   });
                 }
@@ -804,28 +812,77 @@ export default function App() {
             }
           });
         } else if (nextIdx === 2) {
-          setNotebookContent(prev => prev + '\n\nRizky pernah mengalami kecelakaan.');
-          showSupervisorPopup('Rizky ternyata pernah mengalami kecelakaan 8 tahun lalu. Sekarang, coba cari apakah Andi Prasetyo pernah disebut publik di berita.', () => {
-            setAppState('TERM');
-            setQueryString('');
-          });
-        } else if (nextIdx === 3) {
-          setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul di berita.');
-          showSupervisorPopup('Andi tidak pernah disebut publik. Tapi coba perhatikan artikel kecelakaan Rizky tadi, ada nama perusahaan "PT Arunika Logistics". Coba cari berita terkait perusahaan itu.', () => {
-            setAppState('TERM');
-            setQueryString('');
-          });
-        } else if (nextIdx === 4) {
-          setNotebookContent(prev => prev + '\n\nArunika -> Kecelakaan -> Rizky');
+          setNotebookContent(prev => prev + '\n\nPenyintas Tunggal: Rizky Hidayat');
           setPopup({
-            title: 'NEW DATABASE',
-            message: 'Companies Unlocked. Supervisor Raka: Saya menemukan sesuatu, nama perusahaan PT Arunika Logistics ternyata masih aktif.',
+            title: 'Evidence baru.',
+            message: 'Accident Survivor',
             onClose: () => {
-              setPopup(null);
-              showSupervisorPopup('Cari data perusahaan PT Arunika Logistics di database perusahaan menggunakan LIKE.', () => {
+              showSupervisorPopup('Menarik. Cari nama Andi.', () => {
                 setAppState('TERM');
                 setQueryString('');
               });
+            }
+          });
+        } else if (nextIdx === 3) {
+          setPopup({
+            title: 'Hasil',
+            message: 'Tidak ada.',
+            onClose: () => {
+              setPopup(null);
+              setAppState('TERM');
+              setQueryString('');
+            }
+          });
+        } else if (nextIdx === 4) {
+          setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul.');
+          setPopup({
+            title: 'Hasil',
+            message: 'Tetap kosong.',
+            onClose: () => {
+              setPopup({
+                title: 'Supervisor Raka',
+                message: 'Ada nama sebuah perusahaan di artikel sebelumnya.',
+                onClose: () => {
+                  showSupervisorPopup('Coba cari PT Arunika Logistics.', () => {
+                    setAppState('TERM');
+                    setQueryString('');
+                  });
+                }
+              });
+            }
+          });
+        } else if (nextIdx === 5) {
+          setNotebookContent(prev => prev + '\n\nArunika\n\n↓\n\nKecelakaan\n\n↓\n\nRizky\n\nSopir: Menghilang');
+          setPopup({
+            title: 'Hasil',
+            message: 'Lima artikel muncul. Semuanya tentang... Kecelakaan yang sama.',
+            onClose: () => {
+              setPopup({
+                title: 'Supervisor Raka',
+                message: 'Delapan tahun lalu... Ada orang yang juga menghilang.',
+                onClose: () => {
+                  setPopup({
+                    title: 'NEW DATABASE',
+                    message: 'Companies Unlocked. Supervisor Raka: Saya menemukan sesuatu, nama perusahaan PT Arunika Logistics ternyata masih aktif.',
+                    onClose: () => {
+                      setPopup(null);
+                      setUnlockedApps(prev => prev.includes('DB_LIST') ? prev : [...prev, 'DB_LIST']);
+                      triggerBlink('TIMELINE');
+                      setAppState('HOME');
+                      setQueryString('');
+                    }
+                  });
+                }
+              });
+            }
+          });
+        } else if (nextIdx === 6) {
+          setPopup({
+            title: 'LOKASI BARU',
+            message: 'Gudang Lama Unlocked. Sepertinya ini tempat parkir armada Arunika.',
+            onClose: () => {
+              setPopup(null);
+              setAppState('HOME');
             }
           });
         } else {
@@ -1214,6 +1271,17 @@ export default function App() {
             ALL_APPS={ALL_APPS} 
             clearBlink={clearBlink} 
             setAppState={setAppState} 
+            onAppLaunch={(appId) => {
+              if (appId === 'BROWSER' && currentLevelId === 6 && currentObjectiveIndex === 0 && !popup) {
+                showSupervisorPopup('Semua berita telah diindeks ke database. Kamu tetap menggunakan SQL.', () => {
+                  setPopup({
+                    title: `${firstName} Tersenyum`,
+                    message: 'Saya mengerti.',
+                    onClose: () => setPopup(null)
+                  });
+                });
+              }
+            }}
           />
         );
       case 'INBOX':

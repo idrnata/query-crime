@@ -7,6 +7,7 @@ interface MenuScreenProps {
   ALL_APPS: any[];
   clearBlink: (id: string) => void;
   setAppState: (state: AppState) => void;
+  onAppLaunch?: (id: string) => void;
 }
 
 export const MenuScreen: React.FC<MenuScreenProps> = ({ 
@@ -14,7 +15,8 @@ export const MenuScreen: React.FC<MenuScreenProps> = ({
   blinkingApps, 
   ALL_APPS, 
   clearBlink, 
-  setAppState 
+  setAppState,
+  onAppLaunch
 }) => {
   return (
     <div className="flex flex-col h-full p-2 overflow-y-auto hide-scrollbar">
@@ -34,6 +36,7 @@ export const MenuScreen: React.FC<MenuScreenProps> = ({
               disabled={!isUnlocked}
               onClick={() => {
                 clearBlink(app.id);
+                if (onAppLaunch) onAppLaunch(app.id);
                 setAppState(app.id as AppState);
               }}
               className={`flex flex-col items-center justify-center p-3 gap-2 rounded border-2 transition-all

@@ -17,32 +17,32 @@ export const chapter6: Level = {
       {
         id: 1,
         title: 'Kecelakaan di Jalan Merdeka, Rizky Selamat dari Insiden',
-        content: 'Seorang mahasiswa bernama Rizky Hidayat menjadi satu-satunya korban selamat dalam kecelakaan mobil yang menewaskan tiga orang. Mobil diketahui milik PT Arunika Logistics.',
+        content: 'Seorang mahasiswa bernama Rizky Hidayat menjadi satu-satunya korban selamat dalam kecelakaan mobil yang menewaskan tiga orang. Mobil tersebut diketahui milik PT Arunika Logistics.',
         publish_date: '2018-05-12'
       },
       {
         id: 2,
-        title: 'Sopir Truk Menghilang Setelah Kecelakaan Merdeka',
-        content: 'Penyelidik menyatakan sopir truk pengangkut yang bertabrakan dengan mobil PT Arunika Logistics menghilang tanpa jejak setelah kecelakaan.',
-        publish_date: '2018-05-14'
+        title: 'Sopir Truk Menghilang Setelah Kecelakaan',
+        content: 'Pihak kepolisian melaporkan bahwa sopir truk yang terlibat dalam kecelakaan maut di Jalan Merdeka menghilang secara misterius tak lama setelah kejadian.',
+        publish_date: '2018-05-13'
       },
       {
         id: 3,
-        title: 'Data Kendaraan Kecelakaan Belum Ditemukan',
-        content: 'Kepolisian mengonfirmasi bahwa kotak hitam dan data kendaraan dari PT Arunika Logistics belum ditemukan di lokasi kejadian.',
-        publish_date: '2018-05-16'
+        title: 'Data Kendaraan Arunika Belum Ditemukan',
+        content: 'Penyidik mengonfirmasi bahwa data operasional dan logistik kendaraan PT Arunika Logistics pada malam kejadian belum ditemukan atau kemungkinan sengaja dihapus.',
+        publish_date: '2018-05-15'
       },
       {
         id: 4,
-        title: 'Kasus Kecelakaan PT Arunika Dihentikan',
-        content: 'Karena kurangnya bukti dan hilangnya saksi kunci, penyelidikan kasus kecelakaan lalu lintas PT Arunika Logistics resmi dihentikan.',
+        title: 'Kasus Kecelakaan Arunika Resmi Dihentikan',
+        content: 'Karena kurangnya bukti fisik dan menghilangnya saksi-saksi kunci, termasuk sopir truk, penyelidikan kasus kecelakaan PT Arunika Logistics resmi dihentikan.',
         publish_date: '2018-06-01'
       },
       {
         id: 5,
-        title: 'Profil PT Arunika Logistics',
-        content: 'PT Arunika Logistics didirikan untuk melayani kebutuhan logistik medis dan farmasi regional.',
-        publish_date: '2017-02-10'
+        title: 'Trauma Penyintas Kecelakaan Merdeka',
+        content: 'Rizky Hidayat, penyintas tunggal kecelakaan maut delapan tahun lalu, dilaporkan masih mengalami trauma mendalam terkait peristiwa tersebut.',
+        publish_date: '2018-06-15'
       }
     ],
     companies: [
@@ -63,7 +63,7 @@ export const chapter6: Level = {
   objectives: [
     {
       id: 1,
-      story: 'Mulai penyelidikan dengan mencari nama "Rizky Hidayat" di database artikel.',
+      story: 'Cari Rizky Hidayat pada artikel.',
       goal: "SELECT * FROM articles WHERE title='Rizky Hidayat';",
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'title', '=', "'Rizky Hidayat'"],
       validateResult: (res, query) => {
@@ -85,28 +85,47 @@ export const chapter6: Level = {
     },
     {
       id: 3,
-      story: 'Cari apakah Andi pernah disebut publik.',
-      goal: 'Query tabel articles menggunakan LIKE untuk mencari Andi atau Prasetyo di content.',
-      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Andi%'", "'%Prasetyo%'"],
+      story: 'Cari nama Andi di database artikel.',
+      goal: "SELECT * FROM articles WHERE content LIKE '%Andi%';",
+      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Andi%'"],
       validateResult: (res, query) => {
         if (!query) return false;
-        const q = query.toUpperCase();
-        return q.includes('FROM') && q.includes('ARTICLES') && q.includes('LIKE') && (q.includes('ANDI') || q.includes('PRASETYO'));
+        const q = query.toLowerCase().replace(/\s+/g, ' ');
+        return q.includes('like') && q.includes('%andi%') && res && res.length === 0;
       }
     },
     {
       id: 4,
-      story: 'Temukan hubungan yang tidak terlihat dengan mencari PT Arunika Logistics di database artikel.',
-      goal: 'Query tabel articles menggunakan LIKE \'%Arunika%\'.',
-      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Arunika%'"],
-      validateResult: (res) => res && res.length === 5 && res.every(r => r.content.includes('Arunika') || r.title.includes('Arunika'))
+      story: 'Coba cari nama Prasetyo di database artikel.',
+      goal: "SELECT * FROM articles WHERE content LIKE '%Prasetyo%';",
+      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Prasetyo%'"],
+      validateResult: (res, query) => {
+        if (!query) return false;
+        const q = query.toLowerCase().replace(/\s+/g, ' ');
+        return q.includes('like') && q.includes('%prasetyo%') && res && res.length === 0;
+      }
     },
     {
       id: 5,
+      story: 'Cari PT Arunika Logistics pada artikel.',
+      goal: "SELECT * FROM articles WHERE content LIKE '%Arunika%';",
+      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Arunika%'"],
+      validateResult: (res, query) => {
+        if (!query) return false;
+        const q = query.toLowerCase().replace(/\s+/g, ' ');
+        return q.includes('like') && q.includes('%arunika%') && res && res.length >= 5;
+      }
+    },
+    {
+      id: 6,
       story: 'Cari data perusahaan PT Arunika Logistics di database perusahaan.',
-      goal: 'Query tabel companies menggunakan LIKE \'%Arunika%\'.',
+      goal: "SELECT * FROM companies WHERE company_name LIKE '%Arunika%';",
       availableTokens: ['SELECT', '*', 'FROM', 'companies', 'WHERE', 'company_name', 'LIKE', "'%Arunika%'"],
-      validateResult: (res) => res && res.length === 1 && res[0].company_name.includes('Arunika')
+      validateResult: (res, query) => {
+        if (!query) return false;
+        const q = query.toLowerCase().replace(/\s+/g, ' ');
+        return q.includes('like') && q.includes('%arunika%') && res && res.length > 0;
+      }
     }
   ],
   report: {

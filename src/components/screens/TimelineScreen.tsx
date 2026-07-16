@@ -9,8 +9,10 @@ interface TimelineScreenProps {
 
 export const TimelineScreen: React.FC<TimelineScreenProps> = ({ currentLevelId, setAppState, notebookContent }) => {
   const allEvents = [
-    { time: '8 Years Ago', event: 'Kecelakaan lalu lintas tragis melibatkan PT Arunika Logistics.', condition: () => currentLevelId >= 6 },
-    { time: '8 Years Ago', event: 'Rizky Hidayat selamat, sopir truk menghilang misterius.', condition: () => currentLevelId >= 6 },
+    { time: '8 Years Ago', event: '8 Years Ago', condition: () => currentLevelId >= 6 && notebookContent.includes('Arunika') },
+    { time: '8 Years Ago', event: 'Traffic Accident', condition: () => currentLevelId >= 6 && notebookContent.includes('Kecelakaan') },
+    { time: '8 Years Ago', event: 'Rizky Survives', condition: () => currentLevelId >= 6 && notebookContent.includes('Rizky') },
+    { time: '8 Years Ago', event: 'Driver Missing', condition: () => currentLevelId >= 6 && notebookContent.includes('Sopir') },
     { time: '8 Years Ago', event: 'PT Arunika Logistics menyalurkan dana rutin bulanan ke rekening terhapus (Unknown Account).', condition: () => currentLevelId >= 8 },
     { time: '08:00', event: 'Seseorang memarkir mobil B 1734 QAZ di RS.', condition: () => currentLevelId >= 1 },
     { time: '09:20', event: 'Budi Santoso terdeteksi masuk rumah sakit.', condition: () => currentLevelId >= 2 },

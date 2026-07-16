@@ -10,7 +10,7 @@ export const BrowserScreen: React.FC<BrowserScreenProps> = ({ currentLevel, setA
   return (
     <div className="flex flex-col h-full bg-[#1b2118]/5">
       <div className="bg-[#1b2118] text-[#8cb07d] p-3 flex items-center gap-2 text-sm font-bold shrink-0">
-        <Globe size={16} /> <span>POLICE BROWSER</span>
+        <Globe size={16} /> <span>DIGITAL ARCHIVE</span>
       </div>
       
       <div className="flex-1 p-4 overflow-y-auto text-[#1b2118]">
