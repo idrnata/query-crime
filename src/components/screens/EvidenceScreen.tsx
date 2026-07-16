@@ -4,9 +4,12 @@ import { Lock } from 'lucide-react';
 interface EvidenceScreenProps {
   currentLevelId: number;
   setAppState: (state: any) => void;
+  isLevelComplete?: boolean;
+  unlockedApps?: string[];
+  notebookContent?: string;
 }
 
-export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ currentLevelId, setAppState }) => {
+export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ currentLevelId, setAppState, isLevelComplete = false, unlockedApps = [], notebookContent = '' }) => {
   const allEvidence = [
     // Level 1
     { level: 1, label: 'Plate', value: 'B 1734 QAZ' },
@@ -32,7 +35,18 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ currentLevelId, 
     { level: 6, label: 'Corrupted Company Record', value: 'Owner Data Deleted' }
   ];
   
-  const evidenceItems = allEvidence.filter(e => e.level <= currentLevelId);
+  const evidenceItems = allEvidence.filter(e => {
+    if (e.level < currentLevelId) return true;
+    if (e.level > currentLevelId) return false;
+    
+    // For the current level, check if evidence is actually unlocked yet
+    if (e.level === 1) return unlockedApps.includes('EVIDENCE');
+    if (e.level === 5) return notebookContent.includes('06 minutes\nNo Footage');
+    if (e.level === 6) return notebookContent.includes('Seseorang menghapus sebagian data perusahaan.');
+    
+    // For other levels, evidence unlocks when the level is marked as complete
+    return isLevelComplete;
+  });
 
   return (
     <div className="flex flex-col h-full">

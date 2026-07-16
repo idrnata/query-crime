@@ -52,6 +52,7 @@ export default function App() {
   const [showUnknownMessage, setShowUnknownMessage] = useState<boolean>(false);
   const [isHacked, setIsHacked] = useState<boolean>(false);
   const [isHackedMap, setIsHackedMap] = useState<boolean>(false);
+  const [isLevelComplete, setIsLevelComplete] = useState<boolean>(false);
   const [isObjectiveMet, setIsObjectiveMet] = useState<boolean>(false);
   const [hasShownCCTVWarning, setHasShownCCTVWarning] = useState<boolean>(false);
   
@@ -115,6 +116,14 @@ export default function App() {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (appState === 'EVIDENCE' && currentLevelId === 5 && currentObjectiveIndex === 4 && !popup) {
+      showSupervisorPopup('✔ Budi hanya terlihat masuk.\n✔ Rizky terlihat keluar.\n✔ Kamera mati selama enam menit.\n✔ Andi tidak pernah muncul di CCTV.\n✔ Ada kemungkinan orang lain mengemudikan kendaraan.\n\nSekarang buat laporan.', () => {
+        setAppState('REPORT');
+      });
+    }
+  }, [appState, currentLevelId, currentObjectiveIndex, popup]);
 
   useEffect(() => {
     const saved = loadGame();
@@ -381,23 +390,32 @@ export default function App() {
   };
 
   const markMessageAsRead = (id: string) => {
-    const msg = messages.find(m => m.id === id);
-    if (msg && !msg.read) {
-      const updated = messages.map(m => m.id === id ? { ...m, read: true } : m);
-      setMessages(updated);
-      saveProgress(
-        currentLevelId,
-        currentObjectiveIndex,
-        unlockedLevelIds,
-        hasAcceptedMission,
-        unlockedApps,
-        notebookContent,
-        contacts,
-        witnesses,
-        updated,
-        stats
-      );
-    }
+    setMessages(prev => {
+      const msgIndex = prev.findIndex(m => m.id === id);
+      if (msgIndex !== -1 && !prev[msgIndex].read) {
+        const updated = [...prev];
+        updated[msgIndex] = { ...updated[msgIndex], read: true };
+        
+        // Use a slight timeout to save progress after state update is queued
+        setTimeout(() => {
+          saveProgress(
+            currentLevelId,
+            currentObjectiveIndex,
+            unlockedLevelIds,
+            hasAcceptedMission,
+            unlockedApps,
+            notebookContent,
+            contacts,
+            witnesses,
+            updated,
+            stats
+          );
+        }, 0);
+        
+        return updated;
+      }
+      return prev;
+    });
   };
 
   useEffect(() => {
@@ -621,18 +639,20 @@ export default function App() {
           triggerBlink('INBOX');
           triggerBlink('CONTACTS');
           setAppState('INBOX');
-          const newMsg = {
-             id: 'call_dina',
-             sender: 'Supervisor Raka',
-             subject: 'Hubungi Dina',
-             body: 'Bagus. Hubungi Dina.',
-             timestamp: formatTime(currentTime),
-             read: false
-          };
-          const newMessages = [...messages, newMsg];
-          setMessages(newMessages);
+          setMessages(prev => {
+            const newMsg = {
+               id: 'call_dina',
+               sender: 'Supervisor Raka',
+               subject: 'Hubungi Dina',
+               body: 'Bagus. Hubungi Dina.',
+               timestamp: formatTime(currentTime),
+               read: false
+            };
+            const newMessages = [...prev, newMsg];
+            saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, newContacts, witnesses, newMessages);
+            return newMessages;
+          });
           setSelectedMessageId('call_dina');
-          saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, newContacts, witnesses, newMessages);
         }
         else if (nextIdx === 4) {
           showSupervisorPopup('Cari tahu siapa pasien yang dikunjungi.');
@@ -800,6 +820,7 @@ export default function App() {
         }
       }
     } else {
+      setIsLevelComplete(true);
       // Step 12: Quest complete (objectives done), Evidence Unlocked
       if (currentLevelId === 6) {
         setIsFlickering(true);
@@ -810,31 +831,32 @@ export default function App() {
             setIsFlickering(false);
             setPopup(null);
             
-            // Add Unknown Number message
-            const anonMsg = {
-              id: 'anon_msg_6',
-              sender: 'Unknown Number',
-              subject: '!!! WARNING !!!',
-              body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
-              timestamp: formatTime(currentTime),
-              read: false
-            };
-            setMessages(prev => [...prev, anonMsg]);
+            setMessages(prev => {
+              const anonMsg = {
+                id: 'anon_msg_6',
+                sender: 'Unknown Number',
+                subject: '!!! WARNING !!!',
+                body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
+                timestamp: formatTime(currentTime),
+                read: false
+              };
+              const updated = [...prev, anonMsg];
+              
+              // Unlocked EVIDENCE app if not already
+              let newApps = [...unlockedApps];
+              if (!newApps.includes('EVIDENCE')) {
+                newApps.push('EVIDENCE');
+                triggerBlink('EVIDENCE');
+              }
+              setUnlockedApps(newApps);
+              
+              const newNotebook = notebookContent + '\n\nSeseorang menghapus sebagian data perusahaan.';
+              setNotebookContent(newNotebook);
+              
+              saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, newNotebook, contacts, witnesses, updated);
+              return updated;
+            });
             triggerBlink('INBOX');
-            
-            // Unlocked EVIDENCE app if not already
-            let newApps = [...unlockedApps];
-            if (!newApps.includes('EVIDENCE')) {
-              newApps.push('EVIDENCE');
-              triggerBlink('EVIDENCE');
-            }
-            setUnlockedApps(newApps);
-            
-            // Add notebook entries as specified:
-            setNotebookContent(prev => prev + '\n\nSeseorang menghapus sebagian data perusahaan.');
-            
-            // Save progress
-            saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent, contacts, witnesses, [...messages, anonMsg]);
 
             showSupervisorPopup('Sistem kita disusupi! Seseorang mendeteksi pencarian kita tentang kejadian 8 tahun lalu dan mengirim pesan ancaman. Kirimkan laporan fakta investigasimu segera.', () => {
               setAppState('REPORT');
@@ -865,18 +887,20 @@ export default function App() {
                       onClose: () => {
                         setPopup(null);
                         
-                        const techMsg = {
-                          id: 'cctv_tech_msg',
-                          sender: 'Teknisi CCTV',
-                          subject: 'Kamera Main Gate',
-                          body: 'Maaf Pak.\nSaya baru ingat.\nKamera Main Gate sempat mati selama enam menit.',
-                          timestamp: formatTime(currentTime),
-                          read: false
-                        };
-                        const updatedMessages = [...messages, techMsg];
-                        setMessages(updatedMessages);
+                        setMessages(prev => {
+                          const techMsg = {
+                            id: 'cctv_tech_msg',
+                            sender: 'Teknisi CCTV',
+                            subject: 'Kamera Main Gate',
+                            body: 'Maaf Pak.\nSaya baru ingat.\nKamera Main Gate sempat mati selama enam menit.',
+                            timestamp: formatTime(currentTime),
+                            read: false
+                          };
+                          const updatedMessages = [...prev, techMsg];
+                          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, newNote, contacts, witnesses, updatedMessages);
+                          return updatedMessages;
+                        });
                         triggerBlink('INBOX');
-                        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, newNote, contacts, witnesses, updatedMessages);
                       }
                     });
                   }
@@ -936,32 +960,42 @@ export default function App() {
       }
       setStats(newStats);
       
-      // Add closing message to inbox
-      const closingMsg = {
-        id: `closing_${currentLevelId}`,
-        sender: 'Supervisor Raka',
-        subject: `RE: ${currentLevel.title} - SELESAI`,
-        body: currentLevel.report.conclusion,
-        timestamp: formatTime(currentTime),
-        read: false
-      };
-      
-      let newMessages = [...messages, closingMsg];
-      
-      if (currentLevelId === 3) {
-        // Unknown Number message
-        const anonMsg = {
-          id: 'anon_msg',
-          sender: 'Unknown Number',
-          subject: '!!!',
-          body: 'Berhenti mencari Budi. Kalau tidak... kamu akan menjadi orang berikutnya.',
+      setMessages(prev => {
+        const closingMsg = {
+          id: `closing_${currentLevelId}`,
+          sender: 'Supervisor Raka',
+          subject: `RE: ${currentLevel.title} - SELESAI`,
+          body: currentLevel.report.conclusion,
           timestamp: formatTime(currentTime),
           read: false
         };
-        newMessages.push(anonMsg);
-      }
-      
-      setMessages(newMessages);
+        
+        let newMessages = [...prev, closingMsg];
+        
+        if (currentLevelId === 3) {
+          // Unknown Number message
+          const anonMsg = {
+            id: 'anon_msg',
+            sender: 'Unknown Number',
+            subject: '!!!',
+            body: 'Berhenti mencari Budi. Kalau tidak... kamu akan menjadi orang berikutnya.',
+            timestamp: formatTime(currentTime),
+            read: false
+          };
+          newMessages.push(anonMsg);
+        }
+        
+        if (!unlockedLevelIds.includes(currentLevelId + 1) && currentLevelId < LEVELS.length) {
+          const newUnlocked = [...unlockedLevelIds, currentLevelId + 1];
+          setUnlockedLevelIds(newUnlocked);
+          saveProgress(currentLevelId + 1, 0, newUnlocked, false, newApps, notebookContent, contacts, witnesses, newMessages, newStats);
+        } else {
+          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent, contacts, witnesses, newMessages, newStats);
+        }
+        
+        return newMessages;
+      });
+
       triggerBlink('INBOX');
       if (unlockedApps.includes('EVIDENCE')) {
         triggerBlink('EVIDENCE');
@@ -973,14 +1007,6 @@ export default function App() {
          triggerBlink('CONTACTS');
       }
       setUnlockedApps(newApps);
-      
-      if (!unlockedLevelIds.includes(currentLevelId + 1) && currentLevelId < LEVELS.length) {
-        const newUnlocked = [...unlockedLevelIds, currentLevelId + 1];
-        setUnlockedLevelIds(newUnlocked);
-        saveProgress(currentLevelId + 1, 0, newUnlocked, false, newApps, notebookContent, contacts, witnesses, newMessages, newStats);
-      } else {
-        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent, contacts, witnesses, newMessages, newStats);
-      }
     } else {
       setPopup({
         title: 'WRONG ANALYSIS',
@@ -1013,7 +1039,7 @@ export default function App() {
     }
     
     setUnlockedApps(newApps);
-    saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, true, newApps, notebookContent, contacts, witnesses, messages, stats);
+    setMessages(prevMsgs => { saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, true, newApps, notebookContent, contacts, witnesses, prevMsgs, stats); return prevMsgs; });
     
     let popupTitle = 'SYSTEM';
     let popupMessage = 'Mission Accepted. Objective updated in Case Files.';
@@ -1094,20 +1120,19 @@ export default function App() {
               newApps.push('EVIDENCE');
             }
             setUnlockedApps(newApps);
-            setAppState('EVIDENCE');
+            triggerBlink('EVIDENCE');
+            setAppState('HOME');
             
             setPopup({
               title: 'SYSTEM',
-              message: 'NEW EVIDENCE ADDED:\n- Camera Offline\n- Missing Footage\n- Visitor Without Match\n- Timeline Updated',
+              message: 'NEW EVIDENCE ADDED:\n- Camera Offline\n- Missing Footage\n- Visitor Without Match\n- Timeline Updated\n\nSilakan buka EVIDENCE LOCKER untuk mengecek temuan.',
               onClose: () => {
                 setPopup(null);
-                showSupervisorPopup('✔ Budi hanya terlihat masuk.\n✔ Rizky terlihat keluar.\n✔ Kamera mati selama enam menit.\n✔ Andi tidak pernah muncul di CCTV.\n✔ Ada kemungkinan orang lain mengemudikan kendaraan.\n\nSekarang buat laporan.', () => {
-                  setAppState('REPORT');
-                });
+                const nextIdx = 4;
+                setCurrentObjectiveIndex(nextIdx);
+                setMessages(prevMsgs => { saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, newApps, newNote, contacts, witnesses, prevMsgs, stats); return prevMsgs; });
               }
             });
-            
-            saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, newNote, contacts, witnesses, messages, stats);
           }
         });
       }
@@ -1143,6 +1168,7 @@ export default function App() {
         if (currentLevelId < LEVELS.length) {
           setCurrentLevelId(currentLevelId + 1);
           setCurrentObjectiveIndex(0);
+          setIsLevelComplete(false);
           setHasAcceptedMission(false);
           setAppState('HOME');
           setQueryString('');
@@ -1263,7 +1289,7 @@ export default function App() {
       case 'ERROR':
         return <ErrorScreen setAppState={setAppState} />;
       case 'EVIDENCE':
-        return <EvidenceScreen currentLevelId={currentLevelId} setAppState={setAppState} />;
+        return <EvidenceScreen currentLevelId={currentLevelId} setAppState={setAppState} isLevelComplete={isLevelComplete} unlockedApps={unlockedApps} notebookContent={notebookContent} />;
       case 'NOTEBOOK':
         return (
           <NotebookScreen 
