@@ -1,0 +1,6 @@
+{
+  "name": "Query Crime",
+  "description": "A database detective game with a retro Nokia phone UI. Solve logic puzzles via a touch-friendly retro terminal interface.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
