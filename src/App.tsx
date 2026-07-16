@@ -315,6 +315,14 @@ export default function App() {
           timestamp: '08:15',
           read: true
         });
+        reconstructedMessages.push({
+          id: `closing_${c}`,
+          sender: 'Supervisor Raka',
+          subject: `RE: ${lvl.title} - SELESAI`,
+          body: lvl.report.conclusion,
+          timestamp: '08:30',
+          read: true
+        });
       }
       if (c === 2) {
         reconstructedMessages.push({
@@ -323,6 +331,26 @@ export default function App() {
           subject: 'Hubungi Dina',
           body: 'Bagus. Hubungi Dina.',
           timestamp: '08:20',
+          read: true
+        });
+      }
+      if (c === 3) {
+        reconstructedMessages.push({
+          id: 'anon_msg',
+          sender: 'Unknown Number',
+          subject: '!!!',
+          body: 'Berhenti mencari Budi. Kalau tidak... kamu akan menjadi orang berikutnya.',
+          timestamp: '08:35',
+          read: true
+        });
+      }
+      if (c === 6) {
+        reconstructedMessages.push({
+          id: 'anon_msg_6',
+          sender: 'Unknown Number',
+          subject: '!!! WARNING !!!',
+          body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
+          timestamp: '08:35',
           read: true
         });
       }
