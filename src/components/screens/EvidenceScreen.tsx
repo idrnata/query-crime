@@ -21,8 +21,10 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ currentLevelId, 
     { level: 4, label: 'Gap', value: '8 Minutes' },
     { level: 4, label: 'Suspect', value: 'Rudi Hartono' },
     // Level 5
-    { level: 5, label: 'CCTV', value: 'CAM-03 Offline' },
-    { level: 5, label: 'Anomaly', value: 'No Visual Match' },
+    { level: 5, label: 'Camera Offline', value: 'CAM-03 (Main Gate) Offline' },
+    { level: 5, label: 'Missing Footage', value: '6 Minutes Offline at 11:25-11:31' },
+    { level: 5, label: 'Visitor Without Match', value: 'Andi Prasetyo has no CCTV record' },
+    { level: 5, label: 'Timeline Updated', value: 'Timeline sequence adjusted' },
     // Level 6
     { level: 6, label: 'Old Accident', value: '8 Years Ago Traffic' },
     { level: 6, label: 'PT Arunika Logistics', value: 'Associated with Accident' },

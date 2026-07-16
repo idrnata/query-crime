@@ -801,6 +801,44 @@ export default function App() {
             });
           }
         });
+      } else if (currentLevelId === 5) {
+        // CCTV Technician mail
+        const techMsg = {
+          id: 'cctv_tech_msg',
+          sender: 'Teknisi CCTV',
+          subject: 'Kamera Main Gate',
+          body: 'Maaf Pak.\nSaya baru ingat.\nKamera Main Gate sempat mati selama enam menit.\nTepat sebelum Rizky keluar.',
+          timestamp: formatTime(currentTime),
+          read: false
+        };
+        const updatedMessages = [...messages, techMsg];
+        setMessages(updatedMessages);
+        triggerBlink('INBOX');
+
+        // Update Notebook
+        const newNotebook = notebookContent + '\n\n06 minutes\nNo Footage';
+        setNotebookContent(newNotebook);
+
+        // Make sure EVIDENCE is in unlockedApps
+        let newApps = [...unlockedApps];
+        if (!newApps.includes('EVIDENCE')) {
+          newApps.push('EVIDENCE');
+          triggerBlink('EVIDENCE');
+        }
+        setUnlockedApps(newApps);
+
+        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, newNotebook, contacts, witnesses, updatedMessages);
+
+        setPopup({
+          title: 'INBOX UPDATE',
+          message: 'Pesan baru masuk dari Teknisi CCTV di Kotak Masuk (Inbox) Anda.',
+          onClose: () => {
+            setPopup(null);
+            showSupervisorPopup('Ada pesan baru dari Teknisi CCTV. Dan data dari LEFT JOIN menunjukkan kejanggalan pada Andi. Sekarang, buatlah laporan fakta investigasimu segera.', () => {
+              setAppState('REPORT');
+            });
+          }
+        });
       } else {
         if (!unlockedApps.includes('EVIDENCE')) {
           const newApps = [...unlockedApps, 'EVIDENCE'];
