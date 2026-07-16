@@ -1088,7 +1088,7 @@ export default function App() {
             setAppState={setAppState} 
             currentLevel={currentLevel} 
             hasAcceptedMission={hasAcceptedMission} 
-            setHasAcceptedMission={setHasAcceptedMission} 
+            setHasAcceptedMission={handleAcceptMission} 
             markMessageAsRead={markMessageAsRead}
           />
         );

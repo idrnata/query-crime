@@ -161,9 +161,8 @@ export const InboxScreen: React.FC<InboxScreenProps> = ({
               {selectedMessage.id === `initial_${currentLevel.id}` && !hasAcceptedMission ? (
                 <button 
                   onClick={() => {
-                    setHasAcceptedMission(true);
                     setSelectedMessageId(null);
-                    setAppState('MENU');
+                    setHasAcceptedMission(true);
                   }}
                   className="w-full bg-[#1b2118] text-[#8cb07d] py-3.5 font-bold uppercase text-xs flex items-center justify-center gap-2 hover:bg-[#252c21] transition-all"
                 >
