@@ -24,7 +24,7 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
 }) => {
   const tableNames = [
     'Vehicles', 'Owners', 'Citizens', 'Visitors', 
-    'Patients', 'Hospital Parking', 'Cameras', 'Footage', 'Articles', 
+    'Patients', 'Parking', 'Cameras', 'Footage', 'Articles', 
     'Companies', 'Accounts', 'Transactions', 'Branches'
   ];
 

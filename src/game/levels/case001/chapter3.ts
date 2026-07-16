@@ -6,7 +6,7 @@ export const chapter3: Level = {
   mail: {
     sender: 'Supervisor Raka',
     subject: 'Perkembangan Kasus',
-    body: 'Selamat pagi.\nRumah sakit sudah mengirim data tambahan.\nPasien bernama Rizky Hidayat memang keluar pukul 11.30.\nTetapi CCTV rumah sakit sedang rusak.\nSatu-satunya petunjuk hanyalah data parkir kendaraan.\n\nNEW TABLE: Hospital Parking',
+    body: 'Selamat pagi.\nRumah sakit sudah mengirim data tambahan.\nPasien bernama Rizky Hidayat memang keluar pukul 11.30.\nTetapi CCTV rumah sakit sedang rusak.\nSatu-satunya petunjuk hanyalah data parkir kendaraan.\n\nNEW TABLE: Parking',
   },
   files: {
     title: 'Laporan Tambahan RS',
@@ -28,7 +28,7 @@ export const chapter3: Level = {
     vehicles: [
       { id: 10, plate_number: 'B 2841 PT', brand: 'Toyota', model: 'Avanza', color: 'Silver', owner_id: 7 }
     ],
-    hospital_parking: [
+    parking: [
       { id: 1, plate_number: 'C2222CC', entry_time: '2026-07-15 07:00', exit_time: null, location: 'RS Harapan Bangsa' },
       { id: 2, plate_number: 'B1734QAZ', entry_time: '2026-07-12 08:00', exit_time: null, location: 'RS Harapan Bangsa' },
       { id: 3, plate_number: 'D5555XX', entry_time: '2026-07-14 09:00', exit_time: '2026-07-14 10:00', location: 'RS Harapan Bangsa' },
@@ -68,13 +68,13 @@ export const chapter3: Level = {
     {
       id: 5,
       story: 'Cek data parkir untuk plat nomor B 2841 PT.',
-      goal: 'Cari data di hospital_parking untuk plat B 2841 PT.',
-      availableTokens: ['SELECT', '*', 'FROM', 'hospital_parking', 'WHERE', 'plate_number', '=', "'B 2841 PT'"],
+      goal: 'Cari data di parking untuk plat B 2841 PT.',
+      availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'plate_number', '=', "'B 2841 PT'"],
       validateResult: (res) => res && res.length === 1 && res[0].exit_time === '11:34'
     },
     {
       id: 6,
-      story: 'Supervisor: "Bagus. Sekarang gunakan JOIN untuk melihat nama pemilik dan plat nomornya secara langsung."',
+      story: 'Supervisor: "Bagus. Sekarang gunakan JOIN untuk melihat nama pemilik and plat nomornya secara langsung."',
       goal: 'Gunakan JOIN antara citizens dan vehicles.',
       availableTokens: ['SELECT', 'c.name', ',', 'v.plate_number', 'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id'],
       validateResult: (res) => res && res.length >= 1 && res[0].name !== undefined && res[0].plate_number !== undefined
@@ -95,6 +95,6 @@ export const chapter3: Level = {
       'Budi Santoso melarikan diri bersama Andi'
     ],
     correctIndex: 1,
-    conclusion: 'Supervisor Raka:\nBagus.\nSekarang saya ingin tahu...\nApakah Andi pernah berhubungan dengan Budi sebelumnya?\nSaya mendapat kabar buruk. Andi Prasetyo ternyata juga tidak bisa dihubungi. Dua orang hilang. Satu pasien. Satu pengunjung. Dan satu kendaraan yang membawa mereka pergi.\n\n*** CHAPTER 3 COMPLETE ***\nReward: +180 XP\nRank: Detective\nUnlocked: JOIN, Hospital Parking'
+    conclusion: 'Supervisor Raka:\nBagus.\nSekarang saya ingin tahu...\nApakah Andi pernah berhubungan dengan Budi sebelumnya?\nSaya mendapat kabar buruk. Andi Prasetyo ternyata juga tidak bisa dihubungi. Dua orang hilang. Satu pasien. Satu pengunjung. Dan satu kendaraan yang membawa mereka pergi.\n\n*** CHAPTER 3 COMPLETE ***\nReward: +180 XP\nRank: Detective\nUnlocked: JOIN, Parking'
   }
 };

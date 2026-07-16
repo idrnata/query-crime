@@ -923,7 +923,7 @@ export default function App() {
     setPopup({
       title: 'SYSTEM',
       message: currentLevelId === 3 
-        ? 'Mission Accepted. NEW TABLE: Hospital Parking Unlocked.'
+        ? 'Mission Accepted. NEW TABLE: Parking Unlocked.'
         : currentLevelId === 4
         ? 'Mission Accepted. NEW FEATURE: Timeline Unlocked.'
         : currentLevelId === 6

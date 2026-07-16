@@ -25,7 +25,7 @@ export const chapter1: Level = {
       { id: 310, name: 'Rudi', address: 'Jl Mawar 22', phone: '08775555' },
       { id: 482, name: 'Budi Santoso', address: 'Jl Melati 15', phone: '08124444' }
     ],
-    hospital_parking: [
+    parking: [
       { id: 1, plate_number: 'C2222CC', entry_time: '2026-07-15 07:00', exit_time: null, location: 'RS Harapan Bangsa' },
       { id: 2, plate_number: 'B1734QAZ', entry_time: '2026-07-12 08:00', exit_time: null, location: 'RS Harapan Bangsa' },
       { id: 3, plate_number: 'D5555XX', entry_time: '2026-07-14 09:00', exit_time: '2026-07-14 10:00', location: 'RS Harapan Bangsa' },
@@ -57,22 +57,22 @@ export const chapter1: Level = {
     {
       id: 4,
       story: 'Supervisor: "Bagus. Sekarang cari tahu apakah mobil itu masih berada di rumah sakit."',
-      goal: 'Periksa riwayat parkir (hospital_parking) untuk plat B1734QAZ.',
-      availableTokens: ['SELECT', '*', 'FROM', 'hospital_parking', 'WHERE', 'plate_number', '=', "'B1734QAZ'"],
+      goal: 'Periksa riwayat parkir (parking) untuk plat B1734QAZ.',
+      availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'plate_number', '=', "'B1734QAZ'"],
       validateResult: (res) => res && res.length === 1 && res[0].plate_number === 'B1734QAZ'
     },
     {
       id: 5,
       story: 'Mobil masuk 3 hari lalu dan exit_time adalah NULL (belum keluar).',
       goal: 'Cari semua kendaraan yang belum keluar (exit_time IS NULL).',
-      availableTokens: ['SELECT', '*', 'FROM', 'hospital_parking', 'WHERE', 'exit_time', 'IS', 'NULL'],
+      availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'exit_time', 'IS', 'NULL'],
       validateResult: (res) => res && res.length === 3 && res.every(r => r.exit_time === null)
     },
     {
       id: 6,
       story: 'Supervisor: "Mobil mana yang paling lama berada di sana?"',
       goal: 'Urutkan kendaraan yang belum keluar berdasarkan waktu masuk (entry_time).',
-      availableTokens: ['SELECT', '*', 'FROM', 'hospital_parking', 'WHERE', 'exit_time', 'IS', 'NULL', 'ORDER', 'BY', 'entry_time'],
+      availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'exit_time', 'IS', 'NULL', 'ORDER', 'BY', 'entry_time'],
       validateResult: (res) => res && res.length === 3 && res[0].plate_number === 'B1734QAZ'
     }
   ],
