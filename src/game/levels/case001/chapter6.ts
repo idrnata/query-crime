@@ -63,57 +63,57 @@ export const chapter6: Level = {
   objectives: [
     {
       id: 1,
-      story: 'Cari Rizky Hidayat pada artikel.',
-      goal: "SELECT * FROM articles WHERE title='Rizky Hidayat';",
-      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'title', '=', "'Rizky Hidayat'"],
+      story: 'Cari semua artikel yang ada di database.',
+      goal: "SELECT * FROM articles;",
+      availableTokens: ['SELECT', '*', 'FROM', 'articles'],
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
-        return q.includes("where title = 'rizky hidayat'") && res && res.length === 0;
+        return q.includes('select * from articles') && res && res.length > 0;
       }
     },
     {
       id: 2,
-      story: 'Coba pencarian yang lebih fleksibel untuk menemukan berita tentang Rizky.',
-      goal: "SELECT * FROM articles WHERE title LIKE '%Rizky%';",
-      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'title', 'LIKE', "'%Rizky%'"],
+      story: 'Gunakan operator LIKE untuk mencari artikel tentang rumah sakit (Hospital).',
+      goal: "SELECT * FROM articles WHERE content LIKE '%Hospital%';",
+      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Hospital%'"],
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
-        return q.includes('like') && q.includes('%rizky%') && res && res.length > 0;
+        return q.includes('like') && q.includes('%hospital%') && res && res.length > 0;
       }
     },
     {
       id: 3,
-      story: 'Cari nama Andi di database artikel.',
-      goal: "SELECT * FROM articles WHERE content LIKE '%Andi%';",
-      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Andi%'"],
+      story: 'Cari artikel yang menyebut nama Budi.',
+      goal: "SELECT * FROM articles WHERE content LIKE '%Budi%';",
+      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Budi%'"],
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
-        return q.includes('like') && q.includes('%andi%') && res && res.length === 0;
+        return q.includes('like') && q.includes('%budi%') && res && res.length > 0;
       }
     },
     {
       id: 4,
-      story: 'Coba cari nama Prasetyo di database artikel.',
-      goal: "SELECT * FROM articles WHERE content LIKE '%Prasetyo%';",
-      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Prasetyo%'"],
+      story: 'Cari artikel tentang kejadian atau orang yang hilang (Missing).',
+      goal: "SELECT * FROM articles WHERE content LIKE '%Missing%';",
+      availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Missing%'"],
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
-        return q.includes('like') && q.includes('%prasetyo%') && res && res.length === 0;
+        return q.includes('like') && q.includes('%missing%') && res && res.length > 0;
       }
     },
     {
       id: 5,
-      story: 'Cari PT Arunika Logistics pada artikel.',
+      story: 'Cari semua artikel yang mengandung kata "Arunika".',
       goal: "SELECT * FROM articles WHERE content LIKE '%Arunika%';",
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Arunika%'"],
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
-        return q.includes('like') && q.includes('%arunika%') && res && res.length >= 5;
+        return q.includes('like') && q.includes('%arunika%') && res && res.length >= 4;
       }
     },
     {

@@ -838,37 +838,45 @@ export default function App() {
           }
         } else if (currentLevelId === 6) {
           if (nextIdx === 1) {
-            // After index 0 (Hospital found)
+            showSupervisorPopup('Gunakan operator LIKE untuk mencari artikel tentang rumah sakit (Hospital).', () => {
+              setAppState('TERM');
+              setQueryString('');
+            });
+          } else if (nextIdx === 2) {
+            // After Hospital found
             setNotebookContent(prev => prev + '\n\nBanyak berita tentang rumah sakit akhir-akhir ini.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('Sepertinya ada yang menarik. Coba cari berita yang menyebut nama Budi.', () => {
               setAppState('TERM');
               setQueryString('');
             });
-          } else if (nextIdx === 2) {
-            // After index 1 (Budi found)
+          } else if (nextIdx === 3) {
+            // After Budi found
             setNotebookContent(prev => prev + '\n\nRizky Hidayat adalah penyintas kecelakaan maut Arunika delapan tahun lalu.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('Penyintas kecelakaan? Menarik. Coba cari artikel tentang orang hilang (Missing).', () => {
               setAppState('TERM');
               setQueryString('');
             });
-          } else if (nextIdx === 3) {
-            // After index 2 (Missing found)
+          } else if (nextIdx === 4) {
+            // After Missing found
             setNotebookContent(prev => prev + '\n\nSopir truk menghilang setelah kecelakaan. Data kendaraan belum ditemukan.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('Kasusnya dihentikan karena saksi kunci hilang. Sepertinya ada sesuatu yang disembunyikan. Coba telusuri lebih dalam kata-kata yang sering muncul.', () => {
               setAppState('TERM');
               setQueryString('');
             });
-          } else if (nextIdx === 4) {
-            // After index 3 (Arunika Articles found)
+          } else if (nextIdx === 5) {
+            // After Arunika Articles found
             setNotebookContent(prev => prev + '\n\nBanyak artikel tentang kecelakaan maut Arunika.\nSopir truk menghilang secara misterius.\nKasus dihentikan karena kurang bukti.\nArunika... ini bukan cuma nama kejadian.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('PT Arunika Logistics... Nama itu terus muncul. Kita harus mencari tahu siapa mereka.', () => {
               setAppState('TERM');
               setQueryString('');
             });
+          } else {
+            setAppState('TERM');
+            setQueryString('');
           }
         } else if (currentLevelId === 9) {
           if (nextIdx === 1) {
