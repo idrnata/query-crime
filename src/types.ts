@@ -33,6 +33,15 @@ export interface PlayerStats {
   battery?: number;
 }
 
+export interface EvidenceMetadata {
+  id: string;
+  foundAt: { chapter: number; step: number };
+  reviewedCount: number;
+  status: 'Evidence' | 'Critical Evidence';
+  firstLinkedAt?: { chapter: number; step: number };
+  criticalAt?: { chapter: number; step: number };
+}
+
 export interface SaveData {
   currentLevelId: number;
   currentObjectiveIndex: number;
@@ -45,6 +54,7 @@ export interface SaveData {
   messages?: any[];
   stats?: PlayerStats;
   playerName?: string;
+  evidenceMetadata?: Record<string, EvidenceMetadata>;
 }
 
 export type AppState = 'BOOT' | 'HOME' | 'MENU' | 'INBOX' | 'CASE_FILES' | 'DB_LIST' | 'TERM' | 'RESULT' | 'REPORT' | 'QUEST_COMPLETE' | 'ERROR' | 'EVIDENCE' | 'NOTEBOOK' | 'CONTACTS' | 'BROWSER' | 'MAP' | 'RANK' | 'SETTINGS' | 'WITNESSES' | 'CALLING' | 'TIMELINE';

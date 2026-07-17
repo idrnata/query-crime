@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { LEVELS } from './game/levels';
 import { executeSql } from './game/engine';
 import { saveGame, loadGame } from './game/saveSystem';
-import { PlayerStats, AppState } from './types';
+import { PlayerStats, AppState, EvidenceMetadata } from './types';
 import { ALL_APPS } from './constants/apps';
 import { formatTime, formatDate } from './utils/date';
 
@@ -91,6 +91,7 @@ export default function App() {
     achievements: [],
     battery: 100
   });
+  const [evidenceMetadata, setEvidenceMetadata] = useState<Record<string, EvidenceMetadata>>({});
   const [isBlackout, setIsBlackout] = useState<boolean>(false);
 
   useEffect(() => {
@@ -157,6 +158,9 @@ export default function App() {
            ...saved.stats,
            battery: saved.stats.battery !== undefined ? saved.stats.battery : 100
          });
+      }
+      if (saved.evidenceMetadata) {
+         setEvidenceMetadata(saved.evidenceMetadata);
       }
       if (saved.playerName) {
          setPlayerName(saved.playerName);
@@ -239,7 +243,7 @@ export default function App() {
     */
   }, [appState, hasAcceptedMission, selectedMessageId, currentLevelId]);
 
-  const saveProgress = (levelId: number, objectiveIndex: number, unlockedLvl: number[], accepted: boolean, apps: string[], notebook?: string, currentContacts?: any[], currentWitnesses?: any[], currentMessages?: any[], currentStats?: PlayerStats, name?: string) => {
+  const saveProgress = (levelId: number, objectiveIndex: number, unlockedLvl: number[], accepted: boolean, apps: string[], notebook?: string, currentContacts?: any[], currentWitnesses?: any[], currentMessages?: any[], currentStats?: PlayerStats, name?: string, meta?: Record<string, EvidenceMetadata>) => {
     saveGame({ 
       currentLevelId: levelId, 
       currentObjectiveIndex: objectiveIndex, 
@@ -251,7 +255,8 @@ export default function App() {
       witnesses: currentWitnesses || witnesses,
       messages: currentMessages || messages,
       stats: currentStats || stats,
-      playerName: name || playerName
+      playerName: name || playerName,
+      evidenceMetadata: meta || evidenceMetadata
     });
   };
 
@@ -1216,6 +1221,49 @@ export default function App() {
     }
   };
 
+  const onReviewEvidence = useCallback((evidenceId: string) => {
+    setEvidenceMetadata(prev => {
+      const existing = prev[evidenceId] || {
+        id: evidenceId,
+        foundAt: { chapter: currentLevelId, step: currentObjectiveIndex + 1 },
+        reviewedCount: 0,
+        status: 'Evidence'
+      };
+      
+      const newMeta = {
+        ...prev,
+        [evidenceId]: {
+          ...existing,
+          reviewedCount: existing.reviewedCount + 1
+        }
+      };
+      saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName, newMeta);
+      return newMeta;
+    });
+  }, [currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName, evidenceMetadata]);
+
+  const setEvidenceStatus = useCallback((evidenceId: string, status: 'Evidence' | 'Critical Evidence') => {
+    setEvidenceMetadata(prev => {
+      const existing = prev[evidenceId] || {
+        id: evidenceId,
+        foundAt: { chapter: currentLevelId, step: currentObjectiveIndex + 1 },
+        reviewedCount: 0,
+        status: 'Evidence'
+      };
+      
+      const newMeta = {
+        ...prev,
+        [evidenceId]: {
+          ...existing,
+          status,
+          criticalAt: status === 'Critical Evidence' && existing.status !== 'Critical Evidence' ? { chapter: currentLevelId, step: currentObjectiveIndex + 1 } : existing.criticalAt
+        }
+      };
+      saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName, newMeta);
+      return newMeta;
+    });
+  }, [currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName, evidenceMetadata]);
+
   const renderScreenContent = () => {
     switch (appState) {
       case 'BOOT':
@@ -1335,7 +1383,17 @@ export default function App() {
       case 'ERROR':
         return <ErrorScreen setAppState={setAppState} />;
       case 'EVIDENCE':
-        return <EvidenceScreen currentLevelId={currentLevelId} setAppState={setAppState} isLevelComplete={isLevelComplete} unlockedApps={unlockedApps} notebookContent={notebookContent} />;
+        return (
+          <EvidenceScreen 
+            currentLevelId={currentLevelId} 
+            setAppState={setAppState} 
+            isLevelComplete={isLevelComplete} 
+            unlockedApps={unlockedApps} 
+            notebookContent={notebookContent} 
+            evidenceMetadata={evidenceMetadata}
+            onReviewEvidence={onReviewEvidence}
+          />
+        );
       case 'NOTEBOOK':
         return (
           <NotebookScreen 
