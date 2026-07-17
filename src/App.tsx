@@ -1212,22 +1212,14 @@ export default function App() {
           setShowUnknownMessage(true);
         }, 3000);
       } else if (currentLevelId === 6) {
-        // Ending Chapter 6 - Supervisor menelepon
+        // Ending Chapter 6 - Supervisor menelepon (Calling Screen UI)
         setTimeout(() => {
-          setPopup({
-            title: 'INCOMING CALL: SUPERVISOR RAKA',
-            message: 'Supervisor Raka menelepon...\n\n"Saya rasa kita tidak lagi menyelidiki orang hilang."\n\n(Diam beberapa detik)\n\n"Kita sedang menyelidiki seseorang yang bisa menghapus sejarah."',
-            onClose: () => {
-              setPopup({
-                title: 'CALL TERMINATED',
-                message: 'Telepon terputus.\nLayar gelap.',
-                onClose: () => {
-                  setPopup(null);
-                  setAppState('QUEST_COMPLETE');
-                }
-              });
-            }
-          });
+          setActiveCallContact({ id: 'raka', name: 'Supervisor Raka', phone: '08112233' });
+          setCallStatus('DIALING');
+          setAppState('CALLING');
+          setCallStep(666);
+          setTimeout(() => setCallStatus('CONNECTING'), 1500);
+          setTimeout(() => setCallStatus('ACTIVE'), 3000);
         }, 1000);
       } else {
         setAppState('QUEST_COMPLETE');
