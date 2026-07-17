@@ -274,6 +274,8 @@ export default function App() {
       content += '\n\nRizky pernah mengalami kecelakaan.';
       content += '\n\nAndi tidak pernah muncul di berita.';
       content += '\n\nArunika -> Kecelakaan -> Rizky';
+      content += '\n\nSopir truk menghilang.';
+      content += '\n\nData perusahaan telah dimodifikasi.';
     }
     if (chapterId >= 7) {
       content += '\n\nSeseorang menghapus sebagian data perusahaan.';
@@ -626,8 +628,8 @@ export default function App() {
           else if (nextIdx === 2) {
             // Found Dina.
             setNotebookContent(prev => prev + '\n\nDina Santoso: Kemungkinan anggota keluarga.');
+            setAppState('NOTEBOOK');
             showSupervisorPopup('Kamu menemukan Dina Santoso di alamat yang sama. Hubungi dia.');
-            setAppState('TERM');
             setQueryString('');
           }
           else if (nextIdx === 3) {
@@ -676,8 +678,8 @@ export default function App() {
             setQueryString('');
           } else if (nextIdx === 3) {
             setNotebookContent(prev => prev + '\n\nSemua data saling terhubung. Cari hubungan antar tabel.');
-            showSupervisorPopup('Bagus. Sekarang cari kendaraan milik Andi Prasetyo (Owner ID 7).');
             setAppState('NOTEBOOK');
+            showSupervisorPopup('Bagus. Sekarang cari kendaraan milik Andi Prasetyo (Owner ID 7).');
             setQueryString('');
           } else if (nextIdx === 4) {
             showSupervisorPopup('Cek data parkir untuk plat nomor B 2841 PT.');
@@ -705,28 +707,28 @@ export default function App() {
         } else if (currentLevelId === 4) {
           if (nextIdx === 1) {
             setNotebookContent(prev => prev + '\n\nData terlalu banyak. Perlu difilter.\nAda dua orang lain yang berada di lokasi hampir bersamaan.');
-            showSupervisorPopup('Fokus ke pasien yang mereka kunjungi. Gunakan JOIN antara visitors dan patients.');
-            setAppState('TERM');
+            setAppState('NOTEBOOK');
+            showSupervisorPopup('Fokus ke pasien yang mereka kunjungi. Gunakan JOIN antara visitors and patients.');
             setQueryString('');
           } else if (nextIdx === 2) {
             setNotebookContent(prev => prev + '\n\nRudi juga mengunjungi Rizky.');
+            setAppState('NOTEBOOK');
             showSupervisorPopup('Bagus. Sekarang cari identitas Rudi Hartono di tabel citizens.');
-            setAppState('TERM');
             setQueryString('');
           } else if (nextIdx === 3) {
             setNotebookContent(prev => prev + '\n\nData Rudi tidak lengkap.');
+            setAppState('NOTEBOOK');
             showSupervisorPopup('Rudi Hartono terdaftar sebagai warga. Sekarang periksa apakah Rudi memiliki kendaraan terdaftar.');
-            setAppState('TERM');
             setQueryString('');
           } else if (nextIdx === 4) {
             setNotebookContent(prev => prev + '\n\nRudi tidak memiliki kendaraan.');
+            setAppState('NOTEBOOK');
             showSupervisorPopup('Rudi tidak memiliki kendaraan. Sekarang cari semua kendaraan yang keluar dari tempat parkir rumah sakit sekitar pukul 11:30.');
-            setAppState('TERM');
             setQueryString('');
           } else if (nextIdx === 5) {
             setNotebookContent(prev => prev + '\n\nAda tiga kendaraan.');
+            setAppState('NOTEBOOK');
             showSupervisorPopup('Ada tiga kendaraan. Sekarang hubungkan data parkir, kendaraan, dan warga menggunakan triple JOIN untuk mengetahui siapa pemilik kendaraan-kendaraan tersebut.');
-            setAppState('TERM');
             setQueryString('');
           } else {
             setAppState('TERM');
@@ -750,6 +752,7 @@ export default function App() {
                 setTimeout(() => {
                   setNotebookContent(prev => prev + '\n\nData mulai banyak.\nSulit dibandingkan.');
                   triggerBlink('NOTEBOOK');
+                  setAppState('NOTEBOOK');
                   
                   setPopup({
                     title: 'SUPERVISOR RAKA',
@@ -787,33 +790,92 @@ export default function App() {
         } else if (currentLevelId === 6) {
           if (nextIdx === 1) {
             setNotebookContent(prev => prev + '\n\nTidak ditemukan.');
-            showSupervisorPopup('Gunakan pencarian yang lebih fleksibel dengan LIKE.', () => {
-              setAppState('TERM');
-              setQueryString('');
+            setAppState('NOTEBOOK');
+            setPopup({
+              title: 'Supervisor Raka',
+              message: 'Apakah dia memang tidak pernah diberitakan?\nAtau...\nKamu mencari dengan cara yang salah.',
+              onClose: () => {
+                setPopup({
+                  title: 'NEW LESSON',
+                  message: 'LIKE Unlocked.\n\nOperator LIKE digunakan untuk mencari pola teks yang tidak spesifik.\n\nContoh:\nSELECT * FROM articles\nWHERE title LIKE \'%Rizky%\';',
+                  onClose: () => {
+                    setPopup(null);
+                    showSupervisorPopup('Gunakan pencarian yang lebih fleksibel dengan LIKE.', () => {
+                      setQueryString('');
+                    });
+                  }
+                });
+              }
             });
           } else if (nextIdx === 2) {
-            setNotebookContent(prev => prev + '\n\nPenyintas Tunggal: Rizky Hidayat');
-            showSupervisorPopup('Cari nama Andi.', () => {
-              setAppState('TERM');
+            setNotebookContent(prev => prev + '\n\nRizky pernah mengalami kecelakaan.');
+            setAppState('NOTEBOOK');
+            showSupervisorPopup('Menarik. Cari nama Andi.', () => {
               setQueryString('');
             });
           } else if (nextIdx === 3) {
+            setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul.');
+            setAppState('NOTEBOOK');
             showSupervisorPopup('Hasil kosong. Coba cari nama Prasetyo.', () => {
-              setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 4) {
-            setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul.');
-            showSupervisorPopup('Coba cari PT Arunika Logistics.', () => {
-              setAppState('TERM');
+            showSupervisorPopup('Ada nama sebuah perusahaan di artikel sebelumnya. Coba cari PT Arunika Logistics.', () => {
               setQueryString('');
             });
           } else if (nextIdx === 5) {
-            setNotebookContent(prev => prev + '\n\nArunika maut delapan tahun lalu.');
-            showSupervisorPopup('Cari data perusahaan PT Arunika Logistics di database perusahaan.', () => {
-              setAppState('TERM');
-              setQueryString('');
+            setNotebookContent(prev => prev + '\n\nArunika -> Kecelakaan -> Rizky\nSopir: Menghilang');
+            setAppState('NOTEBOOK');
+            setPopup({
+              title: 'Supervisor Raka',
+              message: 'Delapan tahun lalu... Ada orang yang juga menghilang. Saya menemukan sesuatu, nama perusahaan PT Arunika Logistics ternyata masih aktif.',
+              onClose: () => {
+                setPopup(null);
+                showSupervisorPopup('Cari data perusahaan PT Arunika Logistics di database perusahaan.', () => {
+                  setQueryString('');
+                });
+              }
             });
+          } else if (nextIdx === 6) {
+            // STEP 11 - Unauthorized Access
+            setIsFlickering(true);
+            setAppState('HOME');
+            setTimeout(() => {
+              setPopup({
+                title: 'SYSTEM WARNING',
+                message: 'UNAUTHORIZED ACCESS DETECTED',
+                onClose: () => {
+                  setIsFlickering(false);
+                  setPopup(null);
+                  
+                  setNotebookContent(prev => prev + '\n\nSeseorang menghapus sebagian data perusahaan.');
+                  setAppState('NOTEBOOK');
+                  
+                  // Send anonymous message
+                  setMessages(prev => {
+                    if (prev.find(m => m.id === 'anon_msg_6')) return prev;
+                    const anonMsg = {
+                      id: 'anon_msg_6',
+                      sender: 'Unknown Number',
+                      subject: '!!! WARNING !!!',
+                      body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
+                      timestamp: formatTime(currentTime),
+                      read: false
+                    };
+                    const updated = [...prev, anonMsg];
+                    saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, updated);
+                    return updated;
+                  });
+                  triggerBlink('INBOX');
+                  
+                  setTimeout(() => {
+                    showSupervisorPopup('Kerja bagus. Sepertinya data direktur perusahaan memang disamarkan dan sistem kita disusupi! Seseorang mendeteksi pencarian kita. Kirimkan laporan fakta investigasimu segera.', () => {
+                      setAppState('REPORT');
+                    });
+                  }, 2000);
+                }
+              });
+            }, 1500);
           } else {
             setAppState('TERM');
             setQueryString('');
@@ -834,6 +896,7 @@ export default function App() {
                   const newNote = notebookContent + '\n\nAndi\nTidak pernah muncul\ndi CCTV.';
                   setNotebookContent(newNote);
                   triggerBlink('NOTEBOOK');
+                  setAppState('NOTEBOOK');
                   
                   setPopup({
                     title: 'PLAYER',
@@ -874,8 +937,8 @@ export default function App() {
             }
           });
         } else if (currentLevelId === 6) {
-          showSupervisorPopup('Kerja bagus. Sepertinya data direktur perusahaan memang disamarkan. Sekarang buat laporan fakta investigasimu.', () => {
-            setAppState('REPORT');
+          showSupervisorPopup('Laporan sedang diproses...', () => {
+            setAppState('HOME');
           });
         } else {
           setIsLevelComplete(true);
@@ -896,49 +959,23 @@ export default function App() {
           setShowUnknownMessage(true);
         }, 3000);
       } else if (currentLevelId === 6) {
-        setIsFlickering(true);
-        
-        // Add the anonymous message
-        setMessages(prev => {
-          if (prev.find(m => m.id === 'anon_msg_6')) return prev;
-          const anonMsg = {
-            id: 'anon_msg_6',
-            sender: 'Unknown Number',
-            subject: '!!! WARNING !!!',
-            body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
-            timestamp: formatTime(currentTime),
-            read: false
-          };
-          const updated = [...prev, anonMsg];
-          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, updated);
-          return updated;
-        });
-        triggerBlink('INBOX');
-
-        setPopup({
-          title: 'SYSTEM WARNING',
-          message: 'Sistem Disusupi',
-          onClose: () => {
-            setIsFlickering(false);
-            setPopup(null);
-            
-            // Trigger call from Raka
-            setCallStatus('DIALING');
-            setActiveCallContact(contacts.find(c => c.id === 'raka'));
-            setCallStep(666); // Special code for ending
-            setAppState('CALLING');
-            
-            // Simulate connecting
-            setTimeout(() => setCallStatus('ACTIVE'), 2000);
-          }
-        });
+        // Trigger call from Raka as the ending of Chapter 6
+        setTimeout(() => {
+          setCallStatus('DIALING');
+          setActiveCallContact(contacts.find(c => c.id === 'raka'));
+          setCallStep(666); // Special code for ending
+          setAppState('CALLING');
+          
+          // Simulate connecting
+          setTimeout(() => setCallStatus('ACTIVE'), 2000);
+        }, 1000);
       } else {
         setAppState('QUEST_COMPLETE');
       }
       
       const newStats = { 
         ...stats, 
-        xp: stats.xp + (currentLevelId === 1 ? 100 : currentLevelId === 2 ? 120 : currentLevelId === 3 ? 180 : currentLevelId === 4 ? 220 : 250),
+        xp: stats.xp + (currentLevelId === 1 ? 100 : currentLevelId === 2 ? 120 : currentLevelId === 3 ? 180 : currentLevelId === 4 ? 220 : currentLevelId === 5 ? 250 : 320),
         casesCompleted: stats.casesCompleted + 1 
       };
       
@@ -995,6 +1032,7 @@ export default function App() {
       triggerBlink('INBOX');
       if (unlockedApps.includes('EVIDENCE')) {
         triggerBlink('EVIDENCE');
+        setAppState('EVIDENCE');
       }
       
       let newApps = [...unlockedApps];
@@ -1109,6 +1147,7 @@ export default function App() {
             const newNote = notebookContent + '\n\n06 minutes\nNo Footage';
             setNotebookContent(newNote);
             triggerBlink('NOTEBOOK');
+            setAppState('NOTEBOOK');
             triggerBlink('TIMELINE');
             
             let newApps = [...unlockedApps];
@@ -1117,7 +1156,7 @@ export default function App() {
             }
             setUnlockedApps(newApps);
             triggerBlink('EVIDENCE');
-            setAppState('HOME');
+            setAppState('EVIDENCE');
             
             setPopup({
               title: 'SYSTEM',
@@ -1373,6 +1412,7 @@ export default function App() {
                 }
                 
                 triggerBlink('WITNESSES');
+                setAppState('WITNESSES');
                 saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent, contacts, newWitnesses, messages, stats);
                 
                 setPopup({

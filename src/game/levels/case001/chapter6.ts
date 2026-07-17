@@ -22,8 +22,8 @@ export const chapter6: Level = {
       },
       {
         id: 2,
-        title: 'Sopir Truk Menghilang Setelah Kecelakaan',
-        content: 'Pihak kepolisian melaporkan bahwa sopir truk yang terlibat dalam kecelakaan maut di Jalan Merdeka menghilang secara misterius tak lama setelah kejadian.',
+        title: 'Sopir Truk Menghilang Setelah Kecelakaan Arunika',
+        content: 'Pihak kepolisian melaporkan bahwa sopir truk yang terlibat dalam kecelakaan maut Arunika di Jalan Merdeka menghilang secara misterius tak lama setelah kejadian.',
         publish_date: '2018-05-13'
       },
       {
@@ -40,8 +40,8 @@ export const chapter6: Level = {
       },
       {
         id: 5,
-        title: 'Trauma Penyintas Kecelakaan Merdeka',
-        content: 'Rizky Hidayat, penyintas tunggal kecelakaan maut delapan tahun lalu, dilaporkan masih mengalami trauma mendalam terkait peristiwa tersebut.',
+        title: 'Trauma Penyintas Kecelakaan Maut Arunika',
+        content: 'Rizky Hidayat, penyintas tunggal kecelakaan maut Arunika delapan tahun lalu, dilaporkan masih mengalami trauma mendalam terkait peristiwa tersebut.',
         publish_date: '2018-06-15'
       }
     ],

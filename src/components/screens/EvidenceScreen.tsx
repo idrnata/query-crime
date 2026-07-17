@@ -30,7 +30,9 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ currentLevelId, 
     { level: 5, label: 'Timeline Updated', value: 'Timeline sequence adjusted' },
     // Level 6
     { level: 6, id: 'accident_survivor', label: 'Evidence', value: 'Accident Survivor' },
+    { level: 6, id: 'old_accident', label: 'History', value: 'Old Accident' },
     { level: 6, id: 'arunika_assoc', label: 'Company', value: 'PT Arunika Logistics' },
+    { level: 6, id: 'missing_driver', label: 'Missing Person', value: 'Missing Driver' },
     { level: 6, id: 'corrupted', label: 'Status', value: 'Corrupted Company Record' }
   ];
   
@@ -42,8 +44,10 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ currentLevelId, 
     if (e.level === 1) return unlockedApps.includes('EVIDENCE');
     if (e.level === 5) return notebookContent.includes('06 minutes\nNo Footage');
     if (e.level === 6) {
-      if (e.id === 'accident_survivor') return notebookContent.includes('Penyintas Tunggal');
+      if (e.id === 'accident_survivor') return notebookContent.includes('Rizky pernah');
+      if (e.id === 'old_accident') return notebookContent.includes('Arunika');
       if (e.id === 'arunika_assoc') return notebookContent.includes('Arunika');
+      if (e.id === 'missing_driver') return notebookContent.includes('Sopir');
       return isLevelComplete;
     }
     
