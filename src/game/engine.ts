@@ -1,4 +1,24 @@
 export function executeSql(query: string, db: Record<string, any[]>): any[] {
+  const normalized = query.trim();
+  
+  // Basic CTE support: WITH name AS (subquery) mainquery
+  if (normalized.toUpperCase().startsWith('WITH')) {
+    const withMatch = normalized.match(/WITH\s+(\w+)\s+AS\s*\(([\s\S]+)\)\s*(SELECT[\s\S]+)/i);
+    if (withMatch) {
+      const cteName = withMatch[1];
+      const cteSubQuery = withMatch[2];
+      const mainQuery = withMatch[3];
+      
+      try {
+        const cteResult = executeSql(cteSubQuery, db);
+        const virtualDb = { ...db, [cteName]: cteResult };
+        return executeSql(mainQuery, virtualDb);
+      } catch (e) {
+        throw e;
+      }
+    }
+  }
+
   const tokens: string[] = [];
   let i = 0;
   while (i < query.length) {
@@ -32,15 +52,19 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
       continue;
     }
     
-    // Handle symbols and operators (comma, equals, semicolon, etc.)
-    if (/[=,;<>!]/.test(query[i])) {
+    // Handle symbols and operators (comma, equals, semicolon, parentheses, etc.)
+    if (/[=,;<>!()\-]/.test(query[i])) {
       let start = i;
+      const char = query[i];
       i++;
-      while (i < query.length && /[=,;<>!]/.test(query[i])) {
-        i++;
+      // Don't group parentheses with other symbols
+      if (char !== '(' && char !== ')') {
+        while (i < query.length && /[=,;<>!\-]/.test(query[i])) {
+          i++;
+        }
       }
       const symbol = query.substring(start, i);
-      // Skip statement terminator semicolon if it's separate, but keep operators and commas
+      // Skip statement terminator semicolon if it's separate, but keep operators, commas, parentheses
       if (symbol !== ';') {
         tokens.push(symbol);
       }
@@ -49,25 +73,54 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
     
     // Handle words, numbers, fields with aliases (e.g. c.name), and asterisk (*)
     let start = i;
-    while (i < query.length && !/\s/.test(query[i]) && !/[=,;'"<>]/.test(query[i])) {
+    while (i < query.length && !/\s/.test(query[i]) && !/[=,;'"<>()\-]/.test(query[i])) {
       i++;
     }
     tokens.push(query.substring(start, i));
   }
   
-  let selectIdx = tokens.findIndex(t => t.toUpperCase() === 'SELECT');
-  let fromIdx = tokens.findIndex(t => t.toUpperCase() === 'FROM');
-  let whereIdx = tokens.findIndex(t => t.toUpperCase() === 'WHERE');
-  let groupByIdx = tokens.findIndex((t, i) => t.toUpperCase() === 'GROUP' && tokens[i+1]?.toUpperCase() === 'BY');
-  let havingIdx = tokens.findIndex(t => t.toUpperCase() === 'HAVING');
-  let orderIdx = tokens.findIndex((t, i) => t.toUpperCase() === 'ORDER' && tokens[i+1] && tokens[i+1].toUpperCase() === 'BY');
-  let limitIdx = tokens.findIndex(t => t.toUpperCase() === 'LIMIT');
+  const findKeyword = (keyword: string, startFrom: number = 0) => {
+    let parenLevel = 0;
+    for (let k = startFrom; k < tokens.length; k++) {
+      if (tokens[k] === '(') parenLevel++;
+      if (tokens[k] === ')') parenLevel--;
+      if (parenLevel === 0 && tokens[k].toUpperCase() === keyword) {
+        return k;
+      }
+    }
+    return -1;
+  };
+
+  const findCompoundKeyword = (k1: string, k2: string, startFrom: number = 0) => {
+    let parenLevel = 0;
+    for (let k = startFrom; k < tokens.length - 1; k++) {
+      if (tokens[k] === '(') parenLevel++;
+      if (tokens[k] === ')') parenLevel--;
+      if (parenLevel === 0 && tokens[k].toUpperCase() === k1 && tokens[k+1].toUpperCase() === k2) {
+        return k;
+      }
+    }
+    return -1;
+  };
+
+  let selectIdx = findKeyword('SELECT');
+  let fromIdx = findKeyword('FROM');
+  let whereIdx = findKeyword('WHERE');
+  let groupByIdx = findCompoundKeyword('GROUP', 'BY');
+  let havingIdx = findKeyword('HAVING');
+  let orderIdx = findCompoundKeyword('ORDER', 'BY');
+  let limitIdx = findKeyword('LIMIT');
   
   if (selectIdx === -1 || fromIdx === -1) throw new Error("SYNTAX ERROR: SELECT or FROM not found");
   
-  // Find all JOIN positions
+  // Find all JOIN positions (at top level only)
   const joinStarts: { index: number; isLeft: boolean }[] = [];
+  let parenLevel = 0;
   for (let k = fromIdx + 1; k < tokens.length; k++) {
+    if (tokens[k] === '(') parenLevel++;
+    if (tokens[k] === ')') parenLevel--;
+    if (parenLevel !== 0) continue;
+
     if (tokens[k].toUpperCase() === 'JOIN') {
       if (k > 0 && tokens[k-1].toUpperCase() === 'LEFT') {
         continue; // Already handled when LEFT was checked
@@ -201,9 +254,33 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
         conditions.push({ col, op: 'IS NULL' });
         i += 3;
       } else {
-        let val = whereTokens[i+2]?.replace(/['"]/g, '');
+        let val: any = whereTokens[i+2]?.replace(/['"]/g, '');
+        
+        // Handle subquery: col = (SELECT ...)
+        if (whereTokens[i+2] === '(') {
+          let openParens = 1;
+          let subQueryTokens = [];
+          let j = i + 3;
+          while (j < whereTokens.length && openParens > 0) {
+            if (whereTokens[j] === '(') openParens++;
+            if (whereTokens[j] === ')') openParens--;
+            if (openParens > 0) subQueryTokens.push(whereTokens[j]);
+            j++;
+          }
+          const subQueryStr = subQueryTokens.join(' ');
+          const subResult = executeSql(subQueryStr, db);
+          if (subResult && subResult.length > 0) {
+            const firstRow = subResult[0];
+            const firstColKey = Object.keys(firstRow)[0];
+            val = firstRow[firstColKey];
+          } else {
+            val = null;
+          }
+          i = j;
+        } else {
+          i += 3;
+        }
         conditions.push({ col, op, val });
-        i += 3;
       }
       
       if (whereTokens[i]?.toUpperCase() === 'AND') {
@@ -328,6 +405,120 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
           results = results.slice(0, limitVal);
       }
   }
+
+  // Handle Window Functions in SELECT list
+  // Note: This is a simplified implementation for the game's requirements
+  const selectPart = tokens.slice(selectIdx + 1, fromIdx);
+  const processedResults = [...results];
+  
+  // Check for window function patterns
+  const windowFnRegex = /(ROW_NUMBER|LEAD|LAG)\s*\((.*?)\)\s*OVER\s*\((.*?)\)(?:\s*AS\s*(\w+))?/i;
+  const selectStr = selectPart.join(' ');
+  
+  // We'll handle multiple window functions if present
+  const windowFns: { fn: string, args: string[], over: string, alias: string }[] = [];
+  let currentSelectStr = selectStr;
+  let match;
+  while ((match = windowFnRegex.exec(currentSelectStr)) !== null) {
+    const [full, fn, argsStr, overStr, alias] = match;
+    windowFns.push({
+      fn: fn.toUpperCase(),
+      args: argsStr.split(',').map(s => s.trim()).filter(Boolean),
+      over: overStr.trim(),
+      alias: alias || `window_col_${windowFns.length}`
+    });
+    currentSelectStr = currentSelectStr.replace(full, '');
+  }
+
+  // Calculate window functions
+  for (const win of windowFns) {
+    const { fn, args, over, alias } = win;
+    
+    // Sort logic for OVER clause
+    const overTokens = over.split(/\s+/);
+    const partitionIdx = overTokens.findIndex(t => t.toUpperCase() === 'PARTITION');
+    const orderIdx = overTokens.findIndex(t => t.toUpperCase() === 'ORDER');
+    
+    const partitionCol = partitionIdx !== -1 ? overTokens[partitionIdx + 2] : null;
+    const winOrderCol = orderIdx !== -1 ? overTokens[orderIdx + 2] : null;
+    
+    // Create a copy to sort for calculation
+    let calcResults = [...processedResults].map((r, idx) => ({ ...r, __original_idx: idx }));
+    
+    // Sort by partition and order
+    calcResults.sort((a, b) => {
+      if (partitionCol) {
+        const valA = getRowVal(a, partitionCol);
+        const valB = getRowVal(b, partitionCol);
+        if (valA < valB) return -1;
+        if (valA > valB) return 1;
+      }
+      if (winOrderCol) {
+        const valA = getRowVal(a, winOrderCol);
+        const valB = getRowVal(b, winOrderCol);
+        if (valA < valB) return -1;
+        if (valA > valB) return 1;
+      }
+      return 0;
+    });
+
+    // Calculate values
+    let rowNum = 0;
+    let lastPartitionVal: any = undefined;
+    
+    for (let k = 0; k < calcResults.length; k++) {
+      const row = calcResults[k];
+      
+      if (fn === 'ROW_NUMBER') {
+        if (partitionCol) {
+          const currentPartitionVal = getRowVal(row, partitionCol);
+          if (currentPartitionVal !== lastPartitionVal) {
+            rowNum = 1;
+            lastPartitionVal = currentPartitionVal;
+          } else {
+            rowNum++;
+          }
+        } else {
+          rowNum++;
+        }
+        processedResults[row.__original_idx][alias] = rowNum;
+        processedResults[row.__original_idx][fn + '()'] = rowNum; // fallback
+      } else if (fn === 'LEAD') {
+        const targetCol = args[0];
+        const nextRow = calcResults[k + 1];
+        let val = null;
+        if (nextRow) {
+          if (partitionCol) {
+             if (getRowVal(row, partitionCol) === getRowVal(nextRow, partitionCol)) {
+               val = getRowVal(nextRow, targetCol);
+             }
+          } else {
+            val = getRowVal(nextRow, targetCol);
+          }
+        }
+        processedResults[row.__original_idx][alias] = val;
+        processedResults[row.__original_idx][`${fn}(${targetCol})`] = val;
+      } else if (fn === 'LAG') {
+        const targetCol = args[0];
+        const prevRow = calcResults[k - 1];
+        let val = null;
+        if (prevRow) {
+           if (partitionCol) {
+             if (getRowVal(row, partitionCol) === getRowVal(prevRow, partitionCol)) {
+               val = getRowVal(prevRow, targetCol);
+             }
+          } else {
+            val = getRowVal(prevRow, targetCol);
+          }
+        }
+        processedResults[row.__original_idx][alias] = val;
+        processedResults[row.__original_idx][`${fn}(${targetCol})`] = val;
+      }
+    }
+  }
+
+  // Re-map results to final selection
+  results = processedResults;
 
   let selectTokens = tokens.slice(selectIdx + 1, fromIdx).filter(t => t !== ',');
   let fields = selectTokens;

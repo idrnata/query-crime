@@ -33,6 +33,8 @@ import { BrowserScreen } from './components/screens/BrowserScreen';
 import { MapScreen } from './components/screens/MapScreen';
 import { RankScreen } from './components/screens/RankScreen';
 import { SettingsScreen } from './components/screens/SettingsScreen';
+import { EmailScreen } from './components/screens/EmailScreen';
+import { StatisticsScreen } from './components/screens/StatisticsScreen';
 
 export default function App() {
   const [appState, setAppState] = useState<AppState>('BOOT');
@@ -120,12 +122,31 @@ export default function App() {
   }, []);
 
   useEffect(() => {
+    // Chapter 5 Ending Transition
     if (appState === 'EVIDENCE' && currentLevelId === 5 && currentObjectiveIndex === 4 && !popup) {
       showSupervisorPopup('✔ Budi hanya terlihat masuk.\n✔ Rizky terlihat keluar.\n✔ Kamera mati selama enam menit.\n✔ Andi tidak pernah muncul di CCTV.\n✔ Ada kemungkinan orang lain mengemudikan kendaraan.\n\nSekarang buat laporan.', () => {
         setAppState('REPORT');
       });
     }
-  }, [appState, currentLevelId, currentObjectiveIndex, popup]);
+
+    // Chapter 9 Opening Effect
+    if (currentLevelId === 9 && hasAcceptedMission && currentObjectiveIndex === 0 && appState === 'HOME' && !popup) {
+      setIsFlickering(true);
+      setTimeout(() => {
+        setIsFlickering(false);
+        setPopup({
+          title: '07:42',
+          message: 'HP bergetar.\nTidak ada Inbox.\nTidak ada telepon.\nLayar menghitam...',
+          onClose: () => {
+            setPopup(null);
+            showSupervisorPopup('Saya menemukan surat izin lama. Delapan tahun lalu ada seorang penyidik yang menangani kasus Arunika. Tapi identitasnya dihapus. Saya membuka Criminal Records.', () => {
+               setAppState('BROWSER');
+            });
+          }
+        });
+      }, 2000);
+    }
+  }, [currentLevelId, hasAcceptedMission, currentObjectiveIndex, appState, popup]);
 
   useEffect(() => {
     const saved = loadGame();
@@ -811,37 +832,127 @@ export default function App() {
           }
         } else if (currentLevelId === 6) {
           if (nextIdx === 1) {
-            // After index 0 (Rizky search)
+            // After index 0 (Rizky exact - empty)
+            setNotebookContent(prev => prev + '\n\nPencarian nama tepat tidak membuahkan hasil.');
+            setAppState('NOTEBOOK');
+            showSupervisorPopup('Hasilnya kosong? Coba gunakan operator LIKE untuk pencarian yang lebih fleksibel.', () => {
+              setAppState('TERM');
+              setQueryString('');
+            });
+          } else if (nextIdx === 2) {
+            // After index 1 (Rizky LIKE - found)
             setNotebookContent(prev => prev + '\n\nRizky Hidayat adalah penyintas kecelakaan delapan tahun lalu.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('Menarik. Rizky ternyata pernah mengalami kecelakaan maut. Sekarang coba cari nama Andi.', () => {
               setAppState('TERM');
               setQueryString('');
             });
-          } else if (nextIdx === 2) {
-            // After index 1 (Andi search empty)
+          } else if (nextIdx === 3) {
+            // After index 2 (Andi LIKE - empty)
             setNotebookContent(prev => prev + '\n\nAndi tidak ditemukan dalam berita.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('Hasil kosong. Coba cari nama lengkapnya: Andi Prasetyo.', () => {
               setAppState('TERM');
               setQueryString('');
             });
-          } else if (nextIdx === 3) {
-            // After index 2 (Prasetyo search empty)
+          } else if (nextIdx === 4) {
+            // After index 3 (Prasetyo LIKE - empty)
             setNotebookContent(prev => prev + '\n\nAndi Prasetyo juga tidak muncul. Seperti sengaja dihilangkan.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('Aneh, sepertinya datanya memang tidak ada. Tapi ada kata kunci "Arunika" di artikel Rizky tadi. Coba cari semua artikel yang mengandung kata "Arunika".', () => {
               setAppState('TERM');
               setQueryString('');
             });
-          } else if (nextIdx === 4) {
-            // After index 3 (Arunika Article found)
+          } else if (nextIdx === 5) {
+            // After index 4 (Arunika LIKE Articles - found)
             setNotebookContent(prev => prev + '\n\nBanyak artikel tentang kecelakaan maut Arunika.\nSopir truk menghilang secara misterius.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('Sepertinya Arunika bukan hanya nama kejadian, tapi nama perusahaan: PT Arunika Logistics. Coba cari di database perusahaan (tabel companies).', () => {
               setAppState('TERM');
               setQueryString('');
             });
+          }
+        } else if (currentLevelId === 9) {
+          if (nextIdx === 1) {
+             setNotebookContent(prev => prev + '\n\nLead Investigator ID: 52');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup('Sama seperti foreign key. Cari siapa nomor 52 di tabel persons.', () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 2) {
+             setNotebookContent(prev => prev + '\n\nID 52 tidak ditemukan di persons.');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup('Tidak mungkin. Kalau seseorang menghapus identitas, apakah datanya benar-benar hilang? Gunakan SUBQUERY untuk mencari data person yang menjadi investigator kasus Arunika.', () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 3) {
+             setNotebookContent(prev => prev + '\n\nRecord person benar-benar hilang.');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup('Menarik... Berarti bukan datanya yang hilang, tapi record-nya sudah dihapus. Tapi apakah evidence miliknya juga hilang? Gunakan SUBQUERY di tabel evidence.', () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 4) {
+             setNotebookContent(prev => prev + '\n\nNotebook Polisi masih ada di Evidence.');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup('Pesan di Notebook: "Jangan percaya database. Percayalah pada ketidakkonsistenannya."\n\nIni catatan seorang polisi, bukan korban. Cek apakah ada tersangka (suspects) untuk kasus ini.', () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          }
+        } else if (currentLevelId === 10) {
+          if (nextIdx === 1) {
+             setNotebookContent(prev => prev + '\n\nSulit mengikuti percakapan.');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup('Archive email sangat berantakan. Gunakan WITH untuk menyusun result bertahap agar lebih mudah dibaca.', () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 2) {
+             setNotebookContent(prev => prev + '\n\nEmail terakhir (ID 204) telah dihapus.');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup('Jika email utama hilang, cek di tabel deleted. Gunakan CTE untuk memproses thread yang sama.', () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 3) {
+             setNotebookContent(prev => prev + '\n\nEmail terakhir: "Jangan percaya..."');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup('Pesan itu terpotong. Cek lampiran (attachments) yang berkaitan dengan email Arunika menggunakan CTE dan subquery.', () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 4) {
+             setNotebookContent(prev => prev + '\n\nMaintenance? Kamera Offline di Chapter 5... Clue terhubung.');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup('Jadwal Maintenance:\n- 11:24 Start\n- 11:31 End\n\nKamera tidak rusak. Seseorang mematikannya.', () => {
+               setAppState('REPORT');
+               setQueryString('');
+             });
+          }
+        } else if (currentLevelId === 11) {
+          if (nextIdx === 1) {
+             setNotebookContent(prev => prev + '\n\n15 lokasi. 15 waktu. Masih terlalu banyak. Aku harus mengurutkannya.');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup('Data mentah sulit dianalisis. Kita butuh urutan kronologis yang pasti.', () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 2) {
+             setAppState('TIMELINE');
+             showSupervisorPopup('Gunakan LEAD() untuk membandingkan baris saat ini dengan baris berikutnya. Cari kendaraan yang mengikuti Budi.', () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 3) {
+             setNotebookContent(prev => prev + '\n\nIni bukan kebetulan. Mereka mengikuti Budi.');
+             setAppState('EVIDENCE');
+             showSupervisorPopup('Critical Evidence Unlocked: Vehicle Tailing Pattern. Sekarang cari siapa yang mematikan kamera di system_logs.', () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
           }
         }
       } else {
@@ -900,12 +1011,13 @@ export default function App() {
             }
           });
         } else if (currentLevelId === 6) {
-          // After index 4 (Arunika Company found) - TRIGGER TWIST
-          setNotebookContent(prev => prev + '\n\nPT Arunika Logistics ditemukan. Masih aktif.\nSopir kecelakaan menghilang.');
-          setAppState('NOTEBOOK');
+          // After index 5 (Arunika Company found) - TRIGGER TWIST
+          const updatedNote = notebookContent + '\n\nPT Arunika Logistics ditemukan. Masih aktif.\nSopir kecelakaan menghilang.';
+          setNotebookContent(updatedNote);
           
           setIsFlickering(true);
           setAppState('HOME');
+          
           setTimeout(() => {
             setPopup({
               title: 'SYSTEM WARNING',
@@ -914,12 +1026,13 @@ export default function App() {
                 setIsFlickering(false);
                 setPopup(null);
                 
-                setNotebookContent(prev => prev + '\n\nSeseorang menghapus sebagian data perusahaan.');
+                const finalNote = updatedNote + '\n\nSeseorang menghapus sebagian data perusahaan.';
+                setNotebookContent(finalNote);
                 setAppState('NOTEBOOK');
                 
                 // Send anonymous message
-                setMessages(prev => {
-                  if (prev.find(m => m.id === 'anon_msg_6')) return prev;
+                setMessages(prevMsgs => {
+                  if (prevMsgs.find(m => m.id === 'anon_msg_6')) return prevMsgs;
                   const anonMsg = {
                     id: 'anon_msg_6',
                     sender: 'Unknown Number',
@@ -928,9 +1041,9 @@ export default function App() {
                     timestamp: formatTime(currentTime),
                     read: false
                   };
-                  const updated = [...prev, anonMsg];
-                  saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, updated);
-                  return updated;
+                  const updatedMsgs = [...prevMsgs, anonMsg];
+                  saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, finalNote, contacts, witnesses, updatedMsgs);
+                  return updatedMsgs;
                 });
                 triggerBlink('INBOX');
                 
@@ -942,6 +1055,110 @@ export default function App() {
               }
             });
           }, 1500);
+        } else if (currentLevelId === 9) {
+          // Chapter 9 Ending - THE TWIST
+          setIsFlickering(true);
+          setAppState('HOME');
+          
+          setTimeout(() => {
+            setIsFlickering(false);
+            setMessages(prev => {
+              const anonMsg = {
+                id: 'anon_msg_9',
+                sender: 'Unknown Number',
+                subject: 'Bagus.',
+                body: 'Sekarang kamu tahu bahwa polisi pun bisa dihapus. Pertanyaannya... Masih yakin Supervisor-mu masih hidup?',
+                timestamp: formatTime(currentTime),
+                read: false
+              };
+              return [...prev, anonMsg];
+            });
+            triggerBlink('INBOX');
+            
+            // Set Raka offline
+            setContacts(prev => prev.map(c => c.id === 'raka' ? { ...c, status: 'OFFLINE' } : c));
+            
+            setPopup({
+              title: 'INCOMING MESSAGE',
+              message: 'UNKNOWN: "Sekarang kamu tahu bahwa polisi pun bisa dihapus. Pertanyaannya... Masih yakin Supervisor-mu masih hidup?"',
+              onClose: () => {
+                setPopup(null);
+                setAppState('NOTEBOOK');
+                setNotebookContent(prev => prev + '\n\nSupervisor Raka tidak bisa dihubungi.\nPolisi pun bisa dihapus.');
+                
+                // Show Timeline change
+                setTimeout(() => {
+                   setAppState('TIMELINE');
+                   // Simulate dramatic pause before completion
+                   // User requested ~10 seconds
+                   setTimeout(() => {
+                     setAppState('QUEST_COMPLETE');
+                   }, 10000);
+                }, 2000);
+              }
+            });
+          }, 2000);
+        } else if (currentLevelId === 10) {
+          // Chapter 10 Ending - THE CLIFFHANGER
+          setIsFlickering(true);
+          setAppState('HOME');
+          
+          setTimeout(() => {
+            setIsFlickering(false);
+            setPopup({
+              title: 'REMOTE SESSION DETECTED',
+              message: 'DEVICE CONTROL REQUEST FROM: [RAKA_ENCRYPTED]\n\nACCEPTING UNAUTHORIZED CONTROL...',
+              onClose: () => {
+                setPopup(null);
+                // Trigger "Video" style popup
+                setTimeout(() => {
+                  setPopup({
+                    title: 'VIDEO_MESSAGE_RAKA.MP4',
+                    message: 'Wajah Raka terlihat panik di layar gelap.\n\n"Kalau kamu melihat video ini... Jangan datang ke kantor. Mereka sudah di sini. Lari, dan percayalah pada datamu. Jangan percaya siapa pun di dalam..."\n\n[FILE_AUTO_DESTRUCT_SUCCESS]',
+                    onClose: () => {
+                      setPopup(null);
+                      setAppState('NOTEBOOK');
+                      setNotebookContent(prev => prev + '\n\nRAKA: "Jangan datang ke kantor. Lari."');
+                      
+                      setTimeout(() => {
+                        setIsLevelComplete(true);
+                        setAppState('QUEST_COMPLETE');
+                      }, 2000);
+                    }
+                  });
+                }, 1500);
+              }
+            });
+          }, 2000);
+        } else if (currentLevelId === 11) {
+          // Chapter 11 Ending - THE CLIFFHANGER
+          setIsFlickering(true);
+          setAppState('STATISTICS');
+          
+          setTimeout(() => {
+            setPopup({
+              title: 'REMOTE USER CONNECTED',
+              message: 'UNAUTHORIZED REMOTE ACCESS DETECTED\n\nTERMINAL LOCK INITIATED...',
+              onClose: () => {
+                setPopup(null);
+                setTimeout(() => {
+                   setPopup({
+                     title: 'CRITICAL WARNING',
+                     message: 'YOUR CURRENT LOCATION: [KNOWN]\n\n"Kamu mulai melihat yang tidak seharusnya."',
+                     onClose: () => {
+                       setPopup(null);
+                       setIsFlickering(true);
+                       setTimeout(() => {
+                         setIsLevelComplete(true);
+                         setAppState('QUEST_COMPLETE');
+                         setIsFlickering(false);
+                       }, 3000);
+                     }
+                   });
+                }, 2000);
+              }
+            });
+          }, 2000);
         } else {
           setIsLevelComplete(true);
           showSupervisorPopup('Sekarang buat laporan.', () => {
@@ -977,7 +1194,7 @@ export default function App() {
       
       const newStats = { 
         ...stats, 
-        xp: stats.xp + (currentLevelId === 1 ? 100 : currentLevelId === 2 ? 120 : currentLevelId === 3 ? 180 : currentLevelId === 4 ? 220 : currentLevelId === 5 ? 250 : 320),
+        xp: stats.xp + (currentLevelId === 1 ? 100 : currentLevelId === 2 ? 120 : currentLevelId === 3 ? 180 : currentLevelId === 4 ? 220 : currentLevelId === 5 ? 250 : currentLevelId === 6 ? 320 : currentLevelId === 9 ? 700 : currentLevelId === 10 ? 850 : currentLevelId === 11 ? 1000 : 300),
         casesCompleted: stats.casesCompleted + 1 
       };
       
@@ -1073,6 +1290,15 @@ export default function App() {
       newApps.push('MAP');
       triggerBlink('MAP');
     }
+    if (currentLevelId === 9 && !newApps.includes('BROWSER')) {
+      // Ensure Browser is unlocked for Criminal Records if not already
+      newApps.push('BROWSER');
+      triggerBlink('BROWSER');
+    }
+    if (currentLevelId === 10 && !newApps.includes('EMAIL')) {
+      newApps.push('EMAIL');
+      triggerBlink('EMAIL');
+    }
     
     setUnlockedApps(newApps);
     setMessages(prevMsgs => { saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, true, newApps, notebookContent, contacts, witnesses, prevMsgs, stats); return prevMsgs; });
@@ -1104,6 +1330,15 @@ export default function App() {
     } else if (currentLevelId === 8) {
       popupTitle = 'FINANCIAL AUDIT GRANTED';
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- FINANCIAL BANK DATABASE\n  (accounts, transactions, branches)\n\nNew query capabilities unlocked: GROUP BY, COUNT(*), HAVING';
+    } else if (currentLevelId === 9) {
+      popupTitle = 'NEW DATABASE ACCESS';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CRIMINAL RECORDS\n  (persons, cases, suspects, evidence)\n\nNew query capabilities unlocked: SUBQUERY (Nested SELECT)';
+    } else if (currentLevelId === 10) {
+      popupTitle = 'ACCESS GRANTED';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- EMAIL SERVER ARCHIVE\n  (emails, deleted, attachments)\n\nNew query capabilities unlocked: WITH (CTE)';
+    } else if (currentLevelId === 11) {
+      popupTitle = 'FINAL DATABASE ACCESS';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- TRAFFIC CAMERA LOGS\n  (camera_logs, system_logs)\n\nNew query capabilities unlocked: WINDOW FUNCTIONS (ROW_NUMBER, LEAD, LAG)';
     }
     
     setPopup({
@@ -1203,12 +1438,32 @@ export default function App() {
         break;
       case 'QUEST_COMPLETE':
         if (currentLevelId < LEVELS.length) {
-          setCurrentLevelId(currentLevelId + 1);
+          const nextLevelId = currentLevelId + 1;
+          setCurrentLevelId(nextLevelId);
           setCurrentObjectiveIndex(0);
           setIsLevelComplete(false);
           setHasAcceptedMission(false);
-          setAppState('HOME');
           setQueryString('');
+          
+          if (nextLevelId === 11) {
+            setAppState('BOOT'); // Show boot screen again
+            setTimeout(() => {
+              setIsFlickering(true);
+              setTimeout(() => {
+                setIsFlickering(false);
+                setPopup({
+                  title: 'SYSTEM LOG',
+                  message: 'Someone is watching.',
+                  onClose: () => {
+                    setPopup(null);
+                    setAppState('HOME');
+                  }
+                });
+              }, 2000);
+            }, 5000); // Wait for boot screen to "finish"
+          } else {
+            setAppState('HOME');
+          }
         } else {
           setAppState('HOME');
         }
@@ -1383,6 +1638,7 @@ export default function App() {
         return (
           <EvidenceScreen 
             currentLevelId={currentLevelId} 
+            currentObjectiveIndex={currentObjectiveIndex}
             setAppState={setAppState} 
             isLevelComplete={isLevelComplete} 
             unlockedApps={unlockedApps} 
@@ -1525,6 +1781,10 @@ export default function App() {
             onJumpToChapter={handleJumpToChapter}
           />
         );
+      case 'EMAIL':
+        return <EmailScreen setAppState={setAppState} />;
+      case 'STATISTICS':
+        return <StatisticsScreen stats={stats} isThreatMode={currentLevelId === 11 && isLevelComplete} />;
       default:
         return null;
     }

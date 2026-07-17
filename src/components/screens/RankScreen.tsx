@@ -9,9 +9,11 @@ interface RankScreenProps {
 
 export const RankScreen: React.FC<RankScreenProps> = ({ stats, setAppState }) => {
   const getRank = (xp: number) => {
-    if (xp >= 1000) return 'CHIEF DETECTIVE';
-    if (xp >= 700) return 'SENIOR INVESTIGATOR';
-    if (xp >= 400) return 'INVESTIGATOR';
+    if (xp >= 4000) return 'CHIEF DIGITAL INVESTIGATOR';
+    if (xp >= 3000) return 'LEAD INVESTIGATOR';
+    if (xp >= 2000) return 'CHIEF DETECTIVE';
+    if (xp >= 1000) return 'SENIOR INVESTIGATOR';
+    if (xp >= 500) return 'INVESTIGATOR';
     if (xp >= 200) return 'DETECTIVE';
     return 'JUNIOR DETECTIVE';
   };
@@ -28,9 +30,9 @@ export const RankScreen: React.FC<RankScreenProps> = ({ stats, setAppState }) =>
           <div className="text-[10px] font-bold opacity-60 uppercase mb-1">Current Classification</div>
           <div className="text-xl font-bold tracking-tighter uppercase">{getRank(stats.xp)}</div>
           <div className="mt-4 w-full bg-[#8cb07d]/20 h-2 rounded-full overflow-hidden border border-[#8cb07d]/40">
-             <div className="bg-[#8cb07d] h-full" style={{ width: `${Math.min(100, (stats.xp / 1000) * 100)}%` }} />
+             <div className="bg-[#8cb07d] h-full" style={{ width: `${Math.min(100, (stats.xp / 3000) * 100)}%` }} />
           </div>
-          <div className="mt-2 text-[10px] font-bold uppercase">{stats.xp} / 1000 XP</div>
+          <div className="mt-2 text-[10px] font-bold uppercase">{stats.xp} / 3000 XP</div>
         </div>
 
         <div className="grid grid-cols-2 gap-3">

@@ -4,6 +4,7 @@ import { EvidenceMetadata } from '../../types';
 
 interface EvidenceScreenProps {
   currentLevelId: number;
+  currentObjectiveIndex?: number;
   setAppState: (state: any) => void;
   isLevelComplete?: boolean;
   unlockedApps?: string[];
@@ -14,6 +15,7 @@ interface EvidenceScreenProps {
 
 export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({ 
   currentLevelId, 
+  currentObjectiveIndex = 0,
   setAppState, 
   isLevelComplete = false, 
   unlockedApps = [], 
@@ -46,7 +48,31 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
     { level: 6, id: 'old_accident', label: 'History', value: 'Old Accident' },
     { level: 6, id: 'arunika_assoc', label: 'Company', value: 'PT Arunika Logistics' },
     { level: 6, id: 'missing_driver', label: 'Missing Person', value: 'Missing Driver' },
-    { level: 6, id: 'corrupted', label: 'Status', value: 'Corrupted Company Record' }
+    { level: 6, id: 'corrupted', label: 'Status', value: 'Corrupted Company Record' },
+    // Level 7
+    { level: 7, id: 'warehouse_loc', label: 'Location', value: 'Arunika Warehouse' },
+    { level: 7, id: 'suspicious_route', label: 'Route', value: 'Suspicious 57m Delay' },
+    { level: 7, id: 'arunika_fleet', label: 'Activity', value: 'Fleet B 7710 XR detected' },
+    { level: 7, id: 'hacked_map', label: 'Warning', value: 'Red Lines / Hacked Map' },
+    // Level 8
+    { level: 8, id: 'unknown_acc', label: 'Financial', value: 'Unknown Account Found' },
+    { level: 8, id: 'hush_money', label: 'Payments', value: '48 Hush Money Transactions' },
+    { level: 8, id: 'surveillance', label: 'Threat', value: 'Supervisor Surveillance Photo' },
+    { level: 8, id: 'stop_dies', label: 'Warning', value: 'STOP OR HE DIES' },
+    // Level 9
+    { level: 9, id: 'missing_investigator', label: 'Missing Person', value: 'Missing Investigator (ID 52)' },
+    { level: 9, id: 'archived_notebook', label: 'Archived File', value: 'Digital Notebook Polisi' },
+    { level: 9, id: 'deleted_record', label: 'Status', value: 'Deleted Criminal Record' },
+    { level: 9, id: 'empty_suspects', label: 'Case Result', value: 'Empty Suspect List' },
+    // Level 10
+    { level: 10, id: 'recovered_email', label: 'Email', value: 'Recovered Email (Raka/52)' },
+    { level: 10, id: 'camera_maint', label: 'Schedule', value: 'Camera Maintenance Schedule' },
+    { level: 10, id: 'warehouse_blueprint', label: 'Asset', value: 'Warehouse Blueprint' },
+    { level: 10, id: 'employee_list_ev', label: 'People', value: 'Arunika Employee List' },
+    // Level 11
+    { level: 11, id: 'tailing_pattern', label: 'Critical', value: 'Vehicle Tailing Pattern' },
+    { level: 11, id: 'hq_visit', label: 'Suspicious', value: 'Police HQ Visit (XR)' },
+    { level: 11, id: 'admin_disable', label: 'Sabotage', value: 'Admin Camera Override' }
   ];
   
   const evidenceItems = allEvidence.filter(e => {
@@ -61,6 +87,32 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
       if (e.id === 'old_accident') return notebookContent.includes('Arunika');
       if (e.id === 'arunika_assoc') return notebookContent.includes('Arunika');
       if (e.id === 'missing_driver') return notebookContent.includes('Sopir');
+      return isLevelComplete;
+    }
+    if (e.level === 7) {
+      if (e.id === 'warehouse_loc') return notebookContent.includes('Warehouse');
+      if (e.id === 'suspicious_route') return notebookContent.includes('delay');
+      return isLevelComplete;
+    }
+    if (e.level === 8) {
+      if (e.id === 'unknown_acc') return notebookContent.includes('Unknown Account');
+      return isLevelComplete;
+    }
+    if (e.level === 9) {
+      if (e.id === 'missing_investigator') return notebookContent.includes('ID 52');
+      if (e.id === 'archived_notebook') return notebookContent.includes('Notebook Polisi');
+      if (e.id === 'deleted_record') return notebookContent.includes('Record person');
+      if (e.id === 'empty_suspects') return notebookContent.includes('Tidak ada tersangka');
+      return isLevelComplete;
+    }
+    if (e.level === 10) {
+      if (e.id === 'recovered_email') return notebookContent.includes('Email terakhir');
+      if (e.id === 'camera_maint') return notebookContent.includes('Maintenance?');
+      return isLevelComplete;
+    }
+    if (e.level === 11) {
+      if (e.id === 'tailing_pattern') return notebookContent.includes('mengikuti Budi');
+      if (e.id === 'admin_disable') return currentObjectiveIndex >= 4;
       return isLevelComplete;
     }
     
