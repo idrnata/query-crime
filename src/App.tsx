@@ -838,42 +838,34 @@ export default function App() {
           }
         } else if (currentLevelId === 6) {
           if (nextIdx === 1) {
-            // After index 0 (Rizky exact - empty)
-            setNotebookContent(prev => prev + '\n\nPencarian nama tepat tidak membuahkan hasil.');
+            // After index 0 (Hospital found)
+            setNotebookContent(prev => prev + '\n\nBanyak berita tentang rumah sakit akhir-akhir ini.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Hasilnya kosong? Coba gunakan operator LIKE untuk pencarian yang lebih fleksibel.', () => {
+            showSupervisorPopup('Sepertinya ada yang menarik. Coba cari berita yang menyebut nama Budi.', () => {
               setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 2) {
-            // After index 1 (Rizky LIKE - found)
-            setNotebookContent(prev => prev + '\n\nRizky Hidayat adalah penyintas kecelakaan delapan tahun lalu.');
+            // After index 1 (Budi found)
+            setNotebookContent(prev => prev + '\n\nRizky Hidayat adalah penyintas kecelakaan maut Arunika delapan tahun lalu.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Menarik. Rizky ternyata pernah mengalami kecelakaan maut. Sekarang coba cari nama Andi.', () => {
+            showSupervisorPopup('Penyintas kecelakaan? Menarik. Coba cari artikel tentang orang hilang (Missing).', () => {
               setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 3) {
-            // After index 2 (Andi LIKE - empty)
-            setNotebookContent(prev => prev + '\n\nAndi tidak ditemukan dalam berita.');
+            // After index 2 (Missing found)
+            setNotebookContent(prev => prev + '\n\nSopir truk menghilang setelah kecelakaan. Data kendaraan belum ditemukan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Hasil kosong. Coba cari nama lengkapnya: Andi Prasetyo.', () => {
+            showSupervisorPopup('Kasusnya dihentikan karena saksi kunci hilang. Sepertinya ada sesuatu yang disembunyikan. Coba telusuri lebih dalam kata-kata yang sering muncul.', () => {
               setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 4) {
-            // After index 3 (Prasetyo LIKE - empty)
-            setNotebookContent(prev => prev + '\n\nAndi Prasetyo juga tidak muncul. Seperti sengaja dihilangkan.');
+            // After index 3 (Arunika Articles found)
+            setNotebookContent(prev => prev + '\n\nBanyak artikel tentang kecelakaan maut Arunika.\nSopir truk menghilang secara misterius.\nKasus dihentikan karena kurang bukti.\nArunika... ini bukan cuma nama kejadian.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Aneh, sepertinya datanya memang tidak ada. Tapi ada kata kunci "Arunika" di artikel Rizky tadi. Coba cari semua artikel yang mengandung kata "Arunika".', () => {
-              setAppState('TERM');
-              setQueryString('');
-            });
-          } else if (nextIdx === 5) {
-            // After index 4 (Arunika LIKE Articles - found)
-            setNotebookContent(prev => prev + '\n\nBanyak artikel tentang kecelakaan maut Arunika.\nSopir truk menghilang secara misterius.\nKasus dihentikan karena kurang bukti.');
-            setAppState('NOTEBOOK');
-            showSupervisorPopup('Delapan tahun lalu... Ada orang yang juga menghilang. Sepertinya Arunika bukan hanya nama kejadian, tapi nama perusahaan: PT Arunika Logistics. Coba cari di database perusahaan (tabel companies).', () => {
+            showSupervisorPopup('PT Arunika Logistics... Nama itu terus muncul. Kita harus mencari tahu siapa mereka.', () => {
               setAppState('TERM');
               setQueryString('');
             });
@@ -1432,8 +1424,8 @@ export default function App() {
         handleRunQuery();
         break;
       case 'RESULT':
-        if (isBrowsingTable) setAppState('DB_LIST');
-        else if (isObjectiveMet) handleObjectiveComplete();
+        if (isObjectiveMet) handleObjectiveComplete();
+        else if (isBrowsingTable) setAppState('DB_LIST');
         else setAppState('TERM');
         break;
       case 'ERROR':
