@@ -630,6 +630,10 @@ export default function App() {
   };
 
   const handleObjectiveComplete = (overrides?: { apps?: string[], contacts?: any[], witnesses?: any[], messages?: any[], stats?: PlayerStats }) => {
+    setIsObjectiveMet(false);
+    setQueryResult(null);
+    setErrorMessage('');
+    
     const hasNextObjective = currentObjectiveIndex < currentLevel.objectives.length - 1;
     const finalApps = overrides?.apps || unlockedApps;
     const finalContacts = overrides?.contacts || contacts;
@@ -638,7 +642,6 @@ export default function App() {
     const finalStats = overrides?.stats || stats;
 
     if (hasNextObjective) {
-      setIsObjectiveMet(false);
       const nextIdx = currentObjectiveIndex + 1;
       setCurrentObjectiveIndex(nextIdx);
       saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, finalApps, notebookContent, finalContacts, finalWitnesses, finalMessages, finalStats);
@@ -1033,7 +1036,6 @@ export default function App() {
             message: 'Nama direktur terpotong. Database rusak. Sebagian data perusahaan PT Arunika Logistics rusak atau sengaja dihapus.',
             onClose: () => {
               setPopup(null);
-              setIsObjectiveMet(false);
               
               // Transition to Notebook Automatically
               setAppState('NOTEBOOK');
@@ -1043,7 +1045,7 @@ export default function App() {
               // STEP 11: Trigger Twist after a delay in Notebook
               setTimeout(() => {
                 setIsFlickering(true);
-                setAppState('HOME'); // Simulate "Freeze" state
+                setAppState('HOME'); // Simulate "Freeze" state by going home
                 
                 setTimeout(() => {
                   setPopup({
@@ -1078,8 +1080,8 @@ export default function App() {
                       }, 2000);
                     }
                   });
-                }, 1500);
-              }, 3000);
+                }, 1500); // Show warning popup after flicker starts
+              }, 3000); // Stay in notebook for 3 seconds before freeze
             }
           });
         } else if (currentLevelId === 9) {
