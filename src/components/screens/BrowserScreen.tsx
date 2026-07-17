@@ -27,8 +27,11 @@ export const BrowserScreen: React.FC<BrowserScreenProps> = ({ currentLevel, setA
             </div>
 
             <div className="space-y-4">
-              <div>
-                <div className="text-xs font-bold uppercase flex items-center gap-2">
+              <div 
+                className="cursor-pointer hover:bg-[#1b2118]/10 p-2 -m-2 rounded transition-colors group"
+                onClick={() => setAppState('TERM')}
+              >
+                <div className="text-xs font-bold uppercase flex items-center gap-2 group-hover:text-blue-700">
                   <span>▶</span> ARTICLES (News Article Index)
                 </div>
                 <div className="text-[10px] pl-4 opacity-70">

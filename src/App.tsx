@@ -839,41 +839,50 @@ export default function App() {
           }
         } else if (currentLevelId === 6) {
           if (nextIdx === 1) {
-            showSupervisorPopup('Bagus. Sekarang gunakan operator LIKE untuk mencari artikel tentang rumah sakit (Hospital).', () => {
-              setAppState('TERM');
-              setQueryString('');
+            // STEP 4: After Rizky Hidayat exact search (0 rows)
+            setNotebookContent(prev => prev + '\n\nTidak ditemukan.\nApakah dia memang tidak pernah diberitakan?');
+            setAppState('NOTEBOOK');
+            showSupervisorPopup('Mungkin caramu mencari salah. Tidak semua orang ditulis dengan nama lengkap. Kadang hanya nama depan atau belakang.', () => {
+              setPopup({
+                title: 'NEW LESSON UNLOCKED',
+                message: 'OPERATOR LIKE\n\nGunakan LIKE dan wildcard (%) untuk mencari teks yang mengandung kata tertentu.\n\nContoh: WHERE title LIKE \'%Rizky%\'',
+                onClose: () => {
+                  setPopup(null);
+                  setAppState('TERM');
+                  setQueryString('');
+                }
+              });
             });
           } else if (nextIdx === 2) {
-            // After Hospital found
-            setNotebookContent(prev => prev + '\n\nBanyak berita tentang rumah sakit akhir-akhir ini.');
+            // STEP 5: After LIKE '%Rizky%' (Found)
+            setNotebookContent(prev => prev + '\n\nRizky pernah mengalami kecelakaan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Sepertinya ada yang menarik. Coba cari berita yang menyebut nama Budi.', () => {
+            showSupervisorPopup('Menarik. Rizky ternyata penyintas kecelakaan. Sekarang coba cari apakah nama Andi pernah disebut publik.', () => {
               setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 3) {
-            // After Budi found
-            setNotebookContent(prev => prev + '\n\nRizky Hidayat adalah penyintas kecelakaan maut Arunika delapan tahun lalu.');
+            // STEP 6: After LIKE '%Andi%' (0 rows)
+            setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Penyintas kecelakaan? Menarik. Coba cari artikel tentang orang hilang (Missing).', () => {
+            showSupervisorPopup('Andi bersih di media. Tapi coba perhatikan nama perusahaan di artikel kecelakaan Rizky: PT Arunika Logistics. Coba telusuri kata itu.', () => {
               setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 4) {
-            // After Missing found
-            setNotebookContent(prev => prev + '\n\nSopir truk menghilang setelah kecelakaan. Data kendaraan belum ditemukan.');
+            // STEP 7 & 8: After LIKE '%Arunika%' (Found 5 articles)
+            setNotebookContent(prev => prev + '\n\nArunika -> Kecelakaan -> Rizky\n\nSopir truk menghilang setelah kecelakaan.\nData kendaraan belum ditemukan.\nKasus dihentikan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Kasusnya dihentikan karena saksi kunci hilang. Sepertinya ada sesuatu yang disembunyikan. Coba telusuri lebih dalam kata-kata yang sering muncul.', () => {
-              setAppState('TERM');
-              setQueryString('');
-            });
-          } else if (nextIdx === 5) {
-            // After Arunika Articles found
-            setNotebookContent(prev => prev + '\n\nBanyak artikel tentang kecelakaan maut Arunika.\nSopir truk menghilang secara misterius.\nKasus dihentikan karena kurang bukti.\nArunika... ini bukan cuma nama kejadian.');
-            setAppState('NOTEBOOK');
-            showSupervisorPopup('PT Arunika Logistics... Nama itu terus muncul. Coba periksa apakah mereka masih terdaftar di database perusahaan.', () => {
-              setAppState('TERM');
-              setQueryString('');
+            showSupervisorPopup('Delapan tahun lalu... Ada orang yang juga menghilang. Saya menemukan sesuatu, perusahaan itu masih aktif.', () => {
+              setPopup({
+                title: 'NEW DATABASE UNLOCKED',
+                message: 'COMPANIES DATABASE\n\nAccess to national company registration records is now granted.',
+                onClose: () => {
+                  setPopup(null);
+                  setAppState('TERM');
+                  setQueryString('');
+                }
+              });
             });
           } else {
             setAppState('TERM');
@@ -1018,7 +1027,7 @@ export default function App() {
             }
           });
         } else if (currentLevelId === 6) {
-          // STEP 10: Database Error Popup
+          // STEP 10: Database Error Popup after Companies search
           setPopup({
             title: 'DATABASE ERROR',
             message: 'Nama direktur terpotong. Sebagian data perusahaan PT Arunika Logistics rusak atau sengaja dihapus.',
@@ -1578,6 +1587,13 @@ export default function App() {
           <CaseFilesScreen 
             currentLevel={currentLevel} 
             currentObjectiveIndex={currentObjectiveIndex} 
+            setAppState={setAppState} 
+          />
+        );
+      case 'BROWSER':
+        return (
+          <BrowserScreen 
+            currentLevel={currentLevel} 
             setAppState={setAppState} 
           />
         );
