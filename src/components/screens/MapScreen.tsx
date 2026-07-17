@@ -101,9 +101,14 @@ export const MapScreen: React.FC<MapScreenProps> = ({
         {isChapter7 ? (
           <div className="absolute inset-0 w-full h-full p-4 flex flex-col justify-between">
             {/* Top Stats Banner */}
-            <div className="bg-[#1b2118]/80 border border-[#8cb07d]/30 p-2 rounded text-[#8cb07d] text-[10px] font-mono flex justify-between z-10 backdrop-blur-sm">
-              <div>DEVICE LOGS: ACTIVE</div>
-              <div>PLATE TARGET: B 2841 PT</div>
+            <div className="bg-[#1b2118]/80 border border-[#8cb07d]/30 p-2 rounded text-[#8cb07d] text-[10px] font-mono flex flex-wrap justify-between gap-x-4 gap-y-1 z-10 backdrop-blur-sm">
+              <div className="flex gap-4">
+                <div>DEVICE LOGS: ACTIVE</div>
+                <div>PLATE TARGET: B 2841 PT</div>
+              </div>
+              <div className="text-right text-[#10b981] font-bold">
+                GPS: 6.1751° S, 106.8272° E
+              </div>
             </div>
 
             {/* Custom SVG Drawing the Map Elements */}
@@ -210,11 +215,6 @@ export const MapScreen: React.FC<MapScreenProps> = ({
                   </text>
                 </g>
               </svg>
-            </div>
-
-            {/* GPS Coordinates Overlay */}
-            <div className="absolute top-12 right-4 bg-[#1b2118]/80 border border-[#8cb07d]/40 p-1.5 text-[#8cb07d] text-[8px] font-bold uppercase font-mono z-20 backdrop-blur-sm">
-              GPS: 6.1751° S, 106.8272° E
             </div>
 
             {/* Bottom Coordinates & Objective Helper */}

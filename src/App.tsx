@@ -91,6 +91,7 @@ export default function App() {
     achievements: [],
     battery: 100
   });
+  const [isBlackout, setIsBlackout] = useState<boolean>(false);
 
   useEffect(() => {
     if (currentLevel) {
@@ -197,14 +198,14 @@ export default function App() {
 
   // State Healer for Chapter 7: Ensure Maps is unlocked
   useEffect(() => {
-    if (currentLevelId === 7) {
+    if (currentLevelId === 7 && hasAcceptedMission) {
       if (!unlockedApps.includes('MAP')) {
         const newApps = [...unlockedApps, 'MAP'];
         setUnlockedApps(newApps);
         saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent);
       }
     }
-  }, [currentLevelId, unlockedApps.length]);
+  }, [currentLevelId, hasAcceptedMission, unlockedApps.length]);
 
   useEffect(() => {
     if (appState === 'BOOT') {
@@ -590,219 +591,280 @@ export default function App() {
       setCurrentObjectiveIndex(nextIdx);
       saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, finalApps, notebookContent, finalContacts, finalWitnesses, finalMessages, finalStats);
       
-      if (currentLevelId === 1) {
-        if (nextIdx === 2) { 
-          triggerBlink('INBOX');
-          showSupervisorPopup('Bagus. Sekarang cari tahu siapa Owner ID 482.');
-          setAppState('TERM');
-          setQueryString('');
-        }
-        else if (nextIdx === 3) { 
-          setAppState('NOTEBOOK');
-          setQueryString('');
-          setTimeout(() => {
-             triggerBlink('INBOX');
-             showSupervisorPopup('Bagus. Sekarang cari tahu apakah mobil itu masih berada di rumah sakit.');
-          }, 3000);
-        }
-        else if (nextIdx === 5) {
-          showSupervisorPopup('Mobil mana yang paling lama?');
-          setAppState('TERM');
-          setQueryString('');
-        }
-        else {
-          setAppState('TERM');
-          setQueryString('');
-        }
-      } else if (currentLevelId === 2) {
-        if (nextIdx === 1) {
-          showSupervisorPopup('Cari apakah dia tinggal sendirian.');
-          setAppState('TERM');
-          setQueryString('');
-        }
-        else if (nextIdx === 2) {
-          // Found Dina.
-          setNotebookContent(prev => prev + '\n\nDina Santoso: Kemungkinan anggota keluarga.');
-          showSupervisorPopup('Kamu menemukan Dina Santoso di alamat yang sama. Hubungi dia.');
-          setAppState('TERM');
-          setQueryString('');
-        }
-        else if (nextIdx === 3) {
-          // Got phone numbers.
-          const newContacts = contacts.find(c => c.name === 'Dina Santoso') 
-            ? contacts 
-            : [...contacts, { name: 'Dina Santoso', role: 'Anggota Keluarga', phone: '08125555', id: 'dina' }];
-          
-          setContacts(newContacts);
-          triggerBlink('INBOX');
-          triggerBlink('CONTACTS');
-          setAppState('INBOX');
-          setMessages(prev => {
-            if (prev.find(m => m.id === 'call_dina')) return prev;
-            const newMsg = {
-               id: 'call_dina',
-               sender: 'Supervisor Raka',
-               subject: 'Hubungi Dina',
-               body: 'Bagus. Hubungi Dina.',
-               timestamp: formatTime(currentTime),
-               read: false
-            };
-            const newMessages = [...prev, newMsg];
-            saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, newContacts, witnesses, newMessages);
-            return newMessages;
-          });
-          setSelectedMessageId(null);
-        }
-        else if (nextIdx === 4) {
-          showSupervisorPopup('Cari tahu siapa pasien yang dikunjungi.');
-          setAppState('TERM');
-          setQueryString('');
-        }
-        else {
-          setAppState('TERM');
-          setQueryString('');
-        }
-      } else if (currentLevelId === 3) {
-        if (nextIdx === 1) {
-          showSupervisorPopup('Dapatkan data pasien dengan ID 41.');
-          setAppState('TERM');
-          setQueryString('');
-        } else if (nextIdx === 2) {
-          showSupervisorPopup('Rizky memiliki emergency_contact bernomor 7. Cari siapa itu.');
-          setAppState('TERM');
-          setQueryString('');
-        } else if (nextIdx === 3) {
-          setNotebookContent(prev => prev + '\n\nSemua data saling terhubung. Cari hubungan antar tabel.');
-          showSupervisorPopup('Bagus. Sekarang cari kendaraan milik Andi Prasetyo (Owner ID 7).');
-          setAppState('NOTEBOOK');
-          setQueryString('');
-        } else if (nextIdx === 4) {
-          showSupervisorPopup('Cek data parkir untuk plat nomor B 2841 PT.');
-          setAppState('TERM');
-          setQueryString('');
-        } else if (nextIdx === 5) {
-          setPopup({
-            title: 'NEW LESSON',
-            message: 'JOIN Unlocked. Kadang jawaban tidak ada di satu tabel. JOIN digunakan untuk menggabungkan data.',
-            onClose: () => {
-              setPopup(null);
-              showSupervisorPopup('Bagus. Sekarang gunakan JOIN untuk melihat nama pemilik dan plat nomornya secara langsung.');
-              setAppState('TERM');
-              setQueryString('');
-            }
-          });
-        } else if (nextIdx === 6) {
-          showSupervisorPopup('Sekarang gunakan JOIN untuk mencari kendaraan milik Andi Prasetyo.');
-          setAppState('TERM');
-          setQueryString('');
-        } else {
-          setAppState('TERM');
-          setQueryString('');
-        }
-      } else if (currentLevelId === 4) {
-        if (nextIdx === 1) {
-          setNotebookContent(prev => prev + '\n\nData terlalu banyak. Perlu difilter.\nAda dua orang lain yang berada di lokasi hampir bersamaan.');
-          showSupervisorPopup('Fokus ke pasien yang mereka kunjungi. Gunakan JOIN antara visitors dan patients.');
-          setAppState('TERM');
-          setQueryString('');
-        } else if (nextIdx === 2) {
-          setNotebookContent(prev => prev + '\n\nRudi juga mengunjungi Rizky.');
-          showSupervisorPopup('Bagus. Sekarang cari identitas Rudi Hartono di tabel citizens.');
-          setAppState('TERM');
-          setQueryString('');
-        } else if (nextIdx === 3) {
-          setNotebookContent(prev => prev + '\n\nData Rudi tidak lengkap.');
-          showSupervisorPopup('Rudi Hartono terdaftar sebagai warga. Sekarang periksa apakah Rudi memiliki kendaraan terdaftar.');
-          setAppState('TERM');
-          setQueryString('');
-        } else if (nextIdx === 4) {
-          setNotebookContent(prev => prev + '\n\nRudi tidak memiliki kendaraan.');
-          showSupervisorPopup('Rudi tidak memiliki kendaraan. Sekarang cari semua kendaraan yang keluar dari tempat parkir rumah sakit sekitar pukul 11:30.');
-          setAppState('TERM');
-          setQueryString('');
-        } else if (nextIdx === 5) {
-          setNotebookContent(prev => prev + '\n\nAda tiga kendaraan.');
-          showSupervisorPopup('Ada tiga kendaraan. Sekarang hubungkan data parkir, kendaraan, dan warga menggunakan triple JOIN untuk mengetahui siapa pemilik kendaraan-kendaraan tersebut.');
-          setAppState('TERM');
-          setQueryString('');
-        } else {
-          setAppState('TERM');
-          setQueryString('');
-        }
-      } else if (currentLevelId === 5) {
-        if (nextIdx === 1) {
-          showSupervisorPopup('Cari rekaman Budi Santoso di CCTV (tabel footage).');
-          setAppState('TERM');
-          setQueryString('');
-        } else if (nextIdx === 2) {
-          showSupervisorPopup('Cari rekaman Rizky Hidayat di CCTV.');
-          setAppState('TERM');
-          setQueryString('');
-        } else if (nextIdx === 3) {
-          setPopup({
-            title: 'SUPERVISOR RAKA',
-            message: 'Bandingkan keduanya (Visitors dan Footage).',
-            onClose: () => {
-              // Wait a few seconds to let the player "think" or try manually
-              setTimeout(() => {
-                setNotebookContent(prev => prev + '\n\nData mulai banyak.\nSulit dibandingkan.');
-                triggerBlink('NOTEBOOK');
-                
-                setPopup({
-                  title: 'SUPERVISOR RAKA',
-                  message: '*Supervisor tersenyum*\n\nAda satu teknik lagi.\nTidak semua data memiliki pasangan.',
-                  onClose: () => {
-                    setPopup({
-                      title: 'NEW LESSON',
-                      message: 'LEFT JOIN\n\nUnlocked',
-                      onClose: () => {
-                        setPopup({
-                          title: 'TUTORIAL',
-                          message: 'Supervisor memberikan contoh sederhana.\n\nINNER JOIN hanya menampilkan data yang cocok di kedua tabel.\nTapi bagaimana jika kamu ingin mencari siapa yang tidak muncul di CCTV?\n\n(Pemain belum pernah memikirkan itu...)',
-                          onClose: () => {
-                            setPopup(null);
-                            showSupervisorPopup('Gunakan LEFT JOIN untuk membandingkan tabel visitors dengan tabel footage.');
-                            setAppState('TERM');
-                            setQueryString('');
-                            if (!unlockedApps.includes('TIMELINE')) {
-                              setUnlockedApps(prev => [...prev, 'TIMELINE']);
-                              triggerBlink('TIMELINE');
-                            }
-                          }
-                        });
-                      }
-                    });
-                  }
-                });
-              }, 4000);
-            }
-          });
-        } else {
-          setAppState('TERM');
-          setQueryString('');
-        }
-      } else if (currentLevelId === 6) {
-        if (nextIdx === 1) {
-          setNotebookContent(prev => prev + '\n\nTidak ditemukan.');
-          setPopup({
-            title: 'Supervisor Raka',
-            message: 'Apakah dia memang tidak pernah diberitakan?\nAtau...\nKamu mencari dengan cara yang salah.',
-            onClose: () => {
-              setPopup({
-                title: 'Supervisor Raka',
-                message: 'Tidak semua orang ditulis dengan nama lengkap.\nKadang hanya nama depan.\nKadang hanya nama belakang.\nGunakan pencarian yang lebih fleksibel.',
-                onClose: () => {
+      const length = currentLevel?.objectives.length || 0;
+      if (nextIdx < length) {
+        if (currentLevelId === 1) {
+          if (nextIdx === 2) { 
+            triggerBlink('INBOX');
+            showSupervisorPopup('Bagus. Sekarang cari tahu siapa Owner ID 482.');
+            setAppState('TERM');
+            setQueryString('');
+          }
+          else if (nextIdx === 3) { 
+            setAppState('NOTEBOOK');
+            setQueryString('');
+            setTimeout(() => {
+               triggerBlink('INBOX');
+               showSupervisorPopup('Bagus. Sekarang cari tahu apakah mobil itu masih berada di rumah sakit.');
+            }, 3000);
+          }
+          else if (nextIdx === 5) {
+            showSupervisorPopup('Mobil mana yang paling lama?');
+            setAppState('TERM');
+            setQueryString('');
+          }
+          else {
+            setAppState('TERM');
+            setQueryString('');
+          }
+        } else if (currentLevelId === 2) {
+          if (nextIdx === 1) {
+            showSupervisorPopup('Cari apakah dia tinggal sendirian.');
+            setAppState('TERM');
+            setQueryString('');
+          }
+          else if (nextIdx === 2) {
+            // Found Dina.
+            setNotebookContent(prev => prev + '\n\nDina Santoso: Kemungkinan anggota keluarga.');
+            showSupervisorPopup('Kamu menemukan Dina Santoso di alamat yang sama. Hubungi dia.');
+            setAppState('TERM');
+            setQueryString('');
+          }
+          else if (nextIdx === 3) {
+            // Got phone numbers.
+            const newContacts = contacts.find(c => c.name === 'Dina Santoso') 
+              ? contacts 
+              : [...contacts, { name: 'Dina Santoso', role: 'Anggota Keluarga', phone: '08125555', id: 'dina' }];
+            
+            setContacts(newContacts);
+            triggerBlink('INBOX');
+            triggerBlink('CONTACTS');
+            setAppState('INBOX');
+            setMessages(prev => {
+              if (prev.find(m => m.id === 'call_dina')) return prev;
+              const newMsg = {
+                 id: 'call_dina',
+                 sender: 'Supervisor Raka',
+                 subject: 'Hubungi Dina',
+                 body: 'Bagus. Hubungi Dina.',
+                 timestamp: formatTime(currentTime),
+                 read: false
+              };
+              const newMessages = [...prev, newMsg];
+              saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, newContacts, witnesses, newMessages);
+              return newMessages;
+            });
+            setSelectedMessageId(null);
+          }
+          else if (nextIdx === 4) {
+            showSupervisorPopup('Cari tahu siapa pasien yang dikunjungi.');
+            setAppState('TERM');
+            setQueryString('');
+          }
+          else {
+            setAppState('TERM');
+            setQueryString('');
+          }
+        } else if (currentLevelId === 3) {
+          if (nextIdx === 1) {
+            showSupervisorPopup('Dapatkan data pasien dengan ID 41.');
+            setAppState('TERM');
+            setQueryString('');
+          } else if (nextIdx === 2) {
+            showSupervisorPopup('Rizky memiliki emergency_contact bernomor 7. Cari siapa itu.');
+            setAppState('TERM');
+            setQueryString('');
+          } else if (nextIdx === 3) {
+            setNotebookContent(prev => prev + '\n\nSemua data saling terhubung. Cari hubungan antar tabel.');
+            showSupervisorPopup('Bagus. Sekarang cari kendaraan milik Andi Prasetyo (Owner ID 7).');
+            setAppState('NOTEBOOK');
+            setQueryString('');
+          } else if (nextIdx === 4) {
+            showSupervisorPopup('Cek data parkir untuk plat nomor B 2841 PT.');
+            setAppState('TERM');
+            setQueryString('');
+          } else if (nextIdx === 5) {
+            setPopup({
+              title: 'NEW LESSON',
+              message: 'JOIN Unlocked. Kadang jawaban tidak ada di satu tabel. JOIN digunakan untuk menggabungkan data.',
+              onClose: () => {
+                setPopup(null);
+                showSupervisorPopup('Bagus. Sekarang gunakan JOIN untuk melihat nama pemilik dan plat nomornya secara langsung.');
+                setAppState('TERM');
+                setQueryString('');
+              }
+            });
+          } else if (nextIdx === 6) {
+            showSupervisorPopup('Sekarang gunakan JOIN untuk mencari kendaraan milik Andi Prasetyo.');
+            setAppState('TERM');
+            setQueryString('');
+          } else {
+            setAppState('TERM');
+            setQueryString('');
+          }
+        } else if (currentLevelId === 4) {
+          if (nextIdx === 1) {
+            setNotebookContent(prev => prev + '\n\nData terlalu banyak. Perlu difilter.\nAda dua orang lain yang berada di lokasi hampir bersamaan.');
+            showSupervisorPopup('Fokus ke pasien yang mereka kunjungi. Gunakan JOIN antara visitors dan patients.');
+            setAppState('TERM');
+            setQueryString('');
+          } else if (nextIdx === 2) {
+            setNotebookContent(prev => prev + '\n\nRudi juga mengunjungi Rizky.');
+            showSupervisorPopup('Bagus. Sekarang cari identitas Rudi Hartono di tabel citizens.');
+            setAppState('TERM');
+            setQueryString('');
+          } else if (nextIdx === 3) {
+            setNotebookContent(prev => prev + '\n\nData Rudi tidak lengkap.');
+            showSupervisorPopup('Rudi Hartono terdaftar sebagai warga. Sekarang periksa apakah Rudi memiliki kendaraan terdaftar.');
+            setAppState('TERM');
+            setQueryString('');
+          } else if (nextIdx === 4) {
+            setNotebookContent(prev => prev + '\n\nRudi tidak memiliki kendaraan.');
+            showSupervisorPopup('Rudi tidak memiliki kendaraan. Sekarang cari semua kendaraan yang keluar dari tempat parkir rumah sakit sekitar pukul 11:30.');
+            setAppState('TERM');
+            setQueryString('');
+          } else if (nextIdx === 5) {
+            setNotebookContent(prev => prev + '\n\nAda tiga kendaraan.');
+            showSupervisorPopup('Ada tiga kendaraan. Sekarang hubungkan data parkir, kendaraan, dan warga menggunakan triple JOIN untuk mengetahui siapa pemilik kendaraan-kendaraan tersebut.');
+            setAppState('TERM');
+            setQueryString('');
+          } else {
+            setAppState('TERM');
+            setQueryString('');
+          }
+        } else if (currentLevelId === 5) {
+          if (nextIdx === 1) {
+            showSupervisorPopup('Cari rekaman Budi Santoso di CCTV (tabel footage).');
+            setAppState('TERM');
+            setQueryString('');
+          } else if (nextIdx === 2) {
+            showSupervisorPopup('Cari rekaman Rizky Hidayat di CCTV.');
+            setAppState('TERM');
+            setQueryString('');
+          } else if (nextIdx === 3) {
+            setPopup({
+              title: 'SUPERVISOR RAKA',
+              message: 'Bandingkan keduanya (Visitors dan Footage).',
+              onClose: () => {
+                // Wait a few seconds to let the player "think" or try manually
+                setTimeout(() => {
+                  setNotebookContent(prev => prev + '\n\nData mulai banyak.\nSulit dibandingkan.');
+                  triggerBlink('NOTEBOOK');
+                  
                   setPopup({
-                    title: 'NEW LESSON',
-                    message: 'LIKE\n\nUnlocked\n\nContoh:\nSELECT * FROM articles\nWHERE title\nLIKE \'%Rizky%\';',
+                    title: 'SUPERVISOR RAKA',
+                    message: '*Supervisor tersenyum*\n\nAda satu teknik lagi.\nTidak semua data memiliki pasangan.',
                     onClose: () => {
                       setPopup({
-                        title: `${firstName} Tersenyum`,
-                        message: 'Saya mengerti.',
+                        title: 'NEW LESSON',
+                        message: 'LEFT JOIN\n\nUnlocked',
+                        onClose: () => {
+                          setPopup({
+                            title: 'TUTORIAL',
+                            message: 'Supervisor memberikan contoh sederhana.\n\nINNER JOIN hanya menampilkan data yang cocok di kedua tabel.\nTapi bagaimana jika kamu ingin mencari siapa yang tidak muncul di CCTV?\n\n(Pemain belum pernah memikirkan itu...)',
+                            onClose: () => {
+                              setPopup(null);
+                              showSupervisorPopup('Gunakan LEFT JOIN untuk membandingkan tabel visitors dengan tabel footage.');
+                              setAppState('TERM');
+                              setQueryString('');
+                              if (!unlockedApps.includes('TIMELINE')) {
+                                setUnlockedApps(prev => [...prev, 'TIMELINE']);
+                                triggerBlink('TIMELINE');
+                              }
+                            }
+                          });
+                        }
+                      });
+                    }
+                  });
+                }, 4000);
+              }
+            });
+          } else {
+            setAppState('TERM');
+            setQueryString('');
+          }
+        } else if (currentLevelId === 6) {
+          if (nextIdx === 1) {
+            setNotebookContent(prev => prev + '\n\nTidak ditemukan.');
+            showSupervisorPopup('Gunakan pencarian yang lebih fleksibel dengan LIKE.', () => {
+              setAppState('TERM');
+              setQueryString('');
+            });
+          } else if (nextIdx === 2) {
+            setNotebookContent(prev => prev + '\n\nPenyintas Tunggal: Rizky Hidayat');
+            showSupervisorPopup('Cari nama Andi.', () => {
+              setAppState('TERM');
+              setQueryString('');
+            });
+          } else if (nextIdx === 3) {
+            showSupervisorPopup('Hasil kosong. Coba cari nama Prasetyo.', () => {
+              setAppState('TERM');
+              setQueryString('');
+            });
+          } else if (nextIdx === 4) {
+            setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul.');
+            showSupervisorPopup('Coba cari PT Arunika Logistics.', () => {
+              setAppState('TERM');
+              setQueryString('');
+            });
+          } else if (nextIdx === 5) {
+            setNotebookContent(prev => prev + '\n\nArunika maut delapan tahun lalu.');
+            showSupervisorPopup('Cari data perusahaan PT Arunika Logistics di database perusahaan.', () => {
+              setAppState('TERM');
+              setQueryString('');
+            });
+          } else {
+            setAppState('TERM');
+            setQueryString('');
+          }
+        }
+      } else {
+        // Level complete flow
+        if (currentLevelId === 5) {
+          setAppState('HOME');
+          setPopup({
+            title: 'PLAYER',
+            message: '"Hah?"\nKenapa NULL?',
+            onClose: () => {
+              setPopup({
+                title: 'SUPERVISOR RAKA',
+                message: 'NULL juga merupakan petunjuk.',
+                onClose: () => {
+                  const newNote = notebookContent + '\n\nAndi\nTidak pernah muncul\ndi CCTV.';
+                  setNotebookContent(newNote);
+                  triggerBlink('NOTEBOOK');
+                  
+                  setPopup({
+                    title: 'PLAYER',
+                    message: '*Player mulai curiga*\nKalau Andi tidak muncul...\nSiapa yang membawa mobilnya?',
+                    onClose: () => {
+                      setPopup({
+                        title: 'SUPERVISOR RAKA',
+                        message: 'Tepat.\nKita selama ini menganggap Andi mengemudi.\nTapi database tidak pernah mengatakan itu.\nItu hanya asumsi kita.',
                         onClose: () => {
                           setPopup(null);
-                          setAppState('TERM');
-                          setQueryString('');
+                          
+                          setMessages(prev => {
+                            if (prev.find(m => m.id === 'cctv_tech_msg')) return prev;
+                            const techMsg = {
+                              id: 'cctv_tech_msg',
+                              sender: 'Teknisi CCTV',
+                              subject: 'Kamera Main Gate',
+                              body: 'Maaf Pak.\nSaya baru ingat.\nKamera Main Gate sempat mati selama enam menit.',
+                              timestamp: formatTime(currentTime),
+                              read: false
+                            };
+                            const updatedMessages = [...prev, techMsg];
+                            saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, newNote, contacts, witnesses, updatedMessages);
+                            return updatedMessages;
+                          });
+                          triggerBlink('INBOX');
+                          
+                          // Now show report
+                          showSupervisorPopup('Sekarang buat laporan.', () => {
+                            setAppState('REPORT');
+                          });
                         }
                       });
                     }
@@ -811,194 +873,15 @@ export default function App() {
               });
             }
           });
-        } else if (nextIdx === 2) {
-          setNotebookContent(prev => prev + '\n\nPenyintas Tunggal: Rizky Hidayat');
-          setPopup({
-            title: 'Evidence baru.',
-            message: 'Accident Survivor',
-            onClose: () => {
-              showSupervisorPopup('Menarik. Cari nama Andi.', () => {
-                setAppState('TERM');
-                setQueryString('');
-              });
-            }
-          });
-        } else if (nextIdx === 3) {
-          setPopup({
-            title: 'Hasil',
-            message: 'Tidak ada.',
-            onClose: () => {
-              setPopup(null);
-              setAppState('TERM');
-              setQueryString('');
-            }
-          });
-        } else if (nextIdx === 4) {
-          setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul.');
-          setPopup({
-            title: 'Hasil',
-            message: 'Tetap kosong.',
-            onClose: () => {
-              setPopup({
-                title: 'Supervisor Raka',
-                message: 'Ada nama sebuah perusahaan di artikel sebelumnya.',
-                onClose: () => {
-                  showSupervisorPopup('Coba cari PT Arunika Logistics.', () => {
-                    setAppState('TERM');
-                    setQueryString('');
-                  });
-                }
-              });
-            }
-          });
-        } else if (nextIdx === 5) {
-          setNotebookContent(prev => prev + '\n\nArunika\n\n↓\n\nKecelakaan\n\n↓\n\nRizky\n\nSopir: Menghilang');
-          setPopup({
-            title: 'Hasil',
-            message: 'Lima artikel muncul. Semuanya tentang... Kecelakaan yang sama.',
-            onClose: () => {
-              setPopup({
-                title: 'Supervisor Raka',
-                message: 'Delapan tahun lalu... Ada orang yang juga menghilang.',
-                onClose: () => {
-                  setPopup({
-                    title: 'NEW DATABASE',
-                    message: 'Companies Unlocked. Supervisor Raka: Saya menemukan sesuatu, nama perusahaan PT Arunika Logistics ternyata masih aktif.',
-                    onClose: () => {
-                      setPopup(null);
-                      setUnlockedApps(prev => prev.includes('DB_LIST') ? prev : [...prev, 'DB_LIST']);
-                      triggerBlink('TIMELINE');
-                      setAppState('HOME');
-                      setQueryString('');
-                    }
-                  });
-                }
-              });
-            }
-          });
-        } else if (nextIdx === 6) {
-          setPopup({
-            title: 'LOKASI BARU',
-            message: 'Gudang Lama Unlocked. Sepertinya ini tempat parkir armada Arunika.',
-            onClose: () => {
-              setPopup(null);
-              setAppState('HOME');
-            }
+        } else if (currentLevelId === 6) {
+          showSupervisorPopup('Kerja bagus. Sepertinya data direktur perusahaan memang disamarkan. Sekarang buat laporan fakta investigasimu.', () => {
+            setAppState('REPORT');
           });
         } else {
-          setAppState('TERM');
-          setQueryString('');
-        }
-      }
-    } else {
-      setIsLevelComplete(true);
-      // Step 12: Quest complete (objectives done), Evidence Unlocked
-      if (currentLevelId === 6) {
-        setIsFlickering(true);
-        setPopup({
-          title: 'SYSTEM WARNING',
-          message: 'Unauthorized Access Detected',
-          onClose: () => {
-            setIsFlickering(false);
-            setPopup(null);
-            
-            setMessages(prev => {
-              if (prev.find(m => m.id === 'anon_msg_6')) return prev;
-              const anonMsg = {
-                id: 'anon_msg_6',
-                sender: 'Unknown Number',
-                subject: '!!! WARNING !!!',
-                body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
-                timestamp: formatTime(currentTime),
-                read: false
-              };
-              const updated = [...prev, anonMsg];
-              
-              // Unlocked EVIDENCE app if not already
-              let newApps = [...unlockedApps];
-              if (!newApps.includes('EVIDENCE')) {
-                newApps.push('EVIDENCE');
-                triggerBlink('EVIDENCE');
-              }
-              setUnlockedApps(newApps);
-              
-              const newNotebook = notebookContent + '\n\nSeseorang menghapus sebagian data perusahaan.';
-              setNotebookContent(newNotebook);
-              
-              saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, newNotebook, contacts, witnesses, updated);
-              return updated;
-            });
-            triggerBlink('INBOX');
-
-            showSupervisorPopup('Sistem kita disusupi! Seseorang mendeteksi pencarian kita tentang kejadian 8 tahun lalu dan mengirim pesan ancaman. Kirimkan laporan fakta investigasimu segera.', () => {
-              setAppState('REPORT');
-            });
-          }
-        });
-      } else if (currentLevelId === 5) {
-        setAppState('HOME');
-        setPopup({
-          title: 'PLAYER',
-          message: '"Hah?"\nKenapa NULL?',
-          onClose: () => {
-            setPopup({
-              title: 'SUPERVISOR RAKA',
-              message: 'NULL juga merupakan petunjuk.',
-              onClose: () => {
-                const newNote = notebookContent + '\n\nAndi\nTidak pernah muncul\ndi CCTV.';
-                setNotebookContent(newNote);
-                triggerBlink('NOTEBOOK');
-                
-                setPopup({
-                  title: 'PLAYER',
-                  message: '*Player mulai curiga*\nKalau Andi tidak muncul...\nSiapa yang membawa mobilnya?',
-                  onClose: () => {
-                    setPopup({
-                      title: 'SUPERVISOR RAKA',
-                      message: 'Tepat.\nKita selama ini menganggap Andi mengemudi.\nTapi database tidak pernah mengatakan itu.\nItu hanya asumsi kita.',
-                      onClose: () => {
-                        setPopup(null);
-                        
-                        setMessages(prev => {
-                          if (prev.find(m => m.id === 'cctv_tech_msg')) return prev;
-                          const techMsg = {
-                            id: 'cctv_tech_msg',
-                            sender: 'Teknisi CCTV',
-                            subject: 'Kamera Main Gate',
-                            body: 'Maaf Pak.\nSaya baru ingat.\nKamera Main Gate sempat mati selama enam menit.',
-                            timestamp: formatTime(currentTime),
-                            read: false
-                          };
-                          const updatedMessages = [...prev, techMsg];
-                          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, newNote, contacts, witnesses, updatedMessages);
-                          return updatedMessages;
-                        });
-                        triggerBlink('INBOX');
-                      }
-                    });
-                  }
-                });
-              }
-            });
-          }
-        });
-      } else {
-        if (!unlockedApps.includes('EVIDENCE')) {
-          const newApps = [...unlockedApps, 'EVIDENCE'];
-          setUnlockedApps(newApps);
-          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps);
-          setPopup({
-            title: 'SYSTEM',
-            message: 'NEW APP UNLOCKED: Evidence Locker',
-            onClose: () => {
-              setPopup(null);
-              showSupervisorPopup('Sekarang buat laporan.');
-              setAppState('REPORT');
-            }
+          setIsLevelComplete(true);
+          showSupervisorPopup('Sekarang buat laporan.', () => {
+            setAppState('REPORT');
           });
-        } else {
-          showSupervisorPopup('Sekarang buat laporan.');
-          setAppState('REPORT');
         }
       }
     }
@@ -1012,6 +895,43 @@ export default function App() {
           setIsFlickering(false);
           setShowUnknownMessage(true);
         }, 3000);
+      } else if (currentLevelId === 6) {
+        setIsFlickering(true);
+        
+        // Add the anonymous message
+        setMessages(prev => {
+          if (prev.find(m => m.id === 'anon_msg_6')) return prev;
+          const anonMsg = {
+            id: 'anon_msg_6',
+            sender: 'Unknown Number',
+            subject: '!!! WARNING !!!',
+            body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
+            timestamp: formatTime(currentTime),
+            read: false
+          };
+          const updated = [...prev, anonMsg];
+          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, updated);
+          return updated;
+        });
+        triggerBlink('INBOX');
+
+        setPopup({
+          title: 'SYSTEM WARNING',
+          message: 'Sistem Disusupi',
+          onClose: () => {
+            setIsFlickering(false);
+            setPopup(null);
+            
+            // Trigger call from Raka
+            setCallStatus('DIALING');
+            setActiveCallContact(contacts.find(c => c.id === 'raka'));
+            setCallStep(666); // Special code for ending
+            setAppState('CALLING');
+            
+            // Simulate connecting
+            setTimeout(() => setCallStatus('ACTIVE'), 2000);
+          }
+        });
       } else {
         setAppState('QUEST_COMPLETE');
       }
@@ -1427,6 +1347,18 @@ export default function App() {
             callStep={callStep} 
             handleHangUp={() => {
               setCallStatus('IDLE');
+              
+              if (activeCallContact?.id === 'raka' && callStep === 666) {
+                // Raka hung up. Layar Gelap.
+                setIsBlackout(true);
+                setTimeout(() => {
+                  setIsBlackout(false);
+                  setIsLevelComplete(true);
+                  setAppState('QUEST_COMPLETE');
+                }, 3000);
+                return;
+              }
+              
               setAppState('CONTACTS');
               
               if (activeCallContact?.id === 'dina' && currentLevelId === 2 && currentObjectiveIndex === 3) {
@@ -1554,6 +1486,10 @@ export default function App() {
               [RESTORING SYSTEM INTEGRITY...]
             </div>
           </div>
+        )}
+
+        {isBlackout && (
+          <div className="absolute inset-0 bg-black z-[1000]" />
         )}
 
         {renderScreenContent()}
