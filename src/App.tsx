@@ -569,6 +569,23 @@ export default function App() {
       if (met) {
         saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, newStats);
       } else {
+        if (currentLevelId === 6 && currentObjectiveIndex === 0) {
+          if (queryString.toLowerCase().includes('=') && !queryString.toLowerCase().includes('like')) {
+            setPopup({
+              title: 'Supervisor Raka',
+              message: 'Hasilnya kosong? Coba perhatikan baik-baik. Nama Rizky mungkin tidak tertulis persis seperti itu di judul berita.\n\nSQL memiliki operator LIKE untuk mencari pola teks yang fleksibel.',
+              onClose: () => {
+                setPopup({
+                  title: 'NEW LESSON',
+                  message: 'LIKE Operator\n\nDigunakan untuk mencari teks yang mengandung kata tertentu.\n\nContoh:\nWHERE title LIKE \'%Rizky%\';\n\nTanda % berarti "apa pun di sini".',
+                  onClose: () => {
+                    setPopup(null);
+                  }
+                });
+              }
+            });
+          }
+        }
         saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, newStats);
       }
     } catch (e: any) {
@@ -794,55 +811,36 @@ export default function App() {
           }
         } else if (currentLevelId === 6) {
           if (nextIdx === 1) {
-            setNotebookContent(prev => prev + '\n\nTidak ditemukan.');
+            // After index 0 (Rizky search)
+            setNotebookContent(prev => prev + '\n\nRizky Hidayat adalah penyintas kecelakaan delapan tahun lalu.');
             setAppState('NOTEBOOK');
-            setPopup({
-              title: 'Supervisor Raka',
-              message: 'Apakah dia memang tidak pernah diberitakan?\nAtau...\nKamu mencari dengan cara yang salah.',
-              onClose: () => {
-                setPopup({
-                  title: 'NEW LESSON',
-                  message: 'LIKE Unlocked.\n\nOperator LIKE digunakan untuk mencari pola teks yang tidak spesifik.\n\nContoh:\nSELECT * FROM articles\nWHERE title LIKE \'%Rizky%\';',
-                  onClose: () => {
-                    setPopup(null);
-                    showSupervisorPopup('Gunakan pencarian yang lebih fleksibel dengan LIKE.', () => {
-                      setQueryString('');
-                    });
-                  }
-                });
-              }
+            showSupervisorPopup('Menarik. Rizky ternyata pernah mengalami kecelakaan maut. Sekarang coba cari nama Andi.', () => {
+              setAppState('TERM');
+              setQueryString('');
             });
           } else if (nextIdx === 2) {
-            setNotebookContent(prev => prev + '\n\nRizky pernah mengalami kecelakaan.');
+            // After index 1 (Andi search empty)
+            setNotebookContent(prev => prev + '\n\nAndi tidak ditemukan dalam berita.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Menarik. Cari nama Andi.', () => {
+            showSupervisorPopup('Hasil kosong. Coba cari nama lengkapnya: Andi Prasetyo.', () => {
               setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 3) {
-            setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul.');
+            // After index 2 (Prasetyo search empty)
+            setNotebookContent(prev => prev + '\n\nAndi Prasetyo juga tidak muncul. Seperti sengaja dihilangkan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Hasil kosong. Coba cari nama Prasetyo.', () => {
+            showSupervisorPopup('Aneh, sepertinya datanya memang tidak ada. Tapi ada kata kunci "Arunika" di artikel Rizky tadi. Coba cari semua artikel yang mengandung kata "Arunika".', () => {
               setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 4) {
-            showSupervisorPopup('Ada nama sebuah perusahaan di artikel sebelumnya. Coba cari PT Arunika Logistics.', () => {
+            // After index 3 (Arunika Article found)
+            setNotebookContent(prev => prev + '\n\nBanyak artikel tentang kecelakaan maut Arunika.\nSopir truk menghilang secara misterius.');
+            setAppState('NOTEBOOK');
+            showSupervisorPopup('Sepertinya Arunika bukan hanya nama kejadian, tapi nama perusahaan: PT Arunika Logistics. Coba cari di database perusahaan (tabel companies).', () => {
               setAppState('TERM');
               setQueryString('');
-            });
-          } else if (nextIdx === 5) {
-            setNotebookContent(prev => prev + '\n\nArunika -> Kecelakaan -> Rizky\nSopir: Menghilang');
-            setAppState('NOTEBOOK');
-            setPopup({
-              title: 'Supervisor Raka',
-              message: 'Delapan tahun lalu... Ada orang yang juga menghilang. Saya menemukan sesuatu, nama perusahaan PT Arunika Logistics ternyata masih aktif.',
-              onClose: () => {
-                setPopup(null);
-                showSupervisorPopup('Cari data perusahaan PT Arunika Logistics di database perusahaan.', () => {
-                  setQueryString('');
-                });
-              }
             });
           }
         }
@@ -902,7 +900,10 @@ export default function App() {
             }
           });
         } else if (currentLevelId === 6) {
-          // STEP 11 - Unauthorized Access (Chapter 6 Ending)
+          // After index 4 (Arunika Company found) - TRIGGER TWIST
+          setNotebookContent(prev => prev + '\n\nPT Arunika Logistics ditemukan. Masih aktif.\nSopir kecelakaan menghilang.');
+          setAppState('NOTEBOOK');
+          
           setIsFlickering(true);
           setAppState('HOME');
           setTimeout(() => {
