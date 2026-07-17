@@ -17,19 +17,19 @@ export const chapter6: Level = {
       {
         id: 1,
         title: 'Kecelakaan di Jalan Merdeka, Rizky Selamat dari Insiden',
-        content: 'Seorang mahasiswa bernama Rizky Hidayat menjadi satu-satunya korban selamat dalam kecelakaan mobil yang menewaskan tiga orang. Mobil tersebut diketahui milik PT Arunika Logistics.',
+        content: 'Seorang mahasiswa bernama Rizky Hidayat menjadi satu-satunya korban selamat dalam kecelakaan mobil yang menewaskan tiga orang. Rizky kemudian dilarikan ke Hospital terdekat untuk perawatan intensif. Mobil tersebut diketahui milik PT Arunika Logistics.',
         publish_date: '2018-05-12'
       },
       {
         id: 2,
         title: 'Sopir Truk Menghilang Setelah Kecelakaan Arunika',
-        content: 'Pihak kepolisian melaporkan bahwa sopir truk PT Arunika Logistics yang terlibat dalam kecelakaan maut di Jalan Merdeka menghilang secara misterius tak lama setelah kejadian.',
+        content: 'Pihak kepolisian melaporkan bahwa sopir truk PT Arunika Logistics yang terlibat dalam kecelakaan maut di Jalan Merdeka menghilang secara misterius tak lama setelah kejadian. Saksi bernama Budi melihat truk tersebut melaju kencang.',
         publish_date: '2018-05-13'
       },
       {
         id: 3,
         title: 'Data Kendaraan Arunika Belum Ditemukan',
-        content: 'Penyidik mengonfirmasi bahwa data operasional dan logistik kendaraan PT Arunika Logistics pada malam kejadian belum ditemukan atau kemungkinan sengaja dihapus.',
+        content: 'Penyidik mengonfirmasi bahwa data operasional dan logistik kendaraan PT Arunika Logistics pada malam kejadian belum ditemukan atau kemungkinan sengaja dihapus. Status data: Missing from database.',
         publish_date: '2018-05-15'
       },
       {

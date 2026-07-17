@@ -630,6 +630,7 @@ export default function App() {
   };
 
   const handleObjectiveComplete = (overrides?: { apps?: string[], contacts?: any[], witnesses?: any[], messages?: any[], stats?: PlayerStats }) => {
+    setIsObjectiveMet(false);
     const hasNextObjective = currentObjectiveIndex < currentLevel.objectives.length - 1;
     const finalApps = overrides?.apps || unlockedApps;
     const finalContacts = overrides?.contacts || contacts;
@@ -838,7 +839,7 @@ export default function App() {
           }
         } else if (currentLevelId === 6) {
           if (nextIdx === 1) {
-            showSupervisorPopup('Gunakan operator LIKE untuk mencari artikel tentang rumah sakit (Hospital).', () => {
+            showSupervisorPopup('Bagus. Sekarang gunakan operator LIKE untuk mencari artikel tentang rumah sakit (Hospital).', () => {
               setAppState('TERM');
               setQueryString('');
             });
@@ -870,7 +871,7 @@ export default function App() {
             // After Arunika Articles found
             setNotebookContent(prev => prev + '\n\nBanyak artikel tentang kecelakaan maut Arunika.\nSopir truk menghilang secara misterius.\nKasus dihentikan karena kurang bukti.\nArunika... ini bukan cuma nama kejadian.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('PT Arunika Logistics... Nama itu terus muncul. Kita harus mencari tahu siapa mereka.', () => {
+            showSupervisorPopup('PT Arunika Logistics... Nama itu terus muncul. Coba periksa apakah mereka masih terdaftar di database perusahaan.', () => {
               setAppState('TERM');
               setQueryString('');
             });
@@ -1017,12 +1018,13 @@ export default function App() {
             }
           });
         } else if (currentLevelId === 6) {
-          // After index 5 (Arunika Company found) - TRIGGER TWIST
-          const updatedNote = notebookContent + '\n\nPT Arunika Logistics ditemukan. Masih aktif.\nSopir kecelakaan menghilang.';
+          // After index 5 (Arunika Company found) - STEP 10 & 11
+          const updatedNote = notebookContent + '\n\nPT Arunika Logistics ditemukan. Masih aktif.\nSeseorang menghapus sebagian data perusahaan.';
           setNotebookContent(updatedNote);
           
+          // Step 11: Flicker and Freeze
           setIsFlickering(true);
-          setAppState('HOME');
+          setAppState('HOME'); // Simulate "Freeze" by going home and flickering
           
           setTimeout(() => {
             setPopup({
@@ -1032,11 +1034,7 @@ export default function App() {
                 setIsFlickering(false);
                 setPopup(null);
                 
-                const finalNote = updatedNote + '\n\nSeseorang menghapus sebagian data perusahaan.';
-                setNotebookContent(finalNote);
-                setAppState('NOTEBOOK');
-                
-                // Send anonymous message
+                // Inbox masuk: Unknown Number
                 setMessages(prevMsgs => {
                   if (prevMsgs.find(m => m.id === 'anon_msg_6')) return prevMsgs;
                   const anonMsg = {
@@ -1048,19 +1046,20 @@ export default function App() {
                     read: false
                   };
                   const updatedMsgs = [...prevMsgs, anonMsg];
-                  saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, finalNote, contacts, witnesses, updatedMsgs);
+                  saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, updatedNote, contacts, witnesses, updatedMsgs);
                   return updatedMsgs;
                 });
                 triggerBlink('INBOX');
                 
                 setTimeout(() => {
-                  showSupervisorPopup('Kerja bagus. Sepertinya data direktur perusahaan memang disamarkan dan sistem kita disusupi! Seseorang mendeteksi pencarian kita. Kirimkan laporan fakta investigasimu segera.', () => {
+                  setAppState('INBOX');
+                  showSupervisorPopup('Gawat! Sistem kepolisian sedang diawasi seseorang. Data direktur perusahaan (R....) sengaja dirusak. Segera kirim laporan hasil temuanmu sebelum kita diputus aksesnya!', () => {
                     setAppState('REPORT');
                   });
                 }, 2000);
               }
             });
-          }, 1500);
+          }, 2000);
         } else if (currentLevelId === 9) {
           // Chapter 9 Ending - THE TWIST
           setIsFlickering(true);
