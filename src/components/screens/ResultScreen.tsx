@@ -123,7 +123,7 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
             {isObjectiveMet && (
               <button 
                 onClick={() => handleObjectiveComplete()}
-                className="w-full bg-[#1b2118] text-[#8cb07d] py-3 font-bold uppercase text-xs flex items-center justify-center gap-2 animate-bounce mt-2 shadow-md hover:bg-[#8cb07d] hover:text-[#1b2118] transition-colors"
+                className="w-full bg-[#1b2118] text-[#8cb07d] py-3 font-bold uppercase text-xs flex items-center justify-center gap-2 mt-2 shadow-md hover:bg-[#8cb07d] hover:text-[#1b2118] transition-colors"
               >
                 {hasNextObjective ? (
                   <>CONTINUE <ArrowRight size={16} /></>

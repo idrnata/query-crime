@@ -975,7 +975,9 @@ export default function App() {
           }
       }
     } else {
-      // Level complete flow
+      // Level complete flow - Save progress first to ensure consistency
+      saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, finalApps, notebookContent, finalContacts, finalWitnesses, finalMessages, finalStats);
+
       if (currentLevelId === 5) {
         setAppState('HOME');
         setPopup({
@@ -1031,21 +1033,21 @@ export default function App() {
         });
       } else if (currentLevelId === 6) {
         // STEP 10: Police Database corrupted flow
+        // Transition to Notebook IMMEDIATELY so the user sees a visual change
+        setAppState('NOTEBOOK');
+        setIsObjectiveMet(false);
+        setQueryResult(null);
+        setErrorMessage('');
+        
+        const updatedNote = notebookContent + '\n\nSeseorang\nmenghapus sebagian data.';
+        setNotebookContent(updatedNote);
+        triggerBlink('NOTEBOOK');
+
         setPopup({
           title: 'DATABASE ERROR',
           message: 'Nama direktur terpotong.\nDatabase rusak.',
           onClose: () => {
             setPopup(null);
-            
-            // Move to Notebook
-            setAppState('NOTEBOOK');
-            setIsObjectiveMet(false);
-            setQueryResult(null);
-            setErrorMessage('');
-            
-            const updatedNote = notebookContent + '\n\nSeseorang\nmenghapus sebagian data.';
-            setNotebookContent(updatedNote);
-            triggerBlink('NOTEBOOK');
             
             setPopup({
               title: 'INVESTIGATION LOG',
