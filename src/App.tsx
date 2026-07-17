@@ -630,10 +630,6 @@ export default function App() {
   };
 
   const handleObjectiveComplete = (overrides?: { apps?: string[], contacts?: any[], witnesses?: any[], messages?: any[], stats?: PlayerStats }) => {
-    setIsObjectiveMet(false);
-    setQueryResult(null);
-    setErrorMessage('');
-    
     const hasNextObjective = currentObjectiveIndex < currentLevel.objectives.length - 1;
     const finalApps = overrides?.apps || unlockedApps;
     const finalContacts = overrides?.contacts || contacts;
@@ -642,6 +638,10 @@ export default function App() {
     const finalStats = overrides?.stats || stats;
 
     if (hasNextObjective) {
+      setIsObjectiveMet(false);
+      setQueryResult(null);
+      setErrorMessage('');
+      
       const nextIdx = currentObjectiveIndex + 1;
       setCurrentObjectiveIndex(nextIdx);
       saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, finalApps, notebookContent, finalContacts, finalWitnesses, finalMessages, finalStats);
@@ -1030,10 +1030,10 @@ export default function App() {
             }
           });
         } else if (currentLevelId === 6) {
-          // STEP 10: Show Popup FIRST when clicking Complete
+          // STEP 10: Show Popup FIRST as requested
           setPopup({
             title: 'DATABASE ERROR',
-            message: 'Nama direktur terpotong. Database rusak.',
+            message: 'Nama direktur terpotong.\nDatabase rusak.',
             onClose: () => {
               setPopup(null);
               
@@ -1041,6 +1041,11 @@ export default function App() {
               setAppState('NOTEBOOK');
               const updatedNote = notebookContent + '\n\nSeseorang\nmenghapus sebagian data.';
               setNotebookContent(updatedNote);
+              
+              // Clear results after moving to notebook
+              setIsObjectiveMet(false);
+              setQueryResult(null);
+              setErrorMessage('');
               
               // STEP 11: Trigger Twist after a delay in Notebook
               setTimeout(() => {
@@ -1084,6 +1089,7 @@ export default function App() {
               }, 3000); // Stay in notebook for 3 seconds before freeze
             }
           });
+          return;
         } else if (currentLevelId === 9) {
           // Chapter 9 Ending - THE TWIST
           setIsFlickering(true);
