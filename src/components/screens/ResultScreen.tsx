@@ -111,6 +111,15 @@ export const ResultScreen: React.FC<ResultScreenProps> = ({
               </button>
             )}
             
+            {!isObjectiveMet && (
+              <button 
+                onClick={() => setAppState('TERM')}
+                className="w-full bg-transparent text-[#1b2118] py-3 font-bold uppercase text-xs border-2 border-[#1b2118] hover:bg-[#1b2118] hover:text-[#8cb07d] transition-colors"
+              >
+                BACK TO TERMINAL
+              </button>
+            )}
+            
             {isObjectiveMet && (
               <button 
                 onClick={() => handleObjectiveComplete()}

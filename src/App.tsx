@@ -571,6 +571,12 @@ export default function App() {
       setErrorMessage('');
       const met = currentObjective.validateResult(res, query);
       setIsObjectiveMet(met);
+      
+      // Allow browsing for certain tables or if the query looks like a table dump
+      const isArticleQuery = query.toLowerCase().includes('from articles');
+      const isCompanyQuery = query.toLowerCase().includes('from companies');
+      setIsBrowsingTable(isArticleQuery || isCompanyQuery);
+      
       setAppState('RESULT');
       
       const newStats = { ...stats };
@@ -865,9 +871,9 @@ export default function App() {
             });
           } else if (nextIdx === 5) {
             // After index 4 (Arunika LIKE Articles - found)
-            setNotebookContent(prev => prev + '\n\nBanyak artikel tentang kecelakaan maut Arunika.\nSopir truk menghilang secara misterius.');
+            setNotebookContent(prev => prev + '\n\nBanyak artikel tentang kecelakaan maut Arunika.\nSopir truk menghilang secara misterius.\nKasus dihentikan karena kurang bukti.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Sepertinya Arunika bukan hanya nama kejadian, tapi nama perusahaan: PT Arunika Logistics. Coba cari di database perusahaan (tabel companies).', () => {
+            showSupervisorPopup('Delapan tahun lalu... Ada orang yang juga menghilang. Sepertinya Arunika bukan hanya nama kejadian, tapi nama perusahaan: PT Arunika Logistics. Coba cari di database perusahaan (tabel companies).', () => {
               setAppState('TERM');
               setQueryString('');
             });

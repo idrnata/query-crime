@@ -11,6 +11,8 @@ export const TimelineScreen: React.FC<TimelineScreenProps> = ({ currentLevelId, 
   const allEvents = [
     { time: '8 Years Ago', event: '8 Years Ago', condition: () => currentLevelId >= 6 && notebookContent.includes('Arunika') },
     { time: '8 Years Ago', event: 'Traffic Accident', condition: () => currentLevelId >= 6 && notebookContent.includes('Kecelakaan') },
+    { time: '8 Years Ago', event: 'Rizky Survives', condition: () => currentLevelId >= 6 && notebookContent.includes('penyintas kecelakaan') },
+    { time: '8 Years Ago', event: 'Driver Missing', condition: () => currentLevelId >= 6 && notebookContent.includes('Sopir truk menghilang') },
     { time: '8 Years Ago', event: 'Investigator Assigned', condition: () => currentLevelId >= 9 },
     { time: '8 Years Ago', event: 'Investigator Deleted', condition: () => currentLevelId >= 9 && notebookContent.includes('ID 52 tidak ditemukan') },
     { time: '8 Years Ago', event: 'Case Closed (No Suspects)', condition: () => currentLevelId >= 9 && notebookContent.includes('Tidak ada tersangka') },

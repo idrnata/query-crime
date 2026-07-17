@@ -23,7 +23,7 @@ export const chapter6: Level = {
       {
         id: 2,
         title: 'Sopir Truk Menghilang Setelah Kecelakaan Arunika',
-        content: 'Pihak kepolisian melaporkan bahwa sopir truk yang terlibat dalam kecelakaan maut Arunika di Jalan Merdeka menghilang secara misterius tak lama setelah kejadian.',
+        content: 'Pihak kepolisian melaporkan bahwa sopir truk PT Arunika Logistics yang terlibat dalam kecelakaan maut di Jalan Merdeka menghilang secara misterius tak lama setelah kejadian.',
         publish_date: '2018-05-13'
       },
       {
@@ -35,13 +35,13 @@ export const chapter6: Level = {
       {
         id: 4,
         title: 'Kasus Kecelakaan Arunika Resmi Dihentikan',
-        content: 'Karena kurangnya bukti fisik dan menghilangnya saksi-saksi kunci, termasuk sopir truk, penyelidikan kasus kecelakaan PT Arunika Logistics resmi dihentikan.',
+        content: 'Karena kurangnya bukti fisik dan menghilangnya saksi-saksi kunci dari PT Arunika Logistics, termasuk sopir truk, penyelidikan kasus kecelakaan resmi dihentikan.',
         publish_date: '2018-06-01'
       },
       {
         id: 5,
         title: 'Trauma Penyintas Kecelakaan Maut Arunika',
-        content: 'Rizky Hidayat, penyintas tunggal kecelakaan maut Arunika delapan tahun lalu, dilaporkan masih mengalami trauma mendalam terkait peristiwa tersebut.',
+        content: 'Rizky Hidayat, penyintas tunggal kecelakaan maut PT Arunika Logistics delapan tahun lalu, dilaporkan masih mengalami trauma mendalam terkait peristiwa tersebut.',
         publish_date: '2018-06-15'
       }
     ],
