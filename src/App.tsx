@@ -973,124 +973,132 @@ export default function App() {
                setQueryString('');
              });
           }
-        }
-      } else {
-        // Level complete flow
-        if (currentLevelId === 5) {
-          setAppState('HOME');
-          setPopup({
-            title: 'PLAYER',
-            message: '"Hah?"\nKenapa NULL?',
-            onClose: () => {
-              setPopup({
-                title: 'SUPERVISOR RAKA',
-                message: 'NULL juga merupakan petunjuk.',
-                onClose: () => {
-                  const newNote = notebookContent + '\n\nAndi\nTidak pernah muncul\ndi CCTV.';
-                  setNotebookContent(newNote);
-                  triggerBlink('NOTEBOOK');
-                  setAppState('NOTEBOOK');
-                  
-                  setPopup({
-                    title: 'PLAYER',
-                    message: '*Player mulai curiga*\nKalau Andi tidak muncul...\nSiapa yang membawa mobilnya?',
-                    onClose: () => {
-                      setPopup({
-                        title: 'SUPERVISOR RAKA',
-                        message: 'Tepat.\nKita selama ini menganggap Andi mengemudi.\nTapi database tidak pernah mengatakan itu.\nItu hanya asumsi kita.',
-                        onClose: () => {
-                          setPopup(null);
-                          
-                          setMessages(prev => {
-                            if (prev.find(m => m.id === 'cctv_tech_msg')) return prev;
-                            const techMsg = {
-                              id: 'cctv_tech_msg',
-                              sender: 'Teknisi CCTV',
-                              subject: 'Kamera Main Gate',
-                              body: 'Maaf Pak.\nSaya baru ingat.\nKamera Main Gate sempat mati selama enam menit.',
-                              timestamp: formatTime(currentTime),
-                              read: false
-                            };
-                            const updatedMessages = [...prev, techMsg];
-                            saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, newNote, contacts, witnesses, updatedMessages);
-                            return updatedMessages;
-                          });
-                          triggerBlink('INBOX');
-                          
-                          // Now show report
-                          showSupervisorPopup('Sekarang buat laporan.', () => {
-                            setAppState('REPORT');
-                          });
-                        }
-                      });
-                    }
-                  });
-                }
-              });
-            }
-          });
-        } else if (currentLevelId === 6) {
-          // STEP 10: Show Popup FIRST as requested
-          setPopup({
-            title: 'DATABASE ERROR',
-            message: 'Nama direktur terpotong.\nDatabase rusak.',
-            onClose: () => {
-              setPopup(null);
-              
-              // THEN transition to Notebook automatically
-              setAppState('NOTEBOOK');
-              const updatedNote = notebookContent + '\n\nSeseorang\nmenghapus sebagian data.';
-              setNotebookContent(updatedNote);
-              
-              // Clear results after moving to notebook
-              setIsObjectiveMet(false);
-              setQueryResult(null);
-              setErrorMessage('');
-              
-              // STEP 11: Trigger Twist after a delay in Notebook
-              setTimeout(() => {
-                setIsFlickering(true);
-                setAppState('HOME'); // Simulate "Freeze" state by going home
+      }
+    } else {
+      // Level complete flow
+      if (currentLevelId === 5) {
+        setAppState('HOME');
+        setPopup({
+          title: 'PLAYER',
+          message: '"Hah?"\nKenapa NULL?',
+          onClose: () => {
+            setPopup({
+              title: 'SUPERVISOR RAKA',
+              message: 'NULL juga merupakan petunjuk.',
+              onClose: () => {
+                const newNote = notebookContent + '\n\nAndi\nTidak pernah muncul\ndi CCTV.';
+                setNotebookContent(newNote);
+                triggerBlink('NOTEBOOK');
+                setAppState('NOTEBOOK');
                 
-                setTimeout(() => {
-                  setPopup({
-                    title: 'SYSTEM WARNING',
-                    message: 'Unauthorized Access Detected',
-                    onClose: () => {
-                      setIsFlickering(false);
-                      setPopup(null);
-                      
-                      // Inbox masuk: Unknown Number
-                      setMessages(prevMsgs => {
-                        if (prevMsgs.find(m => m.id === 'anon_msg_6')) return prevMsgs;
-                        const anonMsg = {
-                          id: 'anon_msg_6',
-                          sender: 'Unknown Number',
-                          subject: '!!! WARNING !!!',
-                          body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
-                          timestamp: formatTime(currentTime),
-                          read: false
-                        };
-                        const updatedMsgs = [...prevMsgs, anonMsg];
-                        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, updatedNote, contacts, witnesses, updatedMsgs);
-                        return updatedMsgs;
-                      });
-                      triggerBlink('INBOX');
-
-                      setTimeout(() => {
-                        setAppState('INBOX');
-                        showSupervisorPopup('Gawat! Sistem kepolisian sedang diawasi seseorang. Seseorang mendeteksi aktivitas kita! Kirimkan laporan investigasimu segera sebelum akses kita diputus.', () => {
+                setPopup({
+                  title: 'PLAYER',
+                  message: '*Player mulai curiga*\nKalau Andi tidak muncul...\nSiapa yang membawa mobilnya?',
+                  onClose: () => {
+                    setPopup({
+                      title: 'SUPERVISOR RAKA',
+                      message: 'Tepat.\nKita selama ini menganggap Andi mengemudi.\nTapi database tidak pernah mengatakan itu.\nItu hanya asumsi kita.',
+                      onClose: () => {
+                        setPopup(null);
+                        
+                        setMessages(prev => {
+                          if (prev.find(m => m.id === 'cctv_tech_msg')) return prev;
+                          const techMsg = {
+                            id: 'cctv_tech_msg',
+                            sender: 'Teknisi CCTV',
+                            subject: 'Kamera Main Gate',
+                            body: 'Maaf Pak.\nSaya baru ingat.\nKamera Main Gate sempat mati selama enam menit.',
+                            timestamp: formatTime(currentTime),
+                            read: false
+                          };
+                          const updatedMessages = [...prev, techMsg];
+                          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, newNote, contacts, witnesses, updatedMessages);
+                          return updatedMessages;
+                        });
+                        triggerBlink('INBOX');
+                        
+                        // Now show report
+                        showSupervisorPopup('Sekarang buat laporan.', () => {
                           setAppState('REPORT');
                         });
-                      }, 2000);
-                    }
-                  });
-                }, 1500); // Show warning popup after flicker starts
-              }, 3000); // Stay in notebook for 3 seconds before freeze
-            }
-          });
-          return;
-        } else if (currentLevelId === 9) {
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      } else if (currentLevelId === 6) {
+        // STEP 10: Police Database corrupted flow
+        setPopup({
+          title: 'DATABASE ERROR',
+          message: 'Nama direktur terpotong.\nDatabase rusak.',
+          onClose: () => {
+            setPopup(null);
+            
+            // Move to Notebook
+            setAppState('NOTEBOOK');
+            setIsObjectiveMet(false);
+            setQueryResult(null);
+            setErrorMessage('');
+            
+            const updatedNote = notebookContent + '\n\nSeseorang\nmenghapus sebagian data.';
+            setNotebookContent(updatedNote);
+            triggerBlink('NOTEBOOK');
+            
+            setPopup({
+              title: 'INVESTIGATION LOG',
+              message: 'Seseorang menghapus sebagian data.',
+              onClose: () => {
+                setPopup(null);
+                
+                // STEP 11: Trigger Twist after a delay in Notebook
+                setTimeout(() => {
+                  setIsFlickering(true);
+                  setAppState('HOME'); // Simulate "Freeze" state by going home
+                  
+                  setTimeout(() => {
+                    setPopup({
+                      title: 'SYSTEM WARNING',
+                      message: 'Unauthorized Access Detected',
+                      onClose: () => {
+                        setIsFlickering(false);
+                        setPopup(null);
+                        
+                        // Inbox masuk: Unknown Number
+                        setMessages(prevMsgs => {
+                          if (prevMsgs.find(m => m.id === 'anon_msg_6')) return prevMsgs;
+                          const anonMsg = {
+                            id: 'anon_msg_6',
+                            sender: 'Unknown Number',
+                            subject: '!!! WARNING !!!',
+                            body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
+                            timestamp: formatTime(currentTime),
+                            read: false
+                          };
+                          const updatedMsgs = [...prevMsgs, anonMsg];
+                          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, updatedNote, contacts, witnesses, updatedMsgs);
+                          return updatedMsgs;
+                        });
+                        triggerBlink('INBOX');
+
+                        setTimeout(() => {
+                          setAppState('INBOX');
+                          showSupervisorPopup('Gawat! Sistem kepolisian sedang diawasi seseorang. Seseorang mendeteksi aktivitas kita! Kirimkan laporan investigasimu segera sebelum akses kita diputus.', () => {
+                            setAppState('REPORT');
+                          });
+                        }, 2000);
+                      }
+                    });
+                  }, 1500); // Show warning popup after flicker starts
+                }, 3000); // Stay in notebook for 3 seconds before freeze
+              }
+            });
+          }
+        });
+        return;
+      } else if (currentLevelId === 9) {
           // Chapter 9 Ending - THE TWIST
           setIsFlickering(true);
           setAppState('HOME');
