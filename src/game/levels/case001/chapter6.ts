@@ -120,6 +120,6 @@ export const chapter6: Level = {
       'Sopir truk adalah Andi Prasetyo.'
     ],
     correctIndex: 2,
-    conclusion: 'Supervisor Raka:\nLaporan diterima.\nTepat sekali. Rizky selamat dari kecelakaan 8 tahun lalu yang melibatkan PT Arunika Logistics.\nData direktur perusahaan di database juga sengaja dirusak (R....).\n\nSaya rasa kita tidak lagi menyelidiki orang hilang.\nKita sedang menyelidiki seseorang yang bisa menghapus sejarah.\n\n*** CHAPTER 6 COMPLETE ***\nReward: +320 XP\nRank: Senior Investigator\nUnlocked: Browser, LIKE, Wildcard Search, Companies Database'
+    conclusion: 'Supervisor Raka:\nLaporan diterima.\nTepat sekali. Rizky selamat dari kecelakaan 8 tahun lalu yang melibatkan PT Arunika Logistics.\nData pemilik perusahaan juga ditemukan dalam keadaan rusak: R....\n\nSaya rasa kita tidak lagi menyelidiki orang hilang.\nKita sedang menyelidiki seseorang yang bisa menghapus sejarah.\n\n*** CHAPTER 6 COMPLETE ***\nReward: +320 XP\nRank: Senior Investigator\nUnlocked: Browser, LIKE, Wildcard Search, Companies Database'
   }
 };

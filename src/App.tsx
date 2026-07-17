@@ -596,23 +596,6 @@ export default function App() {
       if (met) {
         saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, newStats);
       } else {
-        if (currentLevelId === 6 && currentObjectiveIndex === 0) {
-          if (queryString.toLowerCase().includes('=') && !queryString.toLowerCase().includes('like')) {
-            setPopup({
-              title: 'Supervisor Raka',
-              message: 'Hasilnya kosong? Coba perhatikan baik-baik. Nama Rizky mungkin tidak tertulis persis seperti itu di judul berita.\n\nSQL memiliki operator LIKE untuk mencari pola teks yang fleksibel.',
-              onClose: () => {
-                setPopup({
-                  title: 'NEW LESSON',
-                  message: 'LIKE Operator\n\nDigunakan untuk mencari teks yang mengandung kata tertentu.\n\nContoh:\nWHERE title LIKE \'%Rizky%\';\n\nTanda % berarti "apa pun di sini".',
-                  onClose: () => {
-                    setPopup(null);
-                  }
-                });
-              }
-            });
-          }
-        }
         saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, newStats);
       }
     } catch (e: any) {
@@ -845,41 +828,47 @@ export default function App() {
             // STEP 4: After Rizky Hidayat exact search (0 rows)
             setNotebookContent(prev => prev + '\n\nTidak ditemukan.\nApakah dia memang tidak pernah diberitakan?');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Mungkin caramu mencari salah. Tidak semua orang ditulis dengan nama lengkap. Kadang hanya nama depan atau belakang.', () => {
+            showSupervisorPopup('Atau... Kamu mencari dengan cara yang salah.', () => {
               setPopup({
-                title: 'NEW LESSON UNLOCKED',
-                message: 'OPERATOR LIKE\n\nGunakan LIKE dan wildcard (%) untuk mencari teks yang mengandung kata tertentu.\n\nContoh: WHERE title LIKE \'%Rizky%\'',
+                title: 'Supervisor Raka',
+                message: 'Tidak semua orang ditulis dengan nama lengkap. Kadang hanya nama depan. Kadang hanya nama belakang. Gunakan pencarian yang lebih fleksibel.',
                 onClose: () => {
-                  setPopup(null);
-                  setAppState('TERM');
-                  setQueryString('');
+                  setPopup({
+                    title: 'NEW LESSON UNLOCKED',
+                    message: 'LIKE\n\nUnlocked\n\nContoh:\nSELECT *\nFROM articles\nWHERE title\nLIKE \'%Rizky%\';',
+                    onClose: () => {
+                      setPopup(null);
+                      setAppState('TERM');
+                      setQueryString('');
+                    }
+                  });
                 }
               });
             });
           } else if (nextIdx === 2) {
             // STEP 5: After LIKE '%Rizky%' (Found)
-            setNotebookContent(prev => prev + '\n\nRizky pernah mengalami kecelakaan.');
+            setNotebookContent(prev => prev + '\n\n?\nRizky pernah mengalami kecelakaan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Menarik. Rizky ternyata penyintas kecelakaan. Sekarang coba cari apakah nama Andi pernah disebut publik.', () => {
+            showSupervisorPopup('Menarik. Rizky ternyata penyintas kecelakaan. Sekarang coba cari nama Andi.', () => {
               setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 3) {
             // STEP 6: After LIKE '%Andi%' (0 rows)
-            setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul.');
+            setNotebookContent(prev => prev + '\n\nAndi\ntidak pernah muncul.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('Andi bersih di media. Tapi coba perhatikan nama perusahaan di artikel kecelakaan Rizky: PT Arunika Logistics. Coba telusuri kata itu.', () => {
               setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 4) {
-            // STEP 7 & 8: After LIKE '%Arunika%' (Found 5 articles)
-            setNotebookContent(prev => prev + '\n\nArunika -> Kecelakaan -> Rizky\n\nSopir truk menghilang setelah kecelakaan.\nData kendaraan belum ditemukan.\nKasus dihentikan.');
+            // STEP 7 & 8: After LIKE '%Arunika%' (Found articles)
+            setNotebookContent(prev => prev + '\n\nArunika\n↓\nKecelakaan\n↓\nRizky\n\nSopir truk menghilang.\nRizky adalah penyintas kecelakaan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Delapan tahun lalu... Ada orang yang juga menghilang. Saya menemukan sesuatu, perusahaan itu masih aktif.', () => {
+            showSupervisorPopup('Delapan tahun lalu... Ada orang yang juga menghilang. Saya menemukan sesuatu. Nama perusahaan itu masih aktif.', () => {
               setPopup({
                 title: 'NEW DATABASE UNLOCKED',
-                message: 'COMPANIES DATABASE\n\nAccess to national company registration records is now granted.',
+                message: 'COMPANIES\n\nUnlocked',
                 onClose: () => {
                   setPopup(null);
                   setAppState('TERM');
@@ -1033,7 +1022,7 @@ export default function App() {
         });
       } else if (currentLevelId === 6) {
         // STEP 10: Police Database corrupted flow
-        // Transition to Notebook IMMEDIATELY so the user sees a visual change
+        // Transition to Notebook IMMEDIATELY
         setAppState('NOTEBOOK');
         setIsObjectiveMet(false);
         setQueryResult(null);
@@ -1223,15 +1212,22 @@ export default function App() {
           setShowUnknownMessage(true);
         }, 3000);
       } else if (currentLevelId === 6) {
-        // Trigger call from Raka as the ending of Chapter 6
+        // Ending Chapter 6 - Supervisor menelepon
         setTimeout(() => {
-          setCallStatus('DIALING');
-          setActiveCallContact(contacts.find(c => c.id === 'raka'));
-          setCallStep(666); // Special code for ending
-          setAppState('CALLING');
-          
-          // Simulate connecting
-          setTimeout(() => setCallStatus('ACTIVE'), 2000);
+          setPopup({
+            title: 'INCOMING CALL: SUPERVISOR RAKA',
+            message: 'Supervisor Raka menelepon...\n\n"Saya rasa kita tidak lagi menyelidiki orang hilang."\n\n(Diam beberapa detik)\n\n"Kita sedang menyelidiki seseorang yang bisa menghapus sejarah."',
+            onClose: () => {
+              setPopup({
+                title: 'CALL TERMINATED',
+                message: 'Telepon terputus.\nLayar gelap.',
+                onClose: () => {
+                  setPopup(null);
+                  setAppState('QUEST_COMPLETE');
+                }
+              });
+            }
+          });
         }, 1000);
       } else {
         setAppState('QUEST_COMPLETE');
@@ -1368,7 +1364,7 @@ export default function App() {
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CCTV DATABASE (cameras, footage)\n\nNew query capabilities unlocked: SQL LEFT JOIN';
     } else if (currentLevelId === 6) {
       popupTitle = 'DIGITAL ARCHIVE ACCESS';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- POLICE SECURE BROWSER\n- COMPANIES DATABASE\n\nNew query capabilities unlocked: LIKE with % wildcards';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- POLICE SECURE BROWSER\n- COMPANIES DATABASE\n\nNew query capabilities unlocked: LIKE with % wildcards\n\nSupervisor Raka:\nKamera memang mati selama enam menit. Tapi orang tidak bisa menghapus semua jejaknya. Setiap orang meninggalkan jejak digital. Saya membuka akses ke Arsip Digital Nasional.';
     } else if (currentLevelId === 7) {
       popupTitle = 'GPS TRACKING INTERFACE';
       popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- GPS MAPS TRACKER\n  (locations, routes, checkpoints)\n\nNew query capabilities unlocked: ORDER BY, LIMIT';
@@ -1575,17 +1571,7 @@ export default function App() {
             ALL_APPS={ALL_APPS} 
             clearBlink={clearBlink} 
             setAppState={setAppState} 
-            onAppLaunch={(appId) => {
-              if (appId === 'BROWSER' && currentLevelId === 6 && currentObjectiveIndex === 0 && !popup) {
-                showSupervisorPopup('Semua berita telah diindeks ke database. Kamu tetap menggunakan SQL.', () => {
-                  setPopup({
-                    title: `${firstName} Tersenyum`,
-                    message: 'Saya mengerti.',
-                    onClose: () => setPopup(null)
-                  });
-                });
-              }
-            }}
+            onAppLaunch={() => {}}
           />
         );
       case 'INBOX':
