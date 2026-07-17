@@ -816,16 +816,19 @@ export default function App() {
             setNotebookContent(prev => prev + '\n\nRizky pernah mengalami kecelakaan.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('Menarik. Cari nama Andi.', () => {
+              setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 3) {
             setNotebookContent(prev => prev + '\n\nAndi tidak pernah muncul.');
             setAppState('NOTEBOOK');
             showSupervisorPopup('Hasil kosong. Coba cari nama Prasetyo.', () => {
+              setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 4) {
             showSupervisorPopup('Ada nama sebuah perusahaan di artikel sebelumnya. Coba cari PT Arunika Logistics.', () => {
+              setAppState('TERM');
               setQueryString('');
             });
           } else if (nextIdx === 5) {
@@ -841,49 +844,6 @@ export default function App() {
                 });
               }
             });
-          } else if (nextIdx === 6) {
-            // STEP 11 - Unauthorized Access
-            setIsFlickering(true);
-            setAppState('HOME');
-            setTimeout(() => {
-              setPopup({
-                title: 'SYSTEM WARNING',
-                message: 'UNAUTHORIZED ACCESS DETECTED',
-                onClose: () => {
-                  setIsFlickering(false);
-                  setPopup(null);
-                  
-                  setNotebookContent(prev => prev + '\n\nSeseorang menghapus sebagian data perusahaan.');
-                  setAppState('NOTEBOOK');
-                  
-                  // Send anonymous message
-                  setMessages(prev => {
-                    if (prev.find(m => m.id === 'anon_msg_6')) return prev;
-                    const anonMsg = {
-                      id: 'anon_msg_6',
-                      sender: 'Unknown Number',
-                      subject: '!!! WARNING !!!',
-                      body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
-                      timestamp: formatTime(currentTime),
-                      read: false
-                    };
-                    const updated = [...prev, anonMsg];
-                    saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, updated);
-                    return updated;
-                  });
-                  triggerBlink('INBOX');
-                  
-                  setTimeout(() => {
-                    showSupervisorPopup('Kerja bagus. Sepertinya data direktur perusahaan memang disamarkan dan sistem kita disusupi! Seseorang mendeteksi pencarian kita. Kirimkan laporan fakta investigasimu segera.', () => {
-                      setAppState('REPORT');
-                    });
-                  }, 2000);
-                }
-              });
-            }, 1500);
-          } else {
-            setAppState('TERM');
-            setQueryString('');
           }
         }
       } else {
@@ -942,9 +902,45 @@ export default function App() {
             }
           });
         } else if (currentLevelId === 6) {
-          showSupervisorPopup('Laporan sedang diproses...', () => {
-            setAppState('HOME');
-          });
+          // STEP 11 - Unauthorized Access (Chapter 6 Ending)
+          setIsFlickering(true);
+          setAppState('HOME');
+          setTimeout(() => {
+            setPopup({
+              title: 'SYSTEM WARNING',
+              message: 'UNAUTHORIZED ACCESS DETECTED',
+              onClose: () => {
+                setIsFlickering(false);
+                setPopup(null);
+                
+                setNotebookContent(prev => prev + '\n\nSeseorang menghapus sebagian data perusahaan.');
+                setAppState('NOTEBOOK');
+                
+                // Send anonymous message
+                setMessages(prev => {
+                  if (prev.find(m => m.id === 'anon_msg_6')) return prev;
+                  const anonMsg = {
+                    id: 'anon_msg_6',
+                    sender: 'Unknown Number',
+                    subject: '!!! WARNING !!!',
+                    body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
+                    timestamp: formatTime(currentTime),
+                    read: false
+                  };
+                  const updated = [...prev, anonMsg];
+                  saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, updated);
+                  return updated;
+                });
+                triggerBlink('INBOX');
+                
+                setTimeout(() => {
+                  showSupervisorPopup('Kerja bagus. Sepertinya data direktur perusahaan memang disamarkan dan sistem kita disusupi! Seseorang mendeteksi pencarian kita. Kirimkan laporan fakta investigasimu segera.', () => {
+                    setAppState('REPORT');
+                  });
+                }, 2000);
+              }
+            });
+          }, 1500);
         } else {
           setIsLevelComplete(true);
           showSupervisorPopup('Sekarang buat laporan.', () => {
