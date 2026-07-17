@@ -963,9 +963,10 @@ export default function App() {
              });
           }
       }
-    } else {
-      // Level complete flow - Save progress first to ensure consistency
-      saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, finalApps, notebookContent, finalContacts, finalWitnesses, finalMessages, finalStats);
+    }
+  } else {
+    // Level complete flow - Save progress first to ensure consistency
+    saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, finalApps, notebookContent, finalContacts, finalWitnesses, finalMessages, finalStats);
 
       if (currentLevelId === 5) {
         setAppState('HOME');
@@ -1200,7 +1201,6 @@ export default function App() {
           });
         }
       }
-    }
   };
 
   const handleReportSelect = (idx: number) => {
