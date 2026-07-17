@@ -1018,48 +1018,59 @@ export default function App() {
             }
           });
         } else if (currentLevelId === 6) {
-          // After index 5 (Arunika Company found) - STEP 10 & 11
-          const updatedNote = notebookContent + '\n\nPT Arunika Logistics ditemukan. Masih aktif.\nSeseorang menghapus sebagian data perusahaan.';
-          setNotebookContent(updatedNote);
-          
-          // Step 11: Flicker and Freeze
-          setIsFlickering(true);
-          setAppState('HOME'); // Simulate "Freeze" by going home and flickering
-          
-          setTimeout(() => {
-            setPopup({
-              title: 'SYSTEM WARNING',
-              message: 'UNAUTHORIZED ACCESS DETECTED',
-              onClose: () => {
-                setIsFlickering(false);
-                setPopup(null);
-                
-                // Inbox masuk: Unknown Number
-                setMessages(prevMsgs => {
-                  if (prevMsgs.find(m => m.id === 'anon_msg_6')) return prevMsgs;
-                  const anonMsg = {
-                    id: 'anon_msg_6',
-                    sender: 'Unknown Number',
-                    subject: '!!! WARNING !!!',
-                    body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
-                    timestamp: formatTime(currentTime),
-                    read: false
-                  };
-                  const updatedMsgs = [...prevMsgs, anonMsg];
-                  saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, updatedNote, contacts, witnesses, updatedMsgs);
-                  return updatedMsgs;
-                });
-                triggerBlink('INBOX');
+          // STEP 10: Database Error Popup
+          setPopup({
+            title: 'DATABASE ERROR',
+            message: 'Nama direktur terpotong. Sebagian data perusahaan PT Arunika Logistics rusak atau sengaja dihapus.',
+            onClose: () => {
+              setPopup(null);
+              // Transition to Notebook Automatically
+              setAppState('NOTEBOOK');
+              const updatedNote = notebookContent + '\n\nPT Arunika Logistics ditemukan. Masih aktif.\nSeseorang menghapus sebagian data.';
+              setNotebookContent(updatedNote);
+              
+              // STEP 11: Trigger Twist after a delay in Notebook
+              setTimeout(() => {
+                setIsFlickering(true);
+                setAppState('HOME'); // Simulate "Freeze" state by going home
                 
                 setTimeout(() => {
-                  setAppState('INBOX');
-                  showSupervisorPopup('Gawat! Sistem kepolisian sedang diawasi seseorang. Data direktur perusahaan (R....) sengaja dirusak. Segera kirim laporan hasil temuanmu sebelum kita diputus aksesnya!', () => {
-                    setAppState('REPORT');
+                  setPopup({
+                    title: 'SYSTEM WARNING',
+                    message: 'Unauthorized Access Detected',
+                    onClose: () => {
+                      setIsFlickering(false);
+                      setPopup(null);
+                      
+                      // Inbox masuk: Unknown Number
+                      setMessages(prevMsgs => {
+                        if (prevMsgs.find(m => m.id === 'anon_msg_6')) return prevMsgs;
+                        const anonMsg = {
+                          id: 'anon_msg_6',
+                          sender: 'Unknown Number',
+                          subject: '!!! WARNING !!!',
+                          body: 'Kamu mencari kejadian delapan tahun lalu. Itu kesalahan terbesar yang bisa kamu lakukan.',
+                          timestamp: formatTime(currentTime),
+                          read: false
+                        };
+                        const updatedMsgs = [...prevMsgs, anonMsg];
+                        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, updatedNote, contacts, witnesses, updatedMsgs);
+                        return updatedMsgs;
+                      });
+                      triggerBlink('INBOX');
+
+                      setTimeout(() => {
+                        setAppState('INBOX');
+                        showSupervisorPopup('Gawat! Sistem kepolisian sedang diawasi seseorang. Seseorang mendeteksi aktivitas kita! Kirimkan laporan investigasimu segera sebelum akses kita diputus.', () => {
+                          setAppState('REPORT');
+                        });
+                      }, 2000);
+                    }
                   });
-                }, 2000);
-              }
-            });
-          }, 2000);
+                }, 1500); // Show warning popup after flicker starts
+              }, 3000); // Stay in notebook for 3 seconds before freeze
+            }
+          });
         } else if (currentLevelId === 9) {
           // Chapter 9 Ending - THE TWIST
           setIsFlickering(true);
