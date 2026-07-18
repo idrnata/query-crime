@@ -10,6 +10,7 @@ import { formatTime, formatDate } from './utils/date';
 import { StatusBar } from './components/ui/StatusBar';
 import { Popup } from './components/ui/Popup';
 import { NameInput } from './components/ui/NameInput';
+import { DevConsole } from './components/ui/DevConsole';
 
 // Screens
 import { BootScreen } from './components/screens/BootScreen';
@@ -316,6 +317,9 @@ export default function App() {
     setQueryString('');
     setQueryResult(null);
     setIsObjectiveMet(false);
+    
+    const newUnlocked = Array.from({ length: chapterId }, (_, i) => i + 1);
+    setUnlockedLevelIds(newUnlocked);
     
     let baseApps = ['INBOX', 'CASE_FILES', 'DB_LIST', 'NOTEBOOK', 'RANK', 'SETTINGS'];
     if (chapterId >= 2) baseApps.push('CONTACTS');
@@ -1894,6 +1898,41 @@ export default function App() {
             onSubmit={() => handleNameSubmit(nameInput)} 
           />
         )}
+
+        <DevConsole
+          currentLevelId={currentLevelId}
+          currentObjectiveIndex={currentObjectiveIndex}
+          unlockedLevelIds={unlockedLevelIds}
+          appState={appState}
+          unlockedApps={unlockedApps}
+          levels={LEVELS}
+          onJumpToChapter={handleJumpToChapter}
+          onSetObjectiveIndex={(idx) => {
+            setCurrentObjectiveIndex(idx);
+            setIsObjectiveMet(false);
+            saveProgress(currentLevelId, idx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats);
+          }}
+          onSetAppState={setAppState}
+          onUnlockAllApps={() => {
+            const allAppIds = ALL_APPS.map(app => app.id);
+            setUnlockedApps(allAppIds);
+            saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, allAppIds, notebookContent, contacts, witnesses, messages, stats);
+          }}
+          onAddXP={(amount) => {
+            setStats(prev => {
+              const updated = { ...prev, xp: prev.xp + amount };
+              saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, updated);
+              return updated;
+            });
+          }}
+          onSetBattery={(amount) => {
+            setStats(prev => {
+              const updated = { ...prev, battery: amount };
+              saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, updated);
+              return updated;
+            });
+          }}
+        />
       </div>
 
       {/* Persistent Bottom Action Bar */}
