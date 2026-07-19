@@ -93,8 +93,8 @@ export const chapter5: Level = {
     },
     {
       id: 4,
-      story: 'Supervisor Raka: "Tampilkan semua pengunjung rumah sakit. Lalu cocokkan dengan CCTV menggunakan LEFT JOIN. Kita ingin melihat siapa yang tidak muncul di CCTV."',
-      goal: 'Bandingkan data pengunjung (visitors) dengan rekaman CCTV (footage) menggunakan LEFT JOIN.',
+      story: 'Supervisor Raka: "Tampilkan semua pengunjung rumah sakit, lalu bandingkan dengan seluruh rekaman kamera sekaligus — termasuk yang tidak cocok."',
+      goal: 'Bandingkan data pengunjung (visitors) dengan rekaman CCTV (footage), termasuk pengunjung yang tidak muncul di rekaman manapun.',
       availableTokens: ['SELECT', 'v.visitor_name', ',', 'f.capture_time', 'FROM', 'visitors', 'v', 'LEFT', 'JOIN', 'footage', 'f', 'ON', 'v.visitor_name', '=', 'f.person_name'],
       validateResult: (res) => res && res.length === 4 && res.find(r => r.visitor_name === 'Andi Prasetyo' && r.capture_time === null)
     }
@@ -107,6 +107,6 @@ export const chapter5: Level = {
       'Semua orang terekam masuk dan keluar dengan tertib di waktu yang tepat.'
     ],
     correctIndex: 1,
-    conclusion: 'Supervisor Raka:\nLaporan diterima.\nTepat sekali. Andi tidak pernah muncul di CCTV.\nSiapa yang sebenarnya mengemudikan mobilnya?\n\nUnknown Number: Kamu akhirnya menemukan enam menit yang hilang. Sayangnya... Yang hilang bukan hanya rekamannya.\n\n*** CHAPTER 5 COMPLETE ***\nReward: +250 XP\nRank: Investigator II\nUnlocked: CCTV Database, LEFT JOIN'
+    conclusion: 'Supervisor Raka:\nLaporan diterima.\nTepat sekali. Andi tidak pernah muncul di CCTV.\nSiapa yang sebenarnya mengemudikan mobilnya?\n\nUnknown Number: Kamu akhirnya menemukan enam menit yang hilang. Sayangnya... Yang hilang bukan hanya rekamannya.\n\n*** CHAPTER 5 COMPLETE ***\nUnlocked: CCTV Database'
   }
 };

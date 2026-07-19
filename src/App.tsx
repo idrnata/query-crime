@@ -787,28 +787,15 @@ export default function App() {
                   
                   setPopup({
                     title: 'SUPERVISOR RAKA',
-                    message: '*Supervisor tersenyum*\n\nAda satu teknik lagi.\nTidak semua data memiliki pasangan.',
+                    message: '*Supervisor tersenyum*\n\nAda satu teknik lagi. Tidak semua data memiliki pasangan.\n\nCoba lihat semua pengunjung sekaligus, lalu bandingkan dengan seluruh rekaman kamera — termasuk yang tidak cocok.',
                     onClose: () => {
-                      setPopup({
-                        title: 'NEW LESSON',
-                        message: 'LEFT JOIN\n\nUnlocked',
-                        onClose: () => {
-                          setPopup({
-                            title: 'TUTORIAL',
-                            message: 'Supervisor memberikan contoh sederhana.\n\nINNER JOIN hanya menampilkan data yang cocok di kedua tabel.\nTapi bagaimana jika kamu ingin mencari siapa yang tidak muncul di CCTV?\n\n(Pemain belum pernah memikirkan itu...)',
-                            onClose: () => {
-                              setPopup(null);
-                              showSupervisorPopup('Gunakan LEFT JOIN untuk membandingkan tabel visitors dengan tabel footage.');
-                              setAppState('TERM');
-                              setQueryString('');
-                              if (!unlockedApps.includes('TIMELINE')) {
-                                setUnlockedApps(prev => [...prev, 'TIMELINE']);
-                                triggerBlink('TIMELINE');
-                              }
-                            }
-                          });
-                        }
-                      });
+                      setPopup(null);
+                      setAppState('TERM');
+                      setQueryString('');
+                      if (!unlockedApps.includes('TIMELINE')) {
+                        setUnlockedApps(prev => [...prev, 'TIMELINE']);
+                        triggerBlink('TIMELINE');
+                      }
                     }
                   });
                 }, 4000);
@@ -1337,7 +1324,7 @@ export default function App() {
       popupMessage = 'MISSION ACCEPTED\n\nNEW FEATURE UNLOCKED:\n- CHRONOLOGICAL TIMELINE SCREEN';
     } else if (currentLevelId === 5) {
       popupTitle = 'CCTV SYSTEM GRANTED';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CCTV DATABASE (cameras, footage)\n\nNew query capabilities unlocked: SQL LEFT JOIN';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CCTV DATABASE (cameras, footage)';
     } else if (currentLevelId === 6) {
       popupTitle = 'DIGITAL ARCHIVE ACCESS';
       popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- POLICE SECURE BROWSER\n- COMPANIES DATABASE\n\nNew query capabilities unlocked: LIKE with % wildcards\n\nSupervisor Raka:\nKamera memang mati selama enam menit. Tapi orang tidak bisa menghapus semua jejaknya. Setiap orang meninggalkan jejak digital. Saya membuka akses ke Arsip Digital Nasional.';
