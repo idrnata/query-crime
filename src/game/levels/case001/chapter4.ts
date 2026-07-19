@@ -49,13 +49,13 @@ export const chapter4: Level = {
     {
       id: 1,
       story: 'Cari siapa saja yang berada di rumah sakit antara pukul 09:00 dan 09:30.',
-      goal: "Gunakan BETWEEN untuk mencari pengunjung di rentang waktu '09:00' dan '09:30' pada tabel visitors.",
+      goal: "Cari semua pengunjung yang datang di rentang waktu 09:00 sampai 09:30 pada tabel visitors.",
       availableTokens: ['SELECT', '*', 'FROM', 'visitors', 'WHERE', 'visit_time', 'BETWEEN', "'09:00'", 'AND', "'09:30'"],
       validateResult: (res) => res && res.length === 3 && res.some(r => r.visitor_name === 'Budi Santoso')
     },
     {
       id: 2,
-      story: 'Supervisor: "Jangan fokus ke orangnya. Fokus ke pasien yang mereka kunjungi. Masih ingat JOIN?"',
+      story: 'Supervisor: "Jangan fokus ke orangnya. Fokus ke pasien yang mereka kunjungi."',
       goal: 'Hubungkan tabel visitors (alias v) dan patients (alias p) berdasarkan patient_id untuk melihat siapa menemui siapa di rentang waktu tersebut.',
       availableTokens: [
         'SELECT', 'v.visitor_name', ',', 'p.name', ',', 'v.visit_time', 
@@ -92,7 +92,7 @@ export const chapter4: Level = {
     {
       id: 6,
       story: 'Ada tiga kendaraan. Sekarang hubungkan semuanya untuk mengetahui siapa pemilik dari kendaraan-kendaraan tersebut.',
-      goal: 'Lakukan triple JOIN antara parking (alias p), vehicles (alias v), dan citizens (alias c) untuk menampilkan nama pemilik, plat nomor, dan waktu keluar untuk kendaraan yang keluar di rentang waktu tersebut.',
+      goal: 'Hubungkan tabel parking (alias p), vehicles (alias v), dan citizens (alias c) sekaligus untuk menampilkan nama pemilik, plat nomor, dan waktu keluar dari ketiga kendaraan tersebut.',
       availableTokens: [
         'SELECT', 'c.name', ',', 'v.plate_number', ',', 'p.exit_time', 
         'FROM', 'parking', 'p', 
@@ -111,6 +111,6 @@ export const chapter4: Level = {
       'Siska'
     ],
     correctIndex: 1,
-    conclusion: 'Supervisor Raka:\nKronologi berhasil disusun. Rudi juga menemui Rizky.\nTiga kendaraan keluar sekitar waktu Rizky pulang. Kendaraan Andi adalah yang paling mencurigakan.\n\nUnknown Number: Kamu terlalu lambat. Kalau ingin menemukan Budi... Cari tempat yang tidak pernah tercatat di database.\n\n*** CHAPTER 4 COMPLETE ***\nReward: +220 XP\nRank: Investigator\nUnlocked: Timeline, Multi JOIN, BETWEEN'
+    conclusion: 'Supervisor Raka:\nKronologi berhasil disusun. Rudi juga menemui Rizky.\nTiga kendaraan keluar sekitar waktu Rizky pulang. Kendaraan Andi adalah yang paling mencurigakan.\n\nUnknown Number: Kamu terlalu lambat. Kalau ingin menemukan Budi... Cari tempat yang tidak pernah tercatat di database.\n\n*** CHAPTER 4 COMPLETE ***\nUnlocked: Timeline'
   }
 };

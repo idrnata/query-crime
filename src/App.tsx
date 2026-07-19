@@ -1334,7 +1334,7 @@ export default function App() {
       popupMessage = 'MISSION ACCEPTED\n\nDATA UPDATED:\n- Parking Log (entri baru)\n\nNew query capabilities unlocked: menggabungkan dua tabel sekaligus';
     } else if (currentLevelId === 4) {
       popupTitle = 'NEW INVESTIGATION TOOL';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW FEATURE UNLOCKED:\n- CHRONOLOGICAL TIMELINE SCREEN\n\nNew query capabilities unlocked: BETWEEN, Multi-Table JOINs';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW FEATURE UNLOCKED:\n- CHRONOLOGICAL TIMELINE SCREEN';
     } else if (currentLevelId === 5) {
       popupTitle = 'CCTV SYSTEM GRANTED';
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CCTV DATABASE (cameras, footage)\n\nNew query capabilities unlocked: SQL LEFT JOIN';
