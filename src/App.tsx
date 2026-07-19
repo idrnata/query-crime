@@ -85,13 +85,10 @@ export default function App() {
   const [callStep, setCallStep] = useState(0);
 
   const [stats, setStats] = useState<PlayerStats>({
-    xp: 0,
     queriesRun: 0,
     successfulQueries: 0,
-    accuracy: 100,
     hintsUsed: 0,
     casesCompleted: 0,
-    achievements: [],
     battery: 100
   });
   const [evidenceMetadata, setEvidenceMetadata] = useState<Record<string, EvidenceMetadata>>({});
@@ -589,11 +586,6 @@ export default function App() {
       if (met) {
         newStats.successfulQueries += 1;
       }
-      newStats.accuracy = Math.round((newStats.successfulQueries / newStats.queriesRun) * 100);
-      
-      if (queryString.toUpperCase().includes('JOIN') && !newStats.achievements.includes('Join Specialist')) {
-        newStats.achievements.push('Join Specialist');
-      }
       
       setStats(newStats);
       
@@ -610,7 +602,6 @@ export default function App() {
       
       const newStats = { ...stats };
       newStats.queriesRun += 1;
-      newStats.accuracy = Math.round((newStats.successfulQueries / newStats.queriesRun) * 100);
       setStats(newStats);
       saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, newStats);
     }
@@ -1231,19 +1222,8 @@ export default function App() {
       
       const newStats = { 
         ...stats, 
-        xp: stats.xp + (currentLevelId === 1 ? 100 : currentLevelId === 2 ? 120 : currentLevelId === 3 ? 180 : currentLevelId === 4 ? 220 : currentLevelId === 5 ? 250 : currentLevelId === 6 ? 320 : currentLevelId === 9 ? 700 : currentLevelId === 10 ? 850 : currentLevelId === 11 ? 1000 : 300),
         casesCompleted: stats.casesCompleted + 1 
       };
-      
-      if (newStats.casesCompleted === 1 && !newStats.achievements.includes('SQL Rookie')) {
-        newStats.achievements.push('SQL Rookie');
-      }
-      if (newStats.casesCompleted === 2 && !newStats.achievements.includes('Junior Detective')) {
-        newStats.achievements.push('Junior Detective');
-      }
-      if (newStats.casesCompleted === 3 && !newStats.achievements.includes('Detective')) {
-        newStats.achievements.push('Detective');
-      }
       setStats(newStats);
       
       setMessages(prev => {
@@ -1917,13 +1897,6 @@ export default function App() {
             const allAppIds = ALL_APPS.map(app => app.id);
             setUnlockedApps(allAppIds);
             saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, allAppIds, notebookContent, contacts, witnesses, messages, stats);
-          }}
-          onAddXP={(amount) => {
-            setStats(prev => {
-              const updated = { ...prev, xp: prev.xp + amount };
-              saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, updated);
-              return updated;
-            });
           }}
           onSetBattery={(amount) => {
             setStats(prev => {

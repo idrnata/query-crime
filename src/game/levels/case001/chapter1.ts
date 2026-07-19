@@ -20,9 +20,9 @@ export const chapter1: Level = {
       { id: 4, plate_number: 'C2222CC', brand: 'Mitsubishi', model: 'Pajero', color: 'Black', owner_id: 310 }
     ],
     owners: [
-      { id: 101, name: 'Andi', address: 'Jl Sudirman 10', phone: '08551234' },
+      { id: 101, name: 'Deni', address: 'Jl Sudirman 10', phone: '08551234' },
       { id: 205, name: 'Siti', address: 'Jl Anggrek 5', phone: '08119876' },
-      { id: 310, name: 'Rudi', address: 'Jl Mawar 22', phone: '08775555' },
+      { id: 310, name: 'Wawan Setiadi', address: 'Jl Mawar 22', phone: '08775555' },
       { id: 482, name: 'Budi Santoso', address: 'Jl Melati 15', phone: '08124444' }
     ],
     parking: [

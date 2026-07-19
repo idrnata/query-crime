@@ -1,5 +1,5 @@
 import React from 'react';
-import { Award, Zap, Trophy, Target, MapPin } from 'lucide-react';
+import { Award, Zap, Trophy, MapPin } from 'lucide-react';
 import { PlayerStats } from '../../types';
 
 interface StatisticsScreenProps {
@@ -9,7 +9,7 @@ interface StatisticsScreenProps {
 
 export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ stats, isThreatMode }) => {
   return (
-    <div className="flex flex-col h-full bg-black text-[#8cb07d] font-mono p-6">
+    <div className="flex flex-col h-full bg-black text-[#8cb07d] font-mono p-6 text-left">
       <div className="mb-8 border-b border-[#8cb07d]/30 pb-4">
         <h1 className="text-xl font-bold tracking-widest">SYSTEM STATISTICS</h1>
         <p className="text-[10px] opacity-50 uppercase">Investigation Metadata Summary</p>
@@ -29,14 +29,6 @@ export const StatisticsScreen: React.FC<StatisticsScreenProps> = ({ stats, isThr
           <div>
             <div className="text-[10px] font-bold opacity-50">EVIDENCE COLLECTED</div>
             <div className="text-3xl font-bold">{isThreatMode ? '49' : '31'}</div>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-6 animate-in slide-in-from-left duration-1000">
-          <Target size={32} />
-          <div>
-            <div className="text-[10px] font-bold opacity-50">ANALYSIS ACCURACY</div>
-            <div className="text-3xl font-bold">{isThreatMode ? '97%' : `${stats.accuracy}%`}</div>
           </div>
         </div>
 

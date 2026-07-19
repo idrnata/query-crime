@@ -23,9 +23,9 @@ export const chapter5: Level = {
       { plate_number: 'B1182AA', owner_id: 4 }
     ],
     owners: [
-      { id: 101, name: 'Andi', address: 'Jl Sudirman 10', phone: '08551234' },
+      { id: 101, name: 'Deni', address: 'Jl Sudirman 10', phone: '08551234' },
       { id: 205, name: 'Siti', address: 'Jl Anggrek 5', phone: '08119876' },
-      { id: 310, name: 'Rudi', address: 'Jl Mawar 22', phone: '08775555' },
+      { id: 310, name: 'Wawan Setiadi', address: 'Jl Mawar 22', phone: '08775555' },
       { id: 482, name: 'Budi Santoso', address: 'Jl Melati 15', phone: '08124444' }
     ],
     citizens: [
@@ -53,7 +53,7 @@ export const chapter5: Level = {
     visitors: [
       { visitor_name: 'Budi Santoso', visit_time: '09:20' },
       { visitor_name: 'Maya', visit_time: '09:10' },
-      { visitor_name: 'Rudi', visit_time: '09:25' },
+      { visitor_name: 'Wawan Setiadi', visit_time: '09:25' },
       { visitor_name: 'Andi Prasetyo', visit_time: '11:20' }
     ],
     cameras: [
@@ -65,7 +65,7 @@ export const chapter5: Level = {
     footage: [
       { camera_id: 'CAM-03', person_name: 'Budi Santoso', capture_time: '09:18' },
       { camera_id: 'CAM-03', person_name: 'Maya', capture_time: '09:10' },
-      { camera_id: 'CAM-03', person_name: 'Rudi', capture_time: '09:25' },
+      { camera_id: 'CAM-03', person_name: 'Wawan Setiadi', capture_time: '09:25' },
       { camera_id: 'CAM-03', person_name: 'Rizky Hidayat', capture_time: '11:31' }
     ]
   },

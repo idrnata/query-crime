@@ -16,7 +16,7 @@ export const chapter2: Level = {
     citizens: [
       { id: 1, nik: '3171010101', name: 'Andi Supriatna', birth_date: '1985-05-12', address: 'Jl Sudirman 10', phone: '08551234', status: 'ACTIVE' },
       { id: 2, nik: '3171010102', name: 'Siti Aminah', birth_date: '1990-08-20', address: 'Jl Anggrek 5', phone: '08119876', status: 'ACTIVE' },
-      { id: 3, nik: '3171010103', name: 'Rudi Hermawan', birth_date: '1982-11-30', address: 'Jl Mawar 22', phone: '08775555', status: 'ACTIVE' },
+      { id: 3, nik: '3171010103', name: 'Wawan Setiadi', birth_date: '1982-11-30', address: 'Jl Mawar 22', phone: '08775555', status: 'ACTIVE' },
       { id: 4, nik: '3171010104', name: 'Budi Santoso', birth_date: '1978-03-15', address: 'Jl Melati 15', phone: '08124444', status: 'ACTIVE' },
       { id: 5, nik: '3171010105', name: 'Dina Santoso', birth_date: '1982-06-22', address: 'Jl Melati 15', phone: '08125555', status: 'ACTIVE' },
       { id: 6, nik: '3171010106', name: 'Rizky Hidayat', birth_date: '1995-12-10', address: 'Jl Kamboja 8', phone: '08136666', status: 'ACTIVE' }

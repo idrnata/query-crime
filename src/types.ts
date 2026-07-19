@@ -23,14 +23,12 @@ export interface Level {
 }
 
 export interface PlayerStats {
-  xp: number;
   queriesRun: number;
   successfulQueries: number;
-  accuracy: number;
   hintsUsed: number;
   casesCompleted: number;
-  achievements: string[];
   battery?: number;
+  evidenceReviewed?: number;
 }
 
 export interface EvidenceMetadata {

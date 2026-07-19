@@ -13,7 +13,6 @@ interface DevConsoleProps {
   onSetObjectiveIndex: (idx: number) => void;
   onSetAppState: (state: AppState) => void;
   onUnlockAllApps: () => void;
-  onAddXP: (amount: number) => void;
   onSetBattery: (amount: number) => void;
 }
 
@@ -28,7 +27,6 @@ export const DevConsole: React.FC<DevConsoleProps> = ({
   onSetObjectiveIndex,
   onSetAppState,
   onUnlockAllApps,
-  onAddXP,
   onSetBattery,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -212,17 +210,10 @@ export const DevConsole: React.FC<DevConsoleProps> = ({
                         UNLOCK ALL APPS & SCREENS
                       </button>
 
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => onAddXP(500)}
-                          className="bg-zinc-900 hover:bg-zinc-800 text-amber-400 border border-zinc-800 py-1.5 rounded text-xs font-semibold flex items-center justify-center gap-1"
-                        >
-                          <Zap size={11} />
-                          +500 XP
-                        </button>
+                      <div className="w-full">
                         <button
                           onClick={() => onSetBattery(100)}
-                          className="bg-zinc-900 hover:bg-zinc-800 text-amber-400 border border-zinc-800 py-1.5 rounded text-xs font-semibold flex items-center justify-center gap-1"
+                          className="w-full bg-zinc-900 hover:bg-zinc-800 text-amber-400 border border-zinc-800 py-1.5 rounded text-xs font-semibold flex items-center justify-center gap-1"
                         >
                           <Zap size={11} />
                           100% BATTERY
