@@ -1331,7 +1331,7 @@ export default function App() {
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CITIZENS DATABASE (citizens, visitors, patients)\n- CONTACTS APP UNLOCKED\n\nVerify if Budi Santoso\'s address matches citizens registration data.';
     } else if (currentLevelId === 3) {
       popupTitle = 'HOSPITAL DATABASE GRANTED';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- HOSPITAL DATABASE\n- HOSPITAL PARKING EXTENDED LOGS\n\nNew query capabilities unlocked: SQL JOIN';
+      popupMessage = 'MISSION ACCEPTED\n\nDATA UPDATED:\n- Parking Log (entri baru)\n\nNew query capabilities unlocked: menggabungkan dua tabel sekaligus';
     } else if (currentLevelId === 4) {
       popupTitle = 'NEW INVESTIGATION TOOL';
       popupMessage = 'MISSION ACCEPTED\n\nNEW FEATURE UNLOCKED:\n- CHRONOLOGICAL TIMELINE SCREEN\n\nNew query capabilities unlocked: BETWEEN, Multi-Table JOINs';

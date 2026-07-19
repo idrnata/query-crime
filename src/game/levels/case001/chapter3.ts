@@ -6,7 +6,7 @@ export const chapter3: Level = {
   mail: {
     sender: 'Supervisor Raka',
     subject: 'Perkembangan Kasus',
-    body: 'Selamat pagi.\nRumah sakit sudah mengirim data tambahan.\nPasien bernama Rizky Hidayat memang keluar pukul 11.30.\nTetapi CCTV rumah sakit sedang rusak.\nSatu-satunya petunjuk hanyalah data parkir kendaraan.\n\nNEW TABLE: Parking',
+    body: 'Selamat pagi.\nRumah sakit sudah mengirim data tambahan.\nPasien bernama Rizky Hidayat memang keluar pukul 11.30.\nTetapi CCTV rumah sakit sedang rusak.\nSatu-satunya petunjuk hanyalah data parkir kendaraan.\n\nDATA UPDATED: Parking Log (entri baru ditambahkan)',
   },
   files: {
     title: 'Laporan Tambahan RS',
@@ -74,14 +74,14 @@ export const chapter3: Level = {
     },
     {
       id: 6,
-      story: 'Supervisor: "Bagus. Sekarang gunakan JOIN untuk melihat nama pemilik and plat nomornya secara langsung."',
+      story: 'Supervisor: "Bagus. Sekarang aku ingin tahu nama pemilik dan plat kendaraannya sekaligus — tanpa harus bolak-balik dua tabel. Bisa?"',
       goal: 'Gunakan JOIN antara citizens dan vehicles.',
       availableTokens: ['SELECT', 'c.name', ',', 'v.plate_number', 'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id'],
       validateResult: (res) => res && res.length >= 1 && res[0].name !== undefined && res[0].plate_number !== undefined
     },
     {
       id: 7,
-      story: 'Supervisor: "Sekarang gunakan JOIN untuk mencari kendaraan milik Andi Prasetyo."',
+      story: 'Supervisor: "Sekarang cari kendaraan milik Andi Prasetyo dengan cara yang sama."',
       goal: 'Query JOIN dengan filter nama Andi Prasetyo.',
       availableTokens: ['SELECT', 'c.name', ',', 'v.plate_number', 'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id', 'WHERE', 'c.name', '=', "'Andi Prasetyo'"],
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Andi Prasetyo'
@@ -95,6 +95,6 @@ export const chapter3: Level = {
       'Budi Santoso melarikan diri bersama Andi'
     ],
     correctIndex: 1,
-    conclusion: 'Supervisor Raka:\nBagus.\nSekarang saya ingin tahu...\nApakah Andi pernah berhubungan dengan Budi sebelumnya?\nSaya mendapat kabar buruk. Andi Prasetyo ternyata juga tidak bisa dihubungi. Dua orang hilang. Satu pasien. Satu pengunjung. Dan satu kendaraan yang membawa mereka pergi.\n\n*** CHAPTER 3 COMPLETE ***\nReward: +180 XP\nRank: Detective\nUnlocked: JOIN, Parking'
+    conclusion: 'Supervisor Raka:\nBagus.\nSekarang saya ingin tahu...\nApakah Andi pernah berhubungan dengan Budi sebelumnya?\nSaya mendapat kabar buruk. Andi Prasetyo ternyata juga tidak bisa dihubungi. Dua orang hilang. Satu pasien. Satu pengunjung. Dan satu kendaraan yang membawa mereka pergi.\n\n*** CHAPTER 3 COMPLETE ***\nUnlocked: Kemampuan menggabungkan data dari dua tabel sekaligus'
   }
 };

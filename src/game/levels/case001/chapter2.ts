@@ -82,6 +82,6 @@ export const chapter2: Level = {
       'Kasus Ditutup Sementara'
     ],
     correctIndex: 1,
-    conclusion: 'Supervisor Raka:\nKerja bagus. Saya baru menerima informasi baru. Pasien bernama Rizky Hidayat keluar dari rumah sakit dua jam setelah Budi datang. Anehnya... tidak ada data siapa yang menjemputnya.\n\n*** CHAPTER 2 COMPLETE ***\nReward: +120 XP\nRank: Junior Detective\nUnlocked: Witnesses, Hospital Database'
+    conclusion: 'Supervisor Raka:\nKerja bagus. Saya baru menerima informasi baru. Pasien bernama Rizky Hidayat keluar dari rumah sakit dua jam setelah Budi datang. Anehnya... tidak ada data siapa yang menjemputnya.\n\n*** CHAPTER 2 COMPLETE ***\nUnlocked: Witnesses'
   }
 };
