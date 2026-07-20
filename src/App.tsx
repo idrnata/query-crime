@@ -1554,7 +1554,7 @@ export default function App() {
           <ContactsScreen 
             contacts={contacts} 
             handleCall={(c) => {
-              if (c.id === 'dina' && currentLevelId === 2 && currentObjectiveIndex === 3) {
+              if (c.id === 'dina' && currentLevelId === 2 && currentObjectiveIndex >= 3) {
                 setActiveCallContact(c);
                 setCallStatus('DIALING');
                 setAppState('CALLING');
@@ -1600,7 +1600,7 @@ export default function App() {
               
               setAppState('CONTACTS');
               
-              if (activeCallContact?.id === 'dina' && currentLevelId === 2 && currentObjectiveIndex === 3) {
+              if (activeCallContact?.id === 'dina' && currentLevelId === 2 && currentObjectiveIndex >= 3) {
                 // Unlock WITNESSES app and add testimony
                 const newWitnesses = [{ name: 'Dina Santoso', statement: 'Budi (kakaknya) pergi menemui seseorang di RS Harapan Bangsa 3 hari lalu.' }];
                 setWitnesses(newWitnesses);

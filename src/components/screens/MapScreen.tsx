@@ -85,10 +85,10 @@ export const MapScreen: React.FC<MapScreenProps> = ({
         ${isHackedMap ? 'bg-red-950 text-red-500 border-b border-red-500' : 'bg-[#1b2118] text-[#8cb07d]'}`}>
         <div className="flex items-center gap-2">
           <MapIcon size={16} className={isHackedMap ? 'animate-spin' : ''} />
-          <span>{isHackedMap ? 'CRITICAL SYSTEM TAMPER' : 'TACTICAL MAP VIEW'}</span>
+          <span>{isHackedMap ? 'SISTEM DIALIRKAN SECARA ILEGAL' : 'TAMPILAN PETA TAKTIS'}</span>
         </div>
         <div className="text-[10px] tracking-widest font-mono opacity-80">
-          {isHackedMap ? 'BREACHED' : 'GPS ONLINE'}
+          {isHackedMap ? 'TERTEMBUS' : 'GPS AKTIF'}
         </div>
       </div>
 
@@ -103,8 +103,8 @@ export const MapScreen: React.FC<MapScreenProps> = ({
             {/* Top Stats Banner */}
             <div className="bg-[#1b2118]/80 border border-[#8cb07d]/30 p-2 rounded text-[#8cb07d] text-[10px] font-mono flex flex-wrap justify-between gap-x-4 gap-y-1 z-10 backdrop-blur-sm">
               <div className="flex gap-4">
-                <div>DEVICE LOGS: ACTIVE</div>
-                <div>PLATE TARGET: B 2841 PT</div>
+                <div>LOG PERANGKAT: AKTIF</div>
+                <div>PLAT TARGET: B 2841 PT</div>
               </div>
               <div className="text-right text-[#10b981] font-bold">
                 GPS: 6.1751° S, 106.8272° E
@@ -140,7 +140,7 @@ export const MapScreen: React.FC<MapScreenProps> = ({
                     {/* HQ -> Warehouse */}
                     <line x1="250" y1="50" x2="200" y2="350" stroke="#10b981" strokeWidth="1" strokeDasharray="2 2" />
                     <text x="215" y="190" fill="#10b981" fontSize="9" fontWeight="bold" fontFamily="monospace" transform="rotate(-77 215 190)">
-                      B 7710 XR Route
+                      Rute B 7710 XR
                     </text>
                   </>
                 )}
@@ -166,11 +166,11 @@ export const MapScreen: React.FC<MapScreenProps> = ({
                   <circle r="16" fill="#1b2118" stroke={isHackedMap ? '#ef4444' : '#8cb07d'} strokeWidth="2" />
                   <circle r="4" fill={isHackedMap ? '#ef4444' : '#8cb07d'} />
                   <text y="-22" textAnchor="middle" fill={isHackedMap ? '#ef4444' : '#8cb07d'} fontSize="11" fontWeight="bold" fontFamily="monospace">
-                    Hospital [ID: 21]
+                    Rumah Sakit [ID: 21]
                   </text>
                   {currentObjectiveIndex >= 3 && (
                     <text y="24" textAnchor="middle" fill="#8cb07d" fontSize="8" fontFamily="monospace" opacity="0.8">
-                      Start: 09:13
+                      Mulai: 09:13
                     </text>
                   )}
                 </g>
@@ -180,13 +180,13 @@ export const MapScreen: React.FC<MapScreenProps> = ({
                   <circle r="16" fill="#1b2118" stroke={isHackedMap ? '#ef4444' : '#8cb07d'} strokeWidth="2" />
                   <circle r="4" fill={isHackedMap ? '#ef4444' : '#8cb07d'} />
                   <text y="-22" textAnchor="middle" fill={isHackedMap ? '#ef4444' : '#8cb07d'} fontSize="11" fontWeight="bold" fontFamily="monospace">
-                    Fuel Station [ID: 71]
+                    SPBU [ID: 71]
                   </text>
                   {currentObjectiveIndex >= 3 && !isHackedMap && (
                     <g>
                       <rect x="-45" y="18" width="90" height="14" fill="#f59e0b" rx="2" />
                       <text y="28" textAnchor="middle" fill="#1b2118" fontSize="8" fontWeight="bold" fontFamily="monospace">
-                        STOP: 57 MINUTES
+                        BERHENTI: 57 MENIT
                       </text>
                     </g>
                   )}
@@ -197,11 +197,11 @@ export const MapScreen: React.FC<MapScreenProps> = ({
                   <circle r="18" fill="#1b2118" stroke={isHackedMap ? '#ef4444' : '#10b981'} strokeWidth="2" className="animate-pulse" />
                   <rect x="-6" y="-6" width="12" height="12" fill={isHackedMap ? '#ef4444' : '#10b981'} />
                   <text y="-25" textAnchor="middle" fill={isHackedMap ? '#ef4444' : '#10b981'} fontSize="12" fontWeight="bold" fontFamily="monospace">
-                    Warehouse [ID: 56]
+                    Gudang [ID: 56]
                   </text>
                   {currentObjectiveIndex >= 3 && (
                     <text y="28" textAnchor="middle" fill={isHackedMap ? '#ef4444' : '#10b981'} fontSize="8" fontFamily="monospace" opacity="0.9">
-                      Arrived: 11:07
+                      Tiba: 11:07
                     </text>
                   )}
                 </g>
@@ -211,7 +211,7 @@ export const MapScreen: React.FC<MapScreenProps> = ({
                   <circle r="12" fill="#1b2118" stroke="#8cb07d" strokeWidth="1.5" />
                   <circle r="3" fill="#8cb07d" />
                   <text y="-18" textAnchor="middle" fill="#8cb07d" fontSize="10" fontFamily="monospace">
-                    Police HQ [ID: 34]
+                    Markas Polisi [ID: 34]
                   </text>
                 </g>
               </svg>
@@ -221,26 +221,26 @@ export const MapScreen: React.FC<MapScreenProps> = ({
             <div className="bg-[#1b2118]/95 border border-[#8cb07d]/40 p-3 rounded text-[#8cb07d] text-[10px] font-mono leading-relaxed mt-auto mx-4 mb-4 z-10 backdrop-blur-sm shadow-xl">
               <div className="flex items-center gap-1.5 font-bold mb-1 text-xs text-[#10b981]">
                 <Navigation size={12} className="animate-pulse" />
-                <span>TACTICAL GPS STATUS REPORT</span>
+                <span>LAPORAN STATUS GPS TAKTIS</span>
               </div>
               <div className="pl-3 border-l border-[#8cb07d]/30 space-y-1">
                 {currentObjectiveIndex === 0 && (
-                  <div>• Find the Arunika Warehouse location ID first through the Locations Database.</div>
+                  <div>• Menunggu identifikasi ID lokasi target...</div>
                 )}
                 {currentObjectiveIndex === 1 && (
-                  <div>• Warehouse ID found: 56. Now search for the most recent vehicle that visited the warehouse in the routes database.</div>
+                  <div>• Lokasi teridentifikasi: Gudang Arunika (ID: 56). Memindai aktivitas kendaraan masuk...</div>
                 )}
                 {currentObjectiveIndex === 2 && (
-                  <div>• Vehicle identified: B 2841 PT (Andi's car). Trace all travel history of this vehicle in the routes database.</div>
+                  <div>• Kendaraan terdeteksi: B 2841 PT. Menunggu sinkronisasi riwayat perjalanan...</div>
                 )}
                 {currentObjectiveIndex === 3 && (
-                  <div>• Displaying Andi's travel route. Why did he stop at the fuel station for 57 minutes? Highly suspicious. Search for other vehicles that also visited this warehouse.</div>
+                  <div>• Menampilkan rute perjalanan B 2841 PT. Terdeteksi anomali durasi singgah di SPBU [ID: 71]. Memindai kendaraan lain...</div>
                 )}
                 {currentObjectiveIndex >= 4 && !isHackedMap && (
-                  <div className="text-amber-400 font-bold animate-pulse">• All route data successfully compiled! Press BACK at the bottom to compile the investigation report.</div>
+                  <div className="text-amber-400 font-bold animate-pulse">• Seluruh data rute berhasil dikompilasi! Kembali ke menu utama untuk menyusun laporan penyelidikan.</div>
                 )}
                 {isHackedMap && (
-                  <div className="text-red-500 font-bold animate-glitch">• WARNING: EXTERNAL OVERRIDE DETECTED. DEVICE INTEGRITY COMPROMISED!</div>
+                  <div className="text-red-500 font-bold animate-glitch">• PERINGATAN: INTERVENSI EKSTERNAL TERDETEKSI. INTEGRITAS PERANGKAT TERANCAM!</div>
                 )}
               </div>
             </div>
@@ -250,8 +250,8 @@ export const MapScreen: React.FC<MapScreenProps> = ({
           <div className="relative text-center z-10 p-8">
             <div className="w-16 h-16 border-4 border-[#8cb07d] rounded-full mx-auto mb-4 animate-ping absolute left-1/2 -translate-x-1/2" />
             <div className="w-4 h-4 bg-[#8cb07d] rounded-full mx-auto mb-4 relative z-20" />
-            <div className="bg-[#8cb07d] text-[#1b2118] px-3 py-1 font-bold text-[10px] uppercase animate-pulse">Target Last Location</div>
-            <div className="mt-2 text-[#8cb07d] text-[10px] font-bold uppercase tracking-widest">RS HARAPAN BANGSA AREA</div>
+            <div className="bg-[#8cb07d] text-[#1b2118] px-3 py-1 font-bold text-[10px] uppercase animate-pulse">Lokasi Terakhir Target</div>
+            <div className="mt-2 text-[#8cb07d] text-[10px] font-bold uppercase tracking-widest">AREA RS HARAPAN BANGSA</div>
           </div>
         )}
 
@@ -259,7 +259,7 @@ export const MapScreen: React.FC<MapScreenProps> = ({
         {isHackedMap && glitchText && (
           <div className="absolute inset-0 bg-red-950/85 z-40 flex items-center justify-center p-6 text-center">
             <div className="font-mono text-lg md:text-xl font-black text-red-500 tracking-tight leading-snug animate-glitch drop-shadow-[0_4px_12px_rgba(239,68,68,0.5)]">
-              {glitchText}
+              {glitchText === 'YOU ARE LOOKING AT THE WRONG DESTINATION' ? 'KAMU MELIHAT DESTINASI YANG SALAH' : glitchText}
             </div>
           </div>
         )}
