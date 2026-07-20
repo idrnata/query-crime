@@ -75,14 +75,14 @@ export const chapter3: Level = {
     {
       id: 6,
       story: 'Supervisor: "Bagus. Sekarang aku ingin tahu nama pemilik dan plat kendaraannya sekaligus — tanpa harus bolak-balik dua tabel. Bisa?"',
-      goal: 'Gunakan JOIN antara citizens dan vehicles.',
+      goal: 'Gabungkan citizens dan vehicles.',
       availableTokens: ['SELECT', 'c.name', ',', 'v.plate_number', 'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id'],
       validateResult: (res) => res && res.length >= 1 && res[0].name !== undefined && res[0].plate_number !== undefined
     },
     {
       id: 7,
       story: 'Supervisor: "Sekarang cari kendaraan milik Andi Prasetyo dengan cara yang sama."',
-      goal: 'Query JOIN dengan filter nama Andi Prasetyo.',
+      goal: 'Query gabungan dengan filter nama Andi Prasetyo.',
       availableTokens: ['SELECT', 'c.name', ',', 'v.plate_number', 'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id', 'WHERE', 'c.name', '=', "'Andi Prasetyo'"],
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Andi Prasetyo'
     }
