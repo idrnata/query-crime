@@ -739,7 +739,7 @@ export default function App() {
           if (nextIdx === 1) {
             setNotebookContent(prev => prev + '\n\nData terlalu banyak. Perlu difilter.\nAda dua orang lain yang berada di lokasi hampir bersamaan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Fokus ke pasien yang mereka kunjungi. Gunakan JOIN antara visitors and patients.');
+            showSupervisorPopup('Fokus ke pasien yang mereka kunjungi. Coba hubungkan tabel visitors dan patients.');
             setQueryString('');
           } else if (nextIdx === 2) {
             setNotebookContent(prev => prev + '\n\nRudi juga mengunjungi Rizky.');
@@ -759,7 +759,7 @@ export default function App() {
           } else if (nextIdx === 5) {
             setNotebookContent(prev => prev + '\n\nAda tiga kendaraan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Ada tiga kendaraan. Sekarang hubungkan data parkir, kendaraan, dan warga menggunakan triple JOIN untuk mengetahui siapa pemilik kendaraan-kendaraan tersebut.');
+            showSupervisorPopup('Ada tiga kendaraan. Sekarang hubungkan data parkir, kendaraan, dan warga sekaligus untuk mengetahui siapa pemilik kendaraan-kendaraan tersebut.');
             setQueryString('');
           } else {
             setAppState('TERM');
