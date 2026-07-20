@@ -70,21 +70,21 @@ Saksi mata di tempat kejadian menyebutkan adanya kejanggalan dalam penanganan ba
     },
     {
       id: 2,
-      story: 'Supervisor: "Bagaimana kalau kita kelompokkan berdasarkan penerima untuk mempermudah analisis?"',
+      story: 'Bagaimana kalau kita kelompokkan berdasarkan penerima untuk mempermudah analisis?',
       goal: "Query tabel transactions untuk menampilkan receiver yang dikelompokkan (GROUP BY receiver) dengan filter sender='PT Arunika Logistics'.",
       availableTokens: ['SELECT', 'receiver', 'FROM', 'transactions', 'WHERE', 'sender', '=', "'PT Arunika Logistics'", 'GROUP', 'BY', 'receiver'],
       validateResult: (res) => res && res.length === 6 && res.some(r => r.receiver === 'Unknown Account')
     },
     {
       id: 3,
-      story: 'Supervisor: "Kelompok sudah ada. Sekarang hitung jumlah transaksi untuk masing-masing penerima menggunakan COUNT(*)."',
-      goal: "Query tabel transactions dengan menampilkan receiver dan COUNT(*) yang dikelompokkan berdasarkan receiver dengan filter sender='PT Arunika Logistics'.",
+      story: 'Kelompok sudah ada. Sekarang hitung jumlah transaksi untuk masing-masing penerima menggunakan COUNT(*).',
+      goal: "Query tabel transactions dengan menampilkan receiver and COUNT(*) yang dikelompokkan berdasarkan receiver dengan filter sender='PT Arunika Logistics'.",
       availableTokens: ['SELECT', 'receiver', 'COUNT(*)', 'FROM', 'transactions', 'WHERE', 'sender', '=', "'PT Arunika Logistics'", 'GROUP', 'BY', 'receiver'],
       validateResult: (res) => res && res.length === 6 && res.some(r => r.receiver === 'Unknown Account' && (r['COUNT(*)'] === 48 || r['count(*)'] === 48 || r['count'] === 48))
     },
     {
       id: 4,
-      story: 'Supervisor: "Cari kelompok yang jumlah transaksinya lebih dari lima menggunakan HAVING COUNT(*) > 5."',
+      story: 'Cari kelompok yang jumlah transaksinya lebih dari lima menggunakan HAVING COUNT(*) > 5.',
       goal: 'Query tabel transactions dengan menampilkan receiver dan COUNT(*) dikelompokkan berdasarkan receiver dengan filter jumlah transaksi lebih dari 5.',
       availableTokens: ['SELECT', 'receiver', 'COUNT(*)', 'FROM', 'transactions', 'GROUP', 'BY', 'receiver', 'HAVING', 'COUNT(*)', '>', '5'],
       validateResult: (res) => res && res.length === 1 && res[0].receiver === 'Unknown Account' && (res[0]['COUNT(*)'] === 48 || res[0]['count(*)'] === 48 || res[0]['count'] === 48)

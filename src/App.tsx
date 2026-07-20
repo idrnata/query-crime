@@ -325,6 +325,7 @@ export default function App() {
     if (chapterId >= 5) baseApps.push('EVIDENCE');
     if (chapterId >= 6) baseApps.push('BROWSER');
     if (chapterId >= 7) baseApps.push('MAP');
+    if (chapterId >= 10) baseApps.push('EMAIL');
     
     setUnlockedApps(baseApps);
     
@@ -938,9 +939,6 @@ export default function App() {
                setQueryString('');
              });
           }
-        } else if (currentLevelId === 7) {
-          setAppState('CASE_FILES');
-          setQueryString('');
         } else {
           setAppState('TERM');
           setQueryString('');
@@ -1783,7 +1781,7 @@ export default function App() {
           />
         );
       case 'EMAIL':
-        return <EmailScreen setAppState={setAppState} />;
+        return <EmailScreen setAppState={setAppState} onBrowseTable={handleBrowseTable} />;
       case 'STATISTICS':
         return <StatisticsScreen stats={stats} isThreatMode={currentLevelId === 11 && isLevelComplete} />;
       default:

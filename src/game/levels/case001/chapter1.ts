@@ -35,7 +35,7 @@ export const chapter1: Level = {
   objectives: [
     {
       id: 1,
-      story: 'Supervisor mengirim pesan: "Sebelum mencari seseorang, lihat dulu isi databasenya."',
+      story: 'Sebelum mencari seseorang, lihat dulu isi databasenya.',
       goal: 'Lihat seluruh data kendaraan.',
       availableTokens: ['SELECT', '*', 'FROM', 'vehicles', 'WHERE', '=', "'B1734QAZ'"],
       validateResult: (res) => res && res.length === 4 && res[0].plate_number !== undefined && res[0].brand !== undefined
@@ -49,14 +49,14 @@ export const chapter1: Level = {
     },
     {
       id: 3,
-      story: 'Supervisor: "Bagus. Sekarang cari tahu siapa Owner ID 482."',
+      story: 'Bagus. Sekarang cari tahu siapa Owner ID 482.',
       goal: 'Cari pemilik dengan Owner ID 482 di tabel owners.',
       availableTokens: ['SELECT', '*', 'FROM', 'owners', 'WHERE', 'id', '=', '482'],
       validateResult: (res) => res && res.length === 1 && res[0].id === 482
     },
     {
       id: 4,
-      story: 'Supervisor: "Bagus. Sekarang cari tahu apakah mobil itu masih berada di rumah sakit."',
+      story: 'Bagus. Sekarang cari tahu apakah mobil itu masih berada di rumah sakit.',
       goal: 'Periksa riwayat parkir (parking) untuk plat B1734QAZ.',
       availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'plate_number', '=', "'B1734QAZ'"],
       validateResult: (res) => res && res.length === 1 && res[0].plate_number === 'B1734QAZ'
@@ -70,7 +70,7 @@ export const chapter1: Level = {
     },
     {
       id: 6,
-      story: 'Supervisor: "Mobil mana yang paling lama berada di sana?"',
+      story: 'Mobil mana yang paling lama berada di sana?',
       goal: 'Urutkan kendaraan yang belum keluar berdasarkan waktu masuk (entry_time).',
       availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'exit_time', 'IS', 'NULL', 'ORDER', 'BY', 'entry_time'],
       validateResult: (res) => res && res.length === 3 && res[0].plate_number === 'B1734QAZ'

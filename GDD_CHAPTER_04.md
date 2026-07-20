@@ -90,7 +90,7 @@ CASE_FILES menampilkan 3 target sekaligus (beda dari chapter-chapter sebelumnya 
 
 | | |
 |---|---|
-| **Story (kode)** | Data Rudi sangat minim. Supervisor: "Bagaimana kalau Rudi memiliki kendaraan terdaftar? Coba periksa." |
+| **Story (kode)** | Data Rudi sangat minim. Bagaimana kalau Rudi memiliki kendaraan terdaftar? Coba periksa. |
 | **Goal (kode)** | Hubungkan citizens dan vehicles untuk mencari plat nomor kendaraan Rudi Hartono. |
 | **Expected SQL** | `SELECT c.name, v.plate_number FROM citizens c JOIN vehicles v ON c.id = v.owner_id WHERE c.name = 'Rudi Hartono';` |
 

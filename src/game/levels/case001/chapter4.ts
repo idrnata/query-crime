@@ -55,7 +55,7 @@ export const chapter4: Level = {
     },
     {
       id: 2,
-      story: 'Supervisor: "Jangan fokus ke orangnya. Fokus ke pasien yang mereka kunjungi."',
+      story: 'Jangan fokus ke orangnya. Fokus ke pasien yang mereka kunjungi.',
       goal: 'Hubungkan tabel visitors (alias v) dan patients (alias p) berdasarkan patient_id untuk melihat siapa menemui siapa di rentang waktu tersebut.',
       availableTokens: [
         'SELECT', 'v.visitor_name', ',', 'p.name', ',', 'v.visit_time', 
@@ -73,7 +73,7 @@ export const chapter4: Level = {
     },
     {
       id: 4,
-      story: 'Data Rudi sangat minim. Supervisor: "Bagaimana kalau Rudi memiliki kendaraan terdaftar? Coba periksa."',
+      story: 'Data Rudi sangat minim. Bagaimana kalau Rudi memiliki kendaraan terdaftar? Coba periksa.',
       goal: 'Hubungkan citizens (alias c) dan vehicles (alias v) untuk mencari plat nomor kendaraan Rudi Hartono.',
       availableTokens: [
         'SELECT', 'c.name', ',', 'v.plate_number', 
@@ -84,7 +84,7 @@ export const chapter4: Level = {
     },
     {
       id: 5,
-      story: 'Rudi tidak memiliki kendaraan pribadi terdaftar. Supervisor: "Atau dia memakai kendaraan orang lain. Cari semua kendaraan yang keluar sekitar pukul 11:30."',
+      story: 'Rudi tidak memiliki kendaraan pribadi terdaftar. Atau dia memakai kendaraan orang lain. Cari semua kendaraan yang keluar sekitar pukul 11:30.',
       goal: "Query tabel parking untuk mencari semua kendaraan yang keluar antara pukul '11:25' dan '11:40'.",
       availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'exit_time', 'BETWEEN', "'11:25'", 'AND', "'11:40'"],
       validateResult: (res) => res && res.length === 3

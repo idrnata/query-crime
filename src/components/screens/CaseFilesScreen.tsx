@@ -44,7 +44,7 @@ export const CaseFilesScreen: React.FC<CaseFilesScreenProps> = ({
                       {isCompleted && <div className="w-2 h-2 bg-[#1b2118]" />}
                     </div>
                     <span className={`leading-tight font-bold text-sm uppercase ${isCompleted ? 'line-through' : ''}`}>
-                      {obj.goal}
+                      {obj.story || obj.goal}
                     </span>
                   </div>
                 );

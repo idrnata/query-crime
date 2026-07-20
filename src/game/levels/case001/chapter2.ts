@@ -40,14 +40,14 @@ export const chapter2: Level = {
   objectives: [
     {
       id: 1,
-      story: 'Supervisor: "Pastikan apakah data owner kendaraan sama dengan data kependudukan."',
+      story: 'Pastikan apakah data owner kendaraan sama dengan data kependudukan.',
       goal: 'Cari data Budi Santoso di tabel citizens.',
       availableTokens: ['SELECT', '*', 'FROM', 'citizens', 'WHERE', 'name', '=', "'Budi Santoso'"],
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Budi Santoso'
     },
     {
       id: 2,
-      story: 'Supervisor: "Cari apakah dia tinggal sendirian."',
+      story: 'Cari apakah dia tinggal sendirian.',
       goal: 'Cari orang lain yang tinggal di Jl Melati 15.',
       availableTokens: ['SELECT', '*', 'FROM', 'citizens', 'WHERE', 'address', '=', "'Jl Melati 15'"],
       validateResult: (res) => res && res.length === 2
@@ -61,7 +61,7 @@ export const chapter2: Level = {
     },
     {
       id: 4,
-      story: 'Dina Santoso mengatakan kakaknya (Budi) mengunjungi seseorang di RS Harapan Bangsa. Supervisor membuka akses Hospital Database.',
+      story: 'Dina Santoso mengatakan kakaknya (Budi) mengunjungi seseorang di RS Harapan Bangsa. Akses Hospital Database kini terbuka.',
       goal: 'Lihat daftar pengunjung (visitors) di rumah sakit.',
       availableTokens: ['SELECT', '*', 'FROM', 'visitors'],
       validateResult: (res) => res && res.length >= 1

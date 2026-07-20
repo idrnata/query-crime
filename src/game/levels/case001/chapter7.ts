@@ -49,21 +49,21 @@ export const chapter7: Level = {
     },
     {
       id: 2,
-      story: 'Supervisor: "Cari kendaraan yang PALING TERAKHIR datang ke gudang tersebut." (location_id 56)',
+      story: 'Cari kendaraan yang PALING TERAKHIR datang ke gudang tersebut. (location_id 56)',
       goal: 'Cari kendaraan yang PALING TERAKHIR datang ke gudang tersebut (location_id 56).',
       availableTokens: ['SELECT', '*', 'FROM', 'routes', 'WHERE', 'location_id', '=', '56', 'ORDER', 'BY', 'timestamp', 'DESC', 'LIMIT', '1'],
       validateResult: (res) => res && res.length === 1 && res[0].plate_number && res[0].plate_number.replace(/\s+/g, '') === 'B2841PT' && Number(res[0].location_id) === 56
     },
     {
       id: 3,
-      story: 'Supervisor: "Sekarang lihat seluruh perjalanan mobil itu untuk menyusun kronologinya."',
+      story: 'Sekarang lihat seluruh perjalanan mobil itu untuk menyusun kronologinya.',
       goal: 'Lihat seluruh perjalanan mobil itu untuk menyusun kronologinya.',
       availableTokens: ['SELECT', '*', 'FROM', 'routes', 'WHERE', 'plate_number', '=', "'B 2841 PT'", 'ORDER', 'BY', 'timestamp'],
       validateResult: (res) => res && res.length === 3 && res.some(r => r.location_id === 21) && res.some(r => r.location_id === 71) && res.some(r => r.location_id === 56)
     },
     {
       id: 4,
-      story: 'Supervisor: "Coba lihat 10 kendaraan terakhir yang mengunjungi gudang Arunika untuk melihat aktivitas lain."',
+      story: 'Coba lihat 10 kendaraan terakhir yang mengunjungi gudang Arunika untuk melihat aktivitas lain.',
       goal: 'Coba lihat 10 kendaraan terakhir yang mengunjungi gudang Arunika untuk melihat aktivitas lain.',
       availableTokens: ['SELECT', '*', 'FROM', 'routes', 'WHERE', 'location_id', '=', '56', 'ORDER', 'BY', 'timestamp', 'DESC', 'LIMIT', '10'],
       validateResult: (res) => res && res.length >= 2 && res.some(r => r.plate_number && r.plate_number.replace(/\s+/g, '') === 'B7710XR')
