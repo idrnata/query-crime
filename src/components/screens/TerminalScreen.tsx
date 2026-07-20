@@ -83,6 +83,18 @@ export const TerminalScreen: React.FC<TerminalScreenProps> = ({
             if (currentLevelId >= 6) {
               baseKeywords.push('LIKE', '%');
             }
+            if (currentLevelId >= 7) {
+              baseKeywords.push('LIMIT');
+            }
+            if (currentLevelId >= 8) {
+              baseKeywords.push('GROUP', 'HAVING', 'COUNT');
+            }
+            if (currentLevelId >= 10) {
+              baseKeywords.push('WITH', 'AS');
+            }
+            if (currentLevelId >= 11) {
+              baseKeywords.push('OVER', 'ROW_NUMBER', 'LEAD', 'LAG');
+            }
             
             const getRelatedTablesForLevel = (levelId: number): string[] => {
               switch (levelId) {

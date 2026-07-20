@@ -43,28 +43,28 @@ export const chapter7: Level = {
     {
       id: 1,
       story: 'Cari ID lokasi milik Arunika Warehouse dari tabel locations.',
-      goal: 'Gunakan SELECT untuk melihat seluruh lokasi.',
+      goal: 'Lihat seluruh lokasi yang tercatat di tabel locations.',
       availableTokens: ['SELECT', '*', 'FROM', 'locations'],
       validateResult: (res) => res && res.length >= 1 && res.some(r => r.id === 56)
     },
     {
       id: 2,
       story: 'Supervisor: "Cari kendaraan yang PALING TERAKHIR datang ke gudang tersebut." (location_id 56)',
-      goal: 'Query tabel routes dengan filter location_id=56, urutkan berdasarkan timestamp descending, batasi 1 hasil.',
+      goal: 'Cari kendaraan yang PALING TERAKHIR datang ke gudang tersebut (location_id 56).',
       availableTokens: ['SELECT', '*', 'FROM', 'routes', 'WHERE', 'location_id', '=', '56', 'ORDER', 'BY', 'timestamp', 'DESC', 'LIMIT', '1'],
       validateResult: (res) => res && res.length === 1 && res[0].plate_number && res[0].plate_number.replace(/\s+/g, '') === 'B2841PT' && Number(res[0].location_id) === 56
     },
     {
       id: 3,
       story: 'Supervisor: "Sekarang lihat seluruh perjalanan mobil itu untuk menyusun kronologinya."',
-      goal: "Query tabel routes dengan filter plate_number='B 2841 PT', urutkan berdasarkan timestamp.",
+      goal: 'Lihat seluruh perjalanan mobil itu untuk menyusun kronologinya.',
       availableTokens: ['SELECT', '*', 'FROM', 'routes', 'WHERE', 'plate_number', '=', "'B 2841 PT'", 'ORDER', 'BY', 'timestamp'],
       validateResult: (res) => res && res.length === 3 && res.some(r => r.location_id === 21) && res.some(r => r.location_id === 71) && res.some(r => r.location_id === 56)
     },
     {
       id: 4,
       story: 'Supervisor: "Coba lihat 10 kendaraan terakhir yang mengunjungi gudang Arunika untuk melihat aktivitas lain."',
-      goal: 'Query tabel routes dengan filter location_id=56, urutkan berdasarkan timestamp descending, batasi 10 hasil.',
+      goal: 'Coba lihat 10 kendaraan terakhir yang mengunjungi gudang Arunika untuk melihat aktivitas lain.',
       availableTokens: ['SELECT', '*', 'FROM', 'routes', 'WHERE', 'location_id', '=', '56', 'ORDER', 'BY', 'timestamp', 'DESC', 'LIMIT', '10'],
       validateResult: (res) => res && res.length >= 2 && res.some(r => r.plate_number && r.plate_number.replace(/\s+/g, '') === 'B7710XR')
     }
@@ -78,6 +78,6 @@ export const chapter7: Level = {
       'Sopir truk adalah orang yang memarkir mobil di SPBU.'
     ],
     correctIndex: 1,
-    conclusion: 'Supervisor Raka:\nBagus! Analisis yang sangat cermat.\nRute perjalanan mobil Andi sangat aneh dan tidak efisien. Berhenti 57 menit di SPBU... ada sesuatu yang disembunyikan di sana.\nDan mobil PT Arunika Logistics juga aktif mengunjungi gudang lama tersebut. Kasus ini semakin mengerikan.\n\nWait... Apa ini? Seseorang menggambar garis merah di petamu!\n"YOU ARE LOOKING AT THE WRONG DESTINATION"\nPerangkat kita diretas! Seseorang mengawasi kita...\n\n*** CHAPTER 7 COMPLETE ***\nReward: +400 XP\nRank: Digital Investigator\nUnlocked: Maps, ORDER BY, LIMIT, Route Timeline'
+    conclusion: 'Supervisor Raka:\nBagus! Analisis yang sangat cermat.\nRute perjalanan mobil Andi sangat aneh dan tidak efisien. Berhenti 57 menit di SPBU... ada sesuatu yang disembunyikan di sana.\nDan mobil PT Arunika Logistics juga aktif mengunjungi gudang lama tersebut. Kasus ini semakin mengerikan.\n\nWait... Apa ini? Seseorang menggambar garis merah di petamu!\n"YOU ARE LOOKING AT THE WRONG DESTINATION"\nPerangkat kita diretas! Seseorang mengawasi kita...\n\n*** CHAPTER 7 COMPLETE ***\nUnlocked: Maps, Route Timeline'
   }
 };

@@ -815,15 +815,9 @@ export default function App() {
                 title: 'Supervisor Raka',
                 message: 'Tidak semua orang ditulis dengan nama lengkap. Kadang hanya nama depan. Kadang hanya nama belakang. Gunakan pencarian yang lebih fleksibel.',
                 onClose: () => {
-                  setPopup({
-                    title: 'NEW LESSON UNLOCKED',
-                    message: 'LIKE\n\nUnlocked\n\nContoh:\nSELECT *\nFROM articles\nWHERE title\nLIKE \'%Rizky%\';',
-                    onClose: () => {
-                      setPopup(null);
-                      setAppState('TERM');
-                      setQueryString('');
-                    }
-                  });
+                  setPopup(null);
+                  setAppState('TERM');
+                  setQueryString('');
                 }
               });
             });
@@ -944,7 +938,13 @@ export default function App() {
                setQueryString('');
              });
           }
-      }
+        } else if (currentLevelId === 7) {
+          setAppState('CASE_FILES');
+          setQueryString('');
+        } else {
+          setAppState('TERM');
+          setQueryString('');
+        }
     }
   } else {
     // Level complete flow - Save progress first to ensure consistency
@@ -1327,10 +1327,10 @@ export default function App() {
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CCTV DATABASE (cameras, footage)';
     } else if (currentLevelId === 6) {
       popupTitle = 'DIGITAL ARCHIVE ACCESS';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- POLICE SECURE BROWSER\n- COMPANIES DATABASE\n\nNew query capabilities unlocked: LIKE with % wildcards\n\nSupervisor Raka:\nKamera memang mati selama enam menit. Tapi orang tidak bisa menghapus semua jejaknya. Setiap orang meninggalkan jejak digital. Saya membuka akses ke Arsip Digital Nasional.';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- POLICE SECURE BROWSER\n- COMPANIES DATABASE\n\nSupervisor Raka:\nKamera memang mati selama enam menit. Tapi orang tidak bisa menghapus semua jejaknya. Setiap orang meninggalkan jejak digital. Saya membuka akses ke Arsip Digital Nasional.';
     } else if (currentLevelId === 7) {
       popupTitle = 'GPS TRACKING INTERFACE';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- GPS MAPS TRACKER\n  (locations, routes, checkpoints)\n\nNew query capabilities unlocked: ORDER BY, LIMIT';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- GPS MAPS TRACKER\n  (locations, routes, checkpoints)';
     } else if (currentLevelId === 8) {
       popupTitle = 'FINANCIAL AUDIT GRANTED';
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- FINANCIAL BANK DATABASE\n  (accounts, transactions, branches)\n\nNew query capabilities unlocked: GROUP BY, COUNT(*), HAVING';

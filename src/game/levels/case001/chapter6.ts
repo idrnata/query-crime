@@ -2,7 +2,7 @@ import { Level } from '../../../types';
 
 export const chapter6: Level = {
   id: 6,
-  title: 'Jejak Digital',
+  title: 'Case #001: Jejak Digital',
   mail: {
     sender: 'Supervisor Raka',
     subject: 'Akses Arsip Digital',
@@ -58,7 +58,7 @@ export const chapter6: Level = {
     {
       id: 1,
       story: 'Cari apakah Rizky pernah muncul di berita menggunakan nama lengkap (Rizky Hidayat).',
-      goal: "SELECT * FROM articles WHERE title='Rizky Hidayat';",
+      goal: "Cari artikel dengan judul persis 'Rizky Hidayat' di tabel articles.",
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'title', '=', "'Rizky Hidayat'"],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -68,8 +68,8 @@ export const chapter6: Level = {
     },
     {
       id: 2,
-      story: 'Coba gunakan pencarian yang lebih fleksibel dengan operator LIKE untuk menemukan berita tentang Rizky.',
-      goal: "SELECT * FROM articles WHERE title LIKE '%Rizky%';",
+      story: 'Coba gunakan pencarian yang lebih fleksibel untuk menemukan berita tentang Rizky.',
+      goal: "Cari artikel yang judulnya mengandung kata 'Rizky', menggunakan pencarian yang lebih fleksibel.",
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'title', 'LIKE', "'%Rizky%'"],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -80,7 +80,7 @@ export const chapter6: Level = {
     {
       id: 3,
       story: 'Cari apakah nama Andi atau Prasetyo pernah disebut publik di isi artikel.',
-      goal: "SELECT * FROM articles WHERE content LIKE '%Andi%';",
+      goal: "Cari artikel yang isinya menyebut nama 'Andi', menggunakan pencarian yang lebih fleksibel.",
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Andi%'"],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -91,7 +91,7 @@ export const chapter6: Level = {
     {
       id: 4,
       story: 'Cari semua artikel yang mengandung kata "Arunika".',
-      goal: "SELECT * FROM articles WHERE content LIKE '%Arunika%';",
+      goal: "Cari semua artikel yang isinya menyebut kata 'Arunika'.",
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Arunika%'"],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -102,7 +102,7 @@ export const chapter6: Level = {
     {
       id: 5,
       story: 'Cari data perusahaan PT Arunika Logistics di database perusahaan.',
-      goal: "SELECT * FROM companies WHERE company_name LIKE '%Arunika%';",
+      goal: "Cari data perusahaan PT Arunika Logistics di tabel companies.",
       availableTokens: ['SELECT', '*', 'FROM', 'companies', 'WHERE', 'company_name', 'LIKE', "'%Arunika%'"],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -120,6 +120,6 @@ export const chapter6: Level = {
       'Sopir truk adalah Andi Prasetyo.'
     ],
     correctIndex: 2,
-    conclusion: 'Supervisor Raka:\nLaporan diterima.\nTepat sekali. Rizky selamat dari kecelakaan 8 tahun lalu yang melibatkan PT Arunika Logistics.\nData pemilik perusahaan juga ditemukan dalam keadaan rusak: R....\n\nSaya rasa kita tidak lagi menyelidiki orang hilang.\nKita sedang menyelidiki seseorang yang bisa menghapus sejarah.\n\n*** CHAPTER 6 COMPLETE ***\nReward: +320 XP\nRank: Senior Investigator\nUnlocked: Browser, LIKE, Wildcard Search, Companies Database'
+    conclusion: 'Supervisor Raka:\nLaporan diterima.\nTepat sekali. Rizky selamat dari kecelakaan 8 tahun lalu yang melibatkan PT Arunika Logistics.\nData pemilik perusahaan juga ditemukan dalam keadaan rusak: R....\n\nSaya rasa kita tidak lagi menyelidiki orang hilang.\nKita sedang menyelidiki seseorang yang bisa menghapus sejarah.\n\n*** CHAPTER 6 COMPLETE ***\nUnlocked: Browser, Companies Database'
   }
 };
