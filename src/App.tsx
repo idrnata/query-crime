@@ -719,16 +719,16 @@ export default function App() {
           } else if (nextIdx === 5) {
             setPopup({
               title: 'NEW LESSON',
-              message: 'JOIN Unlocked. Kadang jawaban tidak ada di satu tabel. JOIN digunakan untuk menggabungkan data.',
+              message: 'Kadang jawaban tidak ada di satu tabel. Kamu bisa menggabungkan data dari dua tabel sekaligus.',
               onClose: () => {
                 setPopup(null);
-                showSupervisorPopup('Bagus. Sekarang gunakan JOIN untuk melihat nama pemilik dan plat nomornya secara langsung.');
+                showSupervisorPopup('Bagus. Sekarang aku ingin tahu nama pemilik dan plat kendaraannya sekaligus — tanpa harus bolak-balik dua tabel. Bisa?');
                 setAppState('TERM');
                 setQueryString('');
               }
             });
           } else if (nextIdx === 6) {
-            showSupervisorPopup('Sekarang gunakan JOIN untuk mencari kendaraan milik Andi Prasetyo.');
+            showSupervisorPopup('Sekarang cari kendaraan milik Andi Prasetyo dengan cara yang sama.');
             setAppState('TERM');
             setQueryString('');
           } else {
@@ -1317,7 +1317,7 @@ export default function App() {
       popupTitle = 'NEW DATABASE ACCESS';
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CITIZENS DATABASE (citizens, visitors, patients)\n- CONTACTS APP UNLOCKED\n\nVerify if Budi Santoso\'s address matches citizens registration data.';
     } else if (currentLevelId === 3) {
-      popupTitle = 'HOSPITAL DATABASE GRANTED';
+      popupTitle = 'DATA UPDATED';
       popupMessage = 'MISSION ACCEPTED\n\nDATA UPDATED:\n- Parking Log (entri baru)\n\nNew query capabilities unlocked: menggabungkan dua tabel sekaligus';
     } else if (currentLevelId === 4) {
       popupTitle = 'NEW INVESTIGATION TOOL';
