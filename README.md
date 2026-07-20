@@ -12,8 +12,7 @@
 ## 📱 Live Preview Game
 
 Mainkan game langsung melalui tautan berikut:
-* **[Link Preview Pengembang (Dev App)](https://ais-dev-5ednq7ehft4tkfbckc47e6-585440882595.asia-southeast1.run.app)**
-* **[Link Preview Publik (Shared App)](https://ais-pre-5ednq7ehft4tkfbckc47e6-585440882595.asia-southeast1.run.app)**
+* **[Query Crime Live Game](https://query-crime.vercel.app/)**
 
 ---
 
