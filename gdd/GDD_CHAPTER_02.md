@@ -12,7 +12,7 @@
 | # | Isu di v1.0 | Perbaikan |
 |---|---|---|
 | 1 | v1.0 mengasumsikan Evidence Locker sudah aktif di Chapter 2 (bukti masuk ke "Evidence Locker") | **Diperbaiki.** Kode nyata: `EVIDENCE` app baru unlock saat `chapterId >= 5` (`App.tsx` baris 328). Chapter 2 belum punya Evidence Locker sama sekali. Temuan penting masuk ke Notebook, bukan Evidence Locker. |
-| 2 | v1.0 mengasumsikan ada UI panggilan telepon interaktif penuh (Contacts → Call → dialog) untuk menghubungi Dina | **Diperbaiki.** Kode nyata: tidak ada Call UI di chapter ini. Statement Dina di-generate otomatis lewat `setWitnesses([...])` begitu `currentObjectiveIndex >= 4` — bukan hasil interaksi telepon. Dicatat sebagai simplifikasi saat ini, bukan bug — lihat catatan di bawah. |
+| 2 | v1.0 mengasumsikan ada UI panggilan telepon interaktif penuh (Contacts → Call → dialog) untuk menghubungi Dina | **Koreksi dari audit lanjutan — v1.0 dan v2.0 draft awal SALAH.** `CallingScreen.tsx` + `DINA_DIALOGUE` (4 tahap dialog dengan pilihan) **memang ada dan berfungsi**. Yang salah adalah asumsi soal kapan bisa diakses — lihat detail di Objective 3 & catatan Track B di bawah. |
 | 3 | Timing unlock WITNESSES tidak jelas (v1.0 menaruhnya "setelah Objective 4") | **Dikonfirmasi tepat dari kode** (`App.tsx` baris ~208): WITNESSES unlock persis begitu pemain menyelesaikan Objective 4 (index ≥ 4, sebelum masuk Objective 5). |
 | 4 | `report.conclusion` di kode punya "Reward: +120 XP\nRank: Junior Detective" dan "Unlocked: Witnesses, Hospital Database" (Hospital Database sebenarnya sudah ke-unlock di *awal* chapter, bukan di akhir — redundan/tidak akurat) | **Perlu di-patch** — lihat instruksi Track B di bawah. |
 | 5 | Nama "Andi Supriatna" (citizens id 1) dan "Rudi Hermawan" (citizens id 3) berpotensi bentrok dengan "Andi Prasetyo" (Ch3) dan "Rudi Hartono" (Ch4) | Sudah tercakup di instruksi batch rename yang sudah lo jalankan sebelumnya. |
@@ -45,7 +45,7 @@ Tidak ada boot sequence baru — HP cuma dalam mode sleep (ikuti pola **Boot Sta
 
 > "Selamat pagi. Kemarin kita berhasil menemukan identitas pemilik kendaraan. Tim patroli sudah mendatangi alamat Budi Santoso. Rumahnya kosong. Tetangga mengatakan ia tidak terlihat selama tiga hari. Kami menemukan pintu rumah tidak terkunci. Tidak ada tanda kekerasan. Tapi ponsel miliknya hilang. Saya sudah membuka akses baru. Gunakan dengan bijak."
 
-**Detail hook:** kontras dua pesan ini sengaja dipertahankan — popup teknis dulu (dingin, transaksional), baru Inbox (manusiawi, ada rasa khawatir tersirat dari Raka tanpa dia bilang "khawatir"). Kalimat "pintu tidak terkunci, tidak ada tanda kekerasan, tapi ponsel hilang" itu detail forensik yang sengaja tidak dijelaskan maknanya — pemain yang harus menyimpulkan sendiri bahwa ini bukan penculikan biasa (tidak ada tanda paksaan) tapi juga bukan sekadar pergi (ponsel hilang, tidak wajar untuk orang yang pergi sukarela).
+**Detail hook:** kontras dua pesan ini sengaja dipertahaman — popup teknis dulu (dingin, transaksional), baru Inbox (manusiawi, ada rasa khawatir tersirat dari Raka tanpa dia bilang "khawatir"). Kalimat "pintu tidak terkunci, tidak ada tanda kekerasan, tapi ponsel hilang" itu detail forensik yang sengaja tidak dijelaskan maknanya — pemain yang harus menyimpulkan sendiri bahwa ini bukan penculikan biasa (tidak ada tanda paksaan) tapi juga bukan sekadar pergi (ponsel hilang, tidak wajar untuk orang yang pergi sukarela).
 
 Membuka **CASE_FILES** menampilkan status berubah jadi `REOPENED` — kata ini penting, bukan `ACTIVE` lagi seperti Chapter 1. "Reopened" menyiratkan kasus yang tadinya dianggap selesai, sekarang terbukti belum. Detail bahasa kecil, efek besar.
 
@@ -88,7 +88,9 @@ Membuka **CASE_FILES** menampilkan status berubah jadi `REOPENED` — kata ini p
 | **Goal (kode)** | Dapatkan nama dan nomor telepon dari Jl Melati 15. |
 | **Expected SQL** | `SELECT name, phone FROM citizens WHERE address = 'Jl Melati 15';` |
 
-**Detail hook — simplifikasi yang perlu diketahui:** Story text bilang "Hubungi dia", tapi **tidak ada UI panggilan telepon di chapter ini** — begitu objective ini selesai, Dina otomatis masuk to Contacts, dan statement-nya otomatis muncul di Witnesses (lihat Objective 4). Interaksi "menghubungi" di sini murni tersirat lewat teks, bukan interaksi nyata. Ini bukan kesalahan yang perlu buru-buru diperbaiki — kalau nanti tim membangun komponen **Incoming/Outgoing Call** yang proper (dibutuhkan juga untuk Chapter 6+ ke atas), interaksi Dina di sini bisa di-retrofit pakai komponen yang sama. Untuk sekarang, teks yang ada sudah cukup menyampaikan maksudnya tanpa butuh kerja UI tambahan.
+**Detail hook — koreksi dari audit lanjutan:** Story text bilang "Hubungi dia" — dan ini **beneran bisa dilakukan**, bukan cuma tersirat lewat teks. `CallingScreen.tsx` punya dialog Dina 4-tahap lengkap dengan pilihan respons pemain (`DINA_DIALOGUE`), diakses dengan membuka **CONTACTS** lalu memilih **Call** pada kontak Dina. Ikuti pola Incoming/Outgoing Call standar (UI_MICROINTERACTIONS_SPEC §1).
+
+**Peringatan window waktu (perlu di-patch, lihat instruksi Track B):** Di kode aslinya, panggilan ini cuma bisa diakses persis saat `currentObjectiveIndex === 3` (jendela satu-objective, antara selesai Objective 3 dan selesai Objective 4). Di luar window itu, mencoba menelepon Dina menampilkan pesan generik "Nomor tidak dapat dihubungi atau sibuk." — pemain yang telat membuka Contacts kehilangan dialog interaktif ini secara permanen, digantikan versi flat otomatis di Objective 4 (lihat di bawah). Instruksi Track B melebarkan window ini jadi `currentObjectiveIndex >= 3` supaya tidak gampang kelewat.
 
 ---
 
@@ -116,7 +118,7 @@ Hasil query menampilkan 3 baris pengunjung — termasuk Budi Santoso muncul **du
 | **Goal (kode)** | Cari data pasien dengan ID yang dikunjungi Budi. |
 | **Expected SQL** | `SELECT * FROM patients WHERE id = 10;` |
 
-**Detail hook:** Pemain harus menyambungkan `patient_id: 10` dari hasil Objective 4 to tabel `patients` secara manual — **ini bukan JOIN**, murni dua query berurutan dengan angka yang harus diingat/dicatat sendiri oleh pemain (belum ada Notebook otomatis mencatat angka ini). Justru keterbatasan ini yang membuat Chapter 3 nanti (saat rantai penyambungan manual ini jadi 3-4 tingkat) terasa sangat melelahkan — dan JOIN diperkenalkan sebagai jalan keluar yang benar-benar dibutuhkan, bukan sekadar fitur baru. Hasil: nama pasien — **Rizky Hidayat**, nama baru yang belum dikenal siapa pun.
+**Detail hook:** Pemain harus menyambungkan `patient_id: 10` dari hasil Objective 4 ke tabel `patients` secara manual — **ini bukan JOIN**, murni dua query berurutan dengan angka yang harus diingat/dicatat sendiri oleh pemain (belum ada Notebook otomatis mencatat angka ini). Justru keterbatasan ini yang membuat Chapter 3 nanti (saat rantai penyambungan manual ini jadi 3-4 tingkat) terasa sangat melelahkan — dan JOIN diperkenalkan sebagai jalan keluar yang benar-benar dibutuhkan, bukan sekadar fitur baru. Hasil: nama pasien — **Rizky Hidayat**, nama baru yang belum dikenal siapa pun.
 
 ---
 
@@ -145,3 +147,19 @@ Tiga opsi:
 * [x] Evidence Locker tidak dijanjikan — selaras kode (`chapterId >= 5`).
 * [x] "Hospital Database" dihapus dari daftar unlock akhir chapter karena faktanya sudah aktif sejak awal (redundan/tidak akurat di teks lama).
 * [x] Tidak ada mekanik XP/Rank di GDD ini — instruksi patch kode disiapkan di bawah.
+
+---
+
+# Shadows / Patch Instruksi Track B
+
+```
+Di file src/game/levels/case001/chapter2.ts, pada field report.conclusion, lakukan perubahan berikut:
+
+1. Hapus baris "Reward: +120 XP" dan "Rank: Junior Detective" sepenuhnya.
+2. Ubah baris "Unlocked: Witnesses, Hospital Database" menjadi "Unlocked: Witnesses" saja — hapus "Hospital Database" karena tabel tersebut sebenarnya sudah aktif sejak awal chapter (lewat popup MISSION ACCEPTED), bukan sesuatu yang baru terbuka di akhir.
+
+Teks akhir report.conclusion setelah diubah:
+'Supervisor Raka:\nKerja bagus. Saya baru menerima informasi baru. Pasien bernama Rizky Hidayat keluar dari rumah sakit dua jam setelah Budi datang. Anehnya... tidak ada data siapa yang menjemputnya.\n\n*** CHAPTER 2 COMPLETE ***\nUnlocked: Witnesses'
+
+Jangan ubah struktur objectives, mail, files, atau database di file ini — semuanya sudah final sesuai desain.
+```
