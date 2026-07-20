@@ -55,4 +55,4 @@ export interface SaveData {
   evidenceMetadata?: Record<string, EvidenceMetadata>;
 }
 
-export type AppState = 'BOOT' | 'HOME' | 'MENU' | 'INBOX' | 'CASE_FILES' | 'DB_LIST' | 'TERM' | 'RESULT' | 'REPORT' | 'QUEST_COMPLETE' | 'ERROR' | 'EVIDENCE' | 'NOTEBOOK' | 'CONTACTS' | 'BROWSER' | 'MAP' | 'RANK' | 'SETTINGS' | 'WITNESSES' | 'CALLING' | 'TIMELINE' | 'EMAIL' | 'STATISTICS';
+export type AppState = 'BOOT' | 'HOME' | 'MENU' | 'INBOX' | 'CASE_FILES' | 'DB_LIST' | 'TERM' | 'RESULT' | 'REPORT' | 'QUEST_COMPLETE' | 'ERROR' | 'EVIDENCE' | 'NOTEBOOK' | 'CONTACTS' | 'BROWSER' | 'MAP' | 'RANK' | 'SETTINGS' | 'WITNESSES' | 'CALLING' | 'TIMELINE' | 'EMAIL' | 'STATISTICS' | 'DEV_CONSOLE';

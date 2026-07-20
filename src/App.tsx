@@ -1674,6 +1674,36 @@ export default function App() {
         return <EmailScreen setAppState={setAppState} onBrowseTable={handleBrowseTable} />;
       case 'STATISTICS':
         return <StatisticsScreen stats={stats} isThreatMode={currentLevelId === 11 && isLevelComplete} />;
+      case 'DEV_CONSOLE':
+        return (
+          <DevConsole
+            currentLevelId={currentLevelId}
+            currentObjectiveIndex={currentObjectiveIndex}
+            unlockedLevelIds={unlockedLevelIds}
+            appState={appState}
+            unlockedApps={unlockedApps}
+            levels={LEVELS}
+            onJumpToChapter={handleJumpToChapter}
+            onSetObjectiveIndex={(idx) => {
+              setCurrentObjectiveIndex(idx);
+              setIsObjectiveMet(false);
+              saveProgress(currentLevelId, idx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats);
+            }}
+            onSetAppState={setAppState}
+            onUnlockAllApps={() => {
+              const allAppIds = ALL_APPS.map(app => app.id);
+              setUnlockedApps(allAppIds);
+              saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, allAppIds, notebookContent, contacts, witnesses, messages, stats);
+            }}
+            onSetBattery={(amount) => {
+              setStats(prev => {
+                const updated = { ...prev, battery: amount };
+                saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, updated);
+                return updated;
+              });
+            }}
+          />
+        );
       default:
         return null;
     }
@@ -1753,34 +1783,6 @@ export default function App() {
             onSubmit={() => handleNameSubmit(nameInput)} 
           />
         )}
-
-        <DevConsole
-          currentLevelId={currentLevelId}
-          currentObjectiveIndex={currentObjectiveIndex}
-          unlockedLevelIds={unlockedLevelIds}
-          appState={appState}
-          unlockedApps={unlockedApps}
-          levels={LEVELS}
-          onJumpToChapter={handleJumpToChapter}
-          onSetObjectiveIndex={(idx) => {
-            setCurrentObjectiveIndex(idx);
-            setIsObjectiveMet(false);
-            saveProgress(currentLevelId, idx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats);
-          }}
-          onSetAppState={setAppState}
-          onUnlockAllApps={() => {
-            const allAppIds = ALL_APPS.map(app => app.id);
-            setUnlockedApps(allAppIds);
-            saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, allAppIds, notebookContent, contacts, witnesses, messages, stats);
-          }}
-          onSetBattery={(amount) => {
-            setStats(prev => {
-              const updated = { ...prev, battery: amount };
-              saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, updated);
-              return updated;
-            });
-          }}
-        />
       </div>
 
       {/* Persistent Bottom Action Bar */}
