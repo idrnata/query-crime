@@ -161,10 +161,10 @@ export const DevConsole: React.FC<DevConsoleProps> = ({
                             }`}>
                               {idx}
                             </span>
-                            <span className="font-bold tracking-tight uppercase truncate">{obj.story || obj.goal}</span>
+                            <span className="font-bold tracking-tight uppercase truncate">{obj.goal}</span>
                           </div>
                           <div className="text-[10px] opacity-70 leading-normal pl-5">
-                            {obj.goal}
+                            {obj.story}
                           </div>
                         </button>
                       );

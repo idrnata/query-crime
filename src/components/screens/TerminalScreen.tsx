@@ -36,7 +36,7 @@ export const TerminalScreen: React.FC<TerminalScreenProps> = ({
       
       <div className="bg-[#1b2118]/10 text-[#1b2118] p-3 text-[10px] font-bold border-b-2 border-[#1b2118] shrink-0">
         <div className="opacity-70 uppercase mb-1">Current Objective:</div>
-        <div className="uppercase">{currentObjective.story || currentObjective.goal}</div>
+        <div className="uppercase">{currentObjective.goal}</div>
       </div>
 
       <div className="flex-1 flex flex-col p-4 bg-[#1b2118]/5">
