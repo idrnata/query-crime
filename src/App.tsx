@@ -1221,7 +1221,7 @@ export default function App() {
       popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- GPS MAPS TRACKER\n  (locations, routes, checkpoints)';
     } else if (currentLevelId === 8) {
       popupTitle = 'FINANCIAL AUDIT GRANTED';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- FINANCIAL BANK DATABASE\n  (accounts, transactions, branches)\n\nNew query capabilities unlocked: GROUP BY, COUNT(*), HAVING';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- FINANCIAL BANK DATABASE\n  (accounts, transactions, branches)';
     } else if (currentLevelId === 9) {
       popupTitle = 'NEW DATABASE ACCESS';
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CRIMINAL RECORDS\n  (persons, cases, suspects, evidence)\n\nNew query capabilities unlocked: SUBQUERY (Nested SELECT)';

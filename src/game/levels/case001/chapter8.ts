@@ -64,27 +64,27 @@ Saksi mata di tempat kejadian menyebutkan adanya kejanggalan dalam penanganan ba
     {
       id: 1,
       story: 'Cari apakah PT Arunika membayar seseorang. Lihat semua transaksi dari sender PT Arunika Logistics.',
-      goal: "Gunakan SELECT untuk melihat seluruh transaksi dengan filter sender='PT Arunika Logistics'.",
+      goal: 'Lihat seluruh transaksi dengan sender PT Arunika Logistics.',
       availableTokens: ['SELECT', '*', 'FROM', 'transactions', 'WHERE', 'sender', '=', "'PT Arunika Logistics'"],
       validateResult: (res) => res && res.length === 54 && res.every(r => r.sender === 'PT Arunika Logistics')
     },
     {
       id: 2,
       story: 'Bagaimana kalau kita kelompokkan berdasarkan penerima untuk mempermudah analisis?',
-      goal: "Query tabel transactions untuk menampilkan receiver yang dikelompokkan (GROUP BY receiver) dengan filter sender='PT Arunika Logistics'.",
+      goal: 'Query tabel transactions untuk menampilkan penerima yang dikelompokkan, dengan filter sender PT Arunika Logistics.',
       availableTokens: ['SELECT', 'receiver', 'FROM', 'transactions', 'WHERE', 'sender', '=', "'PT Arunika Logistics'", 'GROUP', 'BY', 'receiver'],
       validateResult: (res) => res && res.length === 6 && res.some(r => r.receiver === 'Unknown Account')
     },
     {
       id: 3,
-      story: 'Kelompok sudah ada. Sekarang hitung jumlah transaksi untuk masing-masing penerima menggunakan COUNT(*).',
-      goal: "Query tabel transactions dengan menampilkan receiver and COUNT(*) yang dikelompokkan berdasarkan receiver dengan filter sender='PT Arunika Logistics'.",
+      story: 'Supervisor: "Kelompok sudah ada. Sekarang hitung jumlah transaksi untuk masing-masing penerima."',
+      goal: 'Query tabel transactions dengan menampilkan penerima beserta jumlah transaksinya, dikelompokkan berdasarkan penerima, dengan filter sender PT Arunika Logistics.',
       availableTokens: ['SELECT', 'receiver', 'COUNT(*)', 'FROM', 'transactions', 'WHERE', 'sender', '=', "'PT Arunika Logistics'", 'GROUP', 'BY', 'receiver'],
       validateResult: (res) => res && res.length === 6 && res.some(r => r.receiver === 'Unknown Account' && (r['COUNT(*)'] === 48 || r['count(*)'] === 48 || r['count'] === 48))
     },
     {
       id: 4,
-      story: 'Cari kelompok yang jumlah transaksinya lebih dari lima menggunakan HAVING COUNT(*) > 5.',
+      story: 'Supervisor: "Cari kelompok yang jumlah transaksinya lebih dari lima."',
       goal: 'Query tabel transactions dengan menampilkan receiver dan COUNT(*) dikelompokkan berdasarkan receiver dengan filter jumlah transaksi lebih dari 5.',
       availableTokens: ['SELECT', 'receiver', 'COUNT(*)', 'FROM', 'transactions', 'GROUP', 'BY', 'receiver', 'HAVING', 'COUNT(*)', '>', '5'],
       validateResult: (res) => res && res.length === 1 && res[0].receiver === 'Unknown Account' && (res[0]['COUNT(*)'] === 48 || res[0]['count(*)'] === 48 || res[0]['count'] === 48)
@@ -99,6 +99,6 @@ Saksi mata di tempat kejadian menyebutkan adanya kejanggalan dalam penanganan ba
       'Uang kompensasi dari PT Arunika Logistics dibayarkan penuh ke semua keluarga korban kecelakaan.'
     ],
     correctIndex: 1,
-    conclusion: 'Supervisor Raka:\nLuar biasa! Penyelidikan yang sangat tajam.\nAkun yang terhapus (Unknown Account) menerima 48 transaksi kecil secara rutin setiap bulan... tepat setelah tabrakan maut itu terjadi.\nIni bukan kompensasi resmi, karena asuransi dan kompensasi resmi tidak ada di arsip berita publik. Seseorang membayarkan uang tutup mulut secara teratur!\n\nWait... Telepon seluler saya bergetar...\n"Unknown Number" mengirimkan foto saya sedang diawasi di ruang briefing kepolisian!\n"STOP OR HE DIES"\n\n*** CHAPTER 8 COMPLETE ***\nReward: +520 XP\nRank: Digital Investigator II\nUnlocked: Bank Database, GROUP BY, COUNT(*), HAVING'
+    conclusion: 'Supervisor Raka:\nLuar biasa! Penyelidikan yang sangat tajam.\nAkun yang terhapus (Unknown Account) menerima 48 transaksi kecil secara rutin setiap bulan... tepat setelah tabrakan maut itu terjadi.\nIni bukan kompensasi resmi, karena asuransi dan kompensasi resmi tidak ada di arsip berita publik. Seseorang membayarkan uang tutup mulut secara teratur!\n\nWait... Telepon seluler saya bergetar...\n"Unknown Number" mengirimkan foto saya sedang diawasi di ruang briefing kepolisian!\n"STOP OR HE DIES"\n\n*** CHAPTER 8 COMPLETE ***\nUnlocked: Bank Database'
   }
 };
