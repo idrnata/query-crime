@@ -35,7 +35,7 @@ export const chapter9: Level = {
     {
       id: 1,
       story: 'Cari kasus kecelakaan Arunika di tabel cases.',
-      goal: "SELECT * FROM cases WHERE title LIKE '%Arunika%';",
+      goal: "Cari kasus dengan judul yang mengandung kata 'Arunika' di tabel cases.",
       availableTokens: ['SELECT', '*', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'"],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -46,7 +46,7 @@ export const chapter9: Level = {
     {
       id: 2,
       story: 'Cari siapa investigator dengan ID 52 di tabel persons.',
-      goal: "SELECT * FROM persons WHERE id=52;",
+      goal: "Cari data investigator dengan ID 52 di tabel persons.",
       availableTokens: ['SELECT', '*', 'FROM', 'persons', 'WHERE', 'id', '=', '52'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -56,8 +56,8 @@ export const chapter9: Level = {
     },
     {
       id: 3,
-      story: 'Coba gunakan subquery untuk mencari data person yang menjadi investigator kasus Arunika.',
-      goal: "SELECT * FROM persons WHERE id = (SELECT lead_investigator FROM cases WHERE title LIKE '%Arunika%');",
+      story: 'Coba cari data person yang menjadi investigator kasus Arunika, tanpa mengetik ID-nya secara manual — gunakan hasil pencarian sebelumnya langsung di dalam query ini.',
+      goal: "Cari data person yang ID-nya sama dengan lead_investigator dari kasus Arunika, dengan menyisipkan pencarian kasus Arunika langsung di dalam query ini.",
       availableTokens: ['SELECT', '*', 'FROM', 'persons', 'WHERE', 'id', '=', '(', 'SELECT', 'lead_investigator', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -67,8 +67,8 @@ export const chapter9: Level = {
     },
     {
       id: 4,
-      story: 'Meskipun record person hilang, mungkin evidence miliknya masih ada. Cari evidence yang dimiliki oleh lead investigator kasus Arunika menggunakan subquery.',
-      goal: "SELECT * FROM evidence WHERE owner_id = (SELECT lead_investigator FROM cases WHERE title LIKE '%Arunika%');",
+      story: 'Meskipun record person hilang, mungkin evidence miliknya masih ada. Cari evidence yang dimiliki oleh lead investigator kasus Arunika, dengan cara yang sama seperti sebelumnya.',
+      goal: "Cari evidence yang owner_id-nya sama dengan lead_investigator dari kasus Arunika, dengan menyisipkan pencarian kasus Arunika di dalam query yang sama.",
       availableTokens: ['SELECT', '*', 'FROM', 'evidence', 'WHERE', 'owner_id', '=', '(', 'SELECT', 'lead_investigator', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -78,8 +78,8 @@ export const chapter9: Level = {
     },
     {
       id: 5,
-      story: 'Cek apakah ada tersangka (suspects) untuk kasus Arunika menggunakan subquery.',
-      goal: "SELECT * FROM suspects WHERE case_id = (SELECT case_id FROM cases WHERE title LIKE '%Arunika%');",
+      story: 'Cek apakah ada tersangka (suspects) untuk kasus Arunika, dengan cara yang sama seperti sebelumnya.',
+      goal: "Cari suspects yang case_id-nya sama dengan case_id dari kasus Arunika, dengan menyisipkan pencarian kasus Arunika di dalam query yang sama.",
       availableTokens: ['SELECT', '*', 'FROM', 'suspects', 'WHERE', 'case_id', '=', '(', 'SELECT', 'case_id', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -97,6 +97,6 @@ export const chapter9: Level = {
       'Semua data telah dihapus total.'
     ],
     correctIndex: 2,
-    conclusion: 'Itu bukan catatan korban. Itu catatan seorang polisi.\nSeseorang telah menghapus identitas investigator resmi kasus ini.\nArtinya musuh kita memiliki akses yang sangat dalam ke sistem kepolisian.\n\n*** CHAPTER 9 COMPLETE ***\nReward: +700 XP\nRank: Lead Investigator\nUnlocked: Criminal Records, Subquery, Archived Evidence'
+    conclusion: 'Itu bukan catatan korban. Itu catatan seorang polisi.\nSeseorang telah menghapus identitas investigator resmi kasus ini.\nArtinya musuh kita memiliki akses yang sangat dalam ke sistem kepolisian.\n\n*** CHAPTER 9 COMPLETE ***\nUnlocked: Criminal Records'
   }
 };

@@ -1,12 +1,12 @@
 import { Level } from '../../../types';
 
 const transactionsList = [
-  { id: 1, sender: 'PT Arunika Logistics', receiver: 'Deni', amount: 15000000, date: '2026-07-10 14:30:00' },
-  { id: 2, sender: 'PT Arunika Logistics', receiver: 'Maya', amount: 20000000, date: '2026-07-11 11:15:00' },
-  { id: 3, sender: 'PT Arunika Logistics', receiver: 'Maya', amount: 18000000, date: '2026-07-12 09:45:00' },
+  { id: 1, sender: 'PT Arunika Logistics', receiver: 'Andi Prasetyo', amount: 15000000, date: '2026-07-10 14:30:00' },
+  { id: 2, sender: 'PT Arunika Logistics', receiver: 'Maya Putri', amount: 20000000, date: '2026-07-11 11:15:00' },
+  { id: 3, sender: 'PT Arunika Logistics', receiver: 'Maya Putri', amount: 18000000, date: '2026-07-12 09:45:00' },
   { id: 4, sender: 'PT Arunika Logistics', receiver: 'PT BBM Nusantara', amount: 150000000, date: '2026-07-09 10:00:00' },
-  { id: 5, sender: 'PT Arunika Logistics', receiver: 'Rizky', amount: 50000000, date: '2026-07-08 08:30:00' },
-  { id: 6, sender: 'PT Arunika Logistics', receiver: 'Budi', amount: 5000000, date: '2026-07-12 16:00:00' }
+  { id: 5, sender: 'PT Arunika Logistics', receiver: 'Rizky Hidayat', amount: 50000000, date: '2026-07-08 08:30:00' },
+  { id: 6, sender: 'PT Arunika Logistics', receiver: 'Budi Santoso', amount: 5000000, date: '2026-07-12 16:00:00' }
 ];
 
 // Generate 48 small regular transactions to "Unknown Account" from "PT Arunika Logistics"
@@ -48,11 +48,11 @@ Saksi mata di tempat kejadian menyebutkan adanya kejanggalan dalam penanganan ba
   },
   database: {
     accounts: [
-      { account_number: 'ACC-001', owner_name: 'Deni', balance: 500000, type: 'Savings' },
-      { account_number: 'ACC-002', owner_name: 'Maya', balance: 15000000, type: 'Checking' },
+      { account_number: 'ACC-001', owner_name: 'Andi Prasetyo', balance: 500000, type: 'Savings' },
+      { account_number: 'ACC-002', owner_name: 'Maya Putri', balance: 15000000, type: 'Checking' },
       { account_number: 'ACC-003', owner_name: 'PT BBM Nusantara', balance: 850000000, type: 'Business' },
-      { account_number: 'ACC-004', owner_name: 'Rizky', balance: 0, type: 'Savings' },
-      { account_number: 'ACC-005', owner_name: 'Budi', balance: 120000, type: 'Savings' }
+      { account_number: 'ACC-004', owner_name: 'Rizky Hidayat', balance: 0, type: 'Savings' },
+      { account_number: 'ACC-005', owner_name: 'Budi Santoso', balance: 120000, type: 'Savings' }
     ],
     transactions: transactionsList,
     branches: [
@@ -95,7 +95,7 @@ Saksi mata di tempat kejadian menyebutkan adanya kejanggalan dalam penanganan ba
     options: [
       'PT Arunika Logistics tidak pernah melakukan pembayaran aneh ke mana pun.',
       'Ditemukan transaksi mencurigakan rutin sebanyak 48 kali ke rekening yang telah dihapus (Unknown Account), yang dibayarkan setiap bulan secara teratur setelah kejadian kecelakaan maut delapan tahun lalu.',
-      'Saksi Deni menerima pembayaran rutin puluhan kali setiap bulannya dari PT Arunika Logistics.',
+      'Saksi Andi Prasetyo menerima pembayaran rutin puluhan kali setiap bulannya dari PT Arunika Logistics.',
       'Uang kompensasi dari PT Arunika Logistics dibayarkan penuh ke semua keluarga korban kecelakaan.'
     ],
     correctIndex: 1,

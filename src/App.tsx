@@ -758,14 +758,14 @@ export default function App() {
           } else if (nextIdx === 2) {
              setNotebookContent(prev => prev + '\n\nID 52 tidak ditemukan di persons.');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Tidak mungkin. Kalau seseorang menghapus identitas, apakah datanya benar-benar hilang? Gunakan SUBQUERY untuk mencari data person yang menjadi investigator kasus Arunika.', () => {
+             showSupervisorPopup('Tidak mungkin. Kalau seseorang menghapus identitas, apakah datanya benar-benar hilang? Coba cari ID investigatornya dulu, lalu langsung pakai hasil itu di query yang sama — tanpa mengetik ulang angkanya secara manual.', () => {
                setAppState('TERM');
                setQueryString('');
              });
           } else if (nextIdx === 3) {
              setNotebookContent(prev => prev + '\n\nRecord person benar-benar hilang.');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Menarik... Berarti bukan datanya yang hilang, tapi record-nya sudah dihapus. Tapi apakah evidence miliknya juga hilang? Gunakan SUBQUERY di tabel evidence.', () => {
+             showSupervisorPopup('Menarik... Berarti bukan datanya yang hilang, tapi record-nya sudah dihapus. Tapi apakah evidence miliknya juga hilang? Coba cara yang sama di tabel evidence.', () => {
                setAppState('TERM');
                setQueryString('');
              });
