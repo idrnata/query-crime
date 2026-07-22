@@ -65,7 +65,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           <div className="text-[10px] font-bold uppercase opacity-50">Reset / Replay Chapter</div>
           <div className="bg-white/30 border-2 border-[#1b2118] p-3 flex flex-col gap-2">
             <div className="text-[10px] opacity-80 mb-1 font-sans">
-              Pilih salah satu chapter yang sudah terbuka di bawah ini untuk mengulangnya dari awal.
+              Select an unlocked chapter below to restart it from the beginning.
             </div>
             <div className="grid grid-cols-1 gap-1.5 max-h-[160px] overflow-y-auto pr-1 custom-scrollbar">
               {levels.map((lvl) => {
@@ -77,7 +77,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     key={lvl.id}
                     disabled={!isUnlocked}
                     onClick={() => {
-                      if (confirm(`Apakah Anda yakin ingin mengulang CH ${lvl.id}: ${lvl.title}? Progress chapter ini akan di-reset.`)) {
+                      if (confirm(`Are you sure you want to restart CH ${lvl.id}: ${lvl.title}? Progress for this chapter will be reset.`)) {
                         onJumpToChapter(lvl.id);
                       }
                     }}
@@ -118,8 +118,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
           >
              <RotateCcw size={20} />
              <div className="text-left">
-                <div className="text-sm">CLEAR ALL DATA</div>
-                <div className="text-[8px] opacity-60 uppercase">Reset all investigation progress</div>
+                <div className="text-sm">FORMAT DATA</div>
+                <div className="text-[8px] opacity-60 uppercase">Format device & reset all progress</div>
              </div>
           </button>
         </div>

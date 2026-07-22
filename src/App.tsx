@@ -1655,8 +1655,8 @@ export default function App() {
                showSupervisorPopup("Investigation data has been saved to local memory.");
             }} 
             handleResetGame={() => {
-              if (confirm("Reset all investigation progress? This cannot be undone.")) {
-                localStorage.removeItem('query_crime_save');
+              if (confirm("Apakah Anda yakin ingin memformat seluruh data? Semua progress investigasi dan riwayat permainan akan dihapus dan diulang dari awal.")) {
+                localStorage.clear();
                 window.location.reload();
               }
             }} 
