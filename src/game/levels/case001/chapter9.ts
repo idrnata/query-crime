@@ -34,8 +34,8 @@ export const chapter9: Level = {
   objectives: [
     {
       id: 1,
-      story: 'Cari kasus kecelakaan Arunika di tabel cases.',
-      goal: "Cari kasus dengan judul yang mengandung kata 'Arunika' di tabel cases.",
+      story: 'Buka arsip Criminal Records. Cari data kasus kecelakaan Arunika di tabel cases.',
+      goal: "Cari data kasus berjuluk 'Arunika' di tabel cases.",
       availableTokens: ['SELECT', '*', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'"],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -45,8 +45,8 @@ export const chapter9: Level = {
     },
     {
       id: 2,
-      story: 'Cari siapa investigator dengan ID 52 di tabel persons.',
-      goal: "Cari data investigator dengan ID 52 di tabel persons.",
+      story: 'Kasus itu ditangani oleh investigator ID 52. Periksa identitas investigator tersebut di tabel persons.',
+      goal: "Cari data warga/personil dengan ID 52 di tabel persons.",
       availableTokens: ['SELECT', '*', 'FROM', 'persons', 'WHERE', 'id', '=', '52'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -56,8 +56,8 @@ export const chapter9: Level = {
     },
     {
       id: 3,
-      story: 'Coba cari data person yang menjadi investigator kasus Arunika, tanpa mengetik ID-nya secara manual — gunakan hasil pencarian sebelumnya langsung di dalam query ini.',
-      goal: "Cari data person yang ID-nya sama dengan lead_investigator dari kasus Arunika, dengan menyisipkan pencarian kasus Arunika langsung di dalam query ini.",
+      story: 'Record ID 52 kosong di persons. Cari personil yang menangani kasus Arunika dengan subquery otomatis tanpa mengetik ID manual.',
+      goal: "Cari data person yang ID-nya sama dengan lead_investigator kasus Arunika menggunakan subquery.",
       availableTokens: ['SELECT', '*', 'FROM', 'persons', 'WHERE', 'id', '=', '(', 'SELECT', 'lead_investigator', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -67,8 +67,8 @@ export const chapter9: Level = {
     },
     {
       id: 4,
-      story: 'Meskipun record person hilang, mungkin evidence miliknya masih ada. Cari evidence yang dimiliki oleh lead investigator kasus Arunika, dengan cara yang sama seperti sebelumnya.',
-      goal: "Cari evidence yang owner_id-nya sama dengan lead_investigator dari kasus Arunika, dengan menyisipkan pencarian kasus Arunika di dalam query yang sama.",
+      story: 'Identitasnya disunting, namun bukti kasus mungkin masih tertinggal. Cari barang bukti (evidence) milik penyidik kasus Arunika.',
+      goal: "Cari barang bukti (evidence) milik lead_investigator kasus Arunika menggunakan subquery.",
       availableTokens: ['SELECT', '*', 'FROM', 'evidence', 'WHERE', 'owner_id', '=', '(', 'SELECT', 'lead_investigator', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -78,8 +78,8 @@ export const chapter9: Level = {
     },
     {
       id: 5,
-      story: 'Cek apakah ada tersangka (suspects) untuk kasus Arunika, dengan cara yang sama seperti sebelumnya.',
-      goal: "Cari suspects yang case_id-nya sama dengan case_id dari kasus Arunika, dengan menyisipkan pencarian kasus Arunika di dalam query yang sama.",
+      story: 'Periksa apakah ada daftar tersangka (suspects) resmi yang tercatat untuk kasus kecelakaan Arunika ini.',
+      goal: "Cari tersangka (suspects) yang terikat dengan case_id kasus Arunika menggunakan subquery.",
       availableTokens: ['SELECT', '*', 'FROM', 'suspects', 'WHERE', 'case_id', '=', '(', 'SELECT', 'case_id', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
       validateResult: (res, query) => {
         if (!query) return false;

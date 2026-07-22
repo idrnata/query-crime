@@ -32,7 +32,7 @@ export const chapter11: Level = {
     {
       id: 1,
       story: 'Temukan seluruh perjalanan mobil Budi (B2841PT) dan urutkan berdasarkan waktu.',
-      goal: "SELECT * FROM camera_logs WHERE plate_number='B2841PT' ORDER BY capture_time;",
+      goal: 'Urutkan riwayat pergerakan kendaraan B2841PT berdasarkan waktu penangkapan kamera.',
       availableTokens: ['SELECT', '*', 'FROM', 'camera_logs', 'WHERE', 'plate_number', '=', "'B2841PT'", 'ORDER', 'BY', 'capture_time'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -43,7 +43,7 @@ export const chapter11: Level = {
     {
       id: 2,
       story: 'Gunakan Window Function ROW_NUMBER() untuk memberi nomor urut pada setiap capture kendaraan.',
-      goal: "SELECT plate_number, capture_time, ROW_NUMBER() OVER (PARTITION BY plate_number ORDER BY capture_time) AS sequence FROM camera_logs;",
+      goal: 'Beri nomor urut pada setiap kemunculan kendaraan dengan fungsi ROW_NUMBER().',
       availableTokens: ['SELECT', 'plate_number', ',', 'capture_time', ',', 'ROW_NUMBER', '(', ')', 'OVER', '(', 'PARTITION', 'BY', 'plate_number', 'ORDER', 'BY', 'capture_time', ')', 'AS', 'sequence', 'FROM', 'camera_logs'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -54,7 +54,7 @@ export const chapter11: Level = {
     {
       id: 3,
       story: 'Lihat kendaraan apa yang muncul SETELAH kendaraan lain menggunakan LEAD(). Urutkan berdasarkan capture_time untuk melihat pola tailing.',
-      goal: "SELECT plate_number, capture_time, LEAD(plate_number) OVER (ORDER BY capture_time) AS next_vehicle FROM camera_logs;",
+      goal: 'Gunakan fungsi LEAD() untuk mendeteksi kendaraan berikutnya yang muncul setelah setiap penangkapan kamera.',
       availableTokens: ['SELECT', 'plate_number', ',', 'capture_time', ',', 'LEAD', '(', 'plate_number', ')', 'OVER', '(', 'ORDER', 'BY', 'capture_time', ')', 'AS', 'next_vehicle', 'FROM', 'camera_logs'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -65,7 +65,7 @@ export const chapter11: Level = {
     {
       id: 4,
       story: 'Cari siapa yang mematikan kamera di tabel system_logs.',
-      goal: "SELECT * FROM system_logs WHERE action='Disable Camera';",
+      goal: 'Cari log aktivitas yang mematikan kamera (Disable Camera) di tabel system_logs.',
       availableTokens: ['SELECT', '*', 'FROM', 'system_logs', 'WHERE', 'action', '=', "'Disable Camera'"],
       validateResult: (res, query) => {
         if (!query) return false;

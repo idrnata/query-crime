@@ -517,9 +517,16 @@ export default function App() {
       
       const length = currentLevel?.objectives.length || 0;
       if (nextIdx < length) {
+        const nextStory = currentLevel.objectives[nextIdx]?.story;
+
         if (currentLevelId === 1) {
-          if (nextIdx === 2) { 
-            showSupervisorPopup('Bagus. Sekarang cari tahu siapa Owner ID 482.');
+          if (nextIdx === 1) {
+            showSupervisorPopup(nextStory);
+            setAppState('TERM');
+            setQueryString('');
+          }
+          else if (nextIdx === 2) { 
+            showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           }
@@ -527,21 +534,27 @@ export default function App() {
             setAppState('NOTEBOOK');
             setQueryString('');
             setTimeout(() => {
-               showSupervisorPopup('Bagus. Sekarang cari tahu apakah mobil itu masih berada di rumah sakit.');
+               showSupervisorPopup(nextStory);
             }, 3000);
           }
+          else if (nextIdx === 4) {
+            showSupervisorPopup(nextStory);
+            setAppState('TERM');
+            setQueryString('');
+          }
           else if (nextIdx === 5) {
-            showSupervisorPopup('Mobil mana yang paling lama?');
+            showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           }
           else {
+            if (nextStory) showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           }
         } else if (currentLevelId === 2) {
           if (nextIdx === 1) {
-            showSupervisorPopup('Cari apakah dia tinggal sendirian.');
+            showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           }
@@ -549,7 +562,7 @@ export default function App() {
             // Found Dina.
             setNotebookContent(prev => prev + '\n\nDina Santoso: Kemungkinan anggota keluarga.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Kamu menemukan Dina Santoso di alamat yang sama. Hubungi dia.');
+            showSupervisorPopup(nextStory);
             setQueryString('');
           }
           else if (nextIdx === 3) {
@@ -579,30 +592,31 @@ export default function App() {
             setSelectedMessageId(null);
           }
           else if (nextIdx === 4) {
-            showSupervisorPopup('Cari tahu siapa pasien yang dikunjungi.');
+            showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           }
           else {
+            if (nextStory) showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           }
         } else if (currentLevelId === 3) {
           if (nextIdx === 1) {
-            showSupervisorPopup('Dapatkan data pasien dengan ID 41.');
+            showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           } else if (nextIdx === 2) {
-            showSupervisorPopup('Rizky memiliki emergency_contact bernomor 7. Cari siapa itu.');
+            showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           } else if (nextIdx === 3) {
             setNotebookContent(prev => prev + '\n\nSemua data saling terhubung. Cari hubungan antar tabel.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Bagus. Sekarang cari kendaraan milik Andi Prasetyo (Owner ID 7).');
+            showSupervisorPopup(nextStory);
             setQueryString('');
           } else if (nextIdx === 4) {
-            showSupervisorPopup('Cek data parkir untuk plat nomor B 2841 PT.');
+            showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           } else if (nextIdx === 5) {
@@ -611,16 +625,17 @@ export default function App() {
               message: 'Kadang jawaban tidak ada di satu tabel. Kamu bisa menggabungkan data dari dua tabel sekaligus.',
               onClose: () => {
                 setPopup(null);
-                showSupervisorPopup('Bagus. Sekarang aku ingin tahu nama pemilik dan plat kendaraannya sekaligus — tanpa harus bolak-balik dua tabel. Bisa?');
+                showSupervisorPopup(nextStory);
                 setAppState('TERM');
                 setQueryString('');
               }
             });
           } else if (nextIdx === 6) {
-            showSupervisorPopup('Sekarang cari kendaraan milik Andi Prasetyo dengan cara yang sama.');
+            showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           } else {
+            if (nextStory) showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           }
@@ -628,39 +643,40 @@ export default function App() {
           if (nextIdx === 1) {
             setNotebookContent(prev => prev + '\n\nData terlalu banyak. Perlu difilter.\nAda dua orang lain yang berada di lokasi hampir bersamaan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Fokus ke pasien yang mereka kunjungi. Coba hubungkan tabel visitors dan patients.');
+            showSupervisorPopup(nextStory);
             setQueryString('');
           } else if (nextIdx === 2) {
             setNotebookContent(prev => prev + '\n\nRudi juga mengunjungi Rizky.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Bagus. Sekarang cari identitas Rudi Hartono di tabel citizens.');
+            showSupervisorPopup(nextStory);
             setQueryString('');
           } else if (nextIdx === 3) {
             setNotebookContent(prev => prev + '\n\nData Rudi tidak lengkap.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Rudi Hartono terdaftar sebagai warga. Sekarang periksa apakah Rudi memiliki kendaraan terdaftar.');
+            showSupervisorPopup(nextStory);
             setQueryString('');
           } else if (nextIdx === 4) {
             setNotebookContent(prev => prev + '\n\nRudi tidak memiliki kendaraan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Rudi tidak memiliki kendaraan. Sekarang cari semua kendaraan yang keluar dari tempat parkir rumah sakit sekitar pukul 11:30.');
+            showSupervisorPopup(nextStory);
             setQueryString('');
           } else if (nextIdx === 5) {
             setNotebookContent(prev => prev + '\n\nAda tiga kendaraan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Ada tiga kendaraan. Sekarang hubungkan data parkir, kendaraan, dan warga sekaligus untuk mengetahui siapa pemilik kendaraan-kendaraan tersebut.');
+            showSupervisorPopup(nextStory);
             setQueryString('');
           } else {
+            if (nextStory) showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           }
         } else if (currentLevelId === 5) {
           if (nextIdx === 1) {
-            showSupervisorPopup('Cari rekaman Budi Santoso di CCTV (tabel footage).');
+            showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           } else if (nextIdx === 2) {
-            showSupervisorPopup('Cari rekaman Rizky Hidayat di CCTV.');
+            showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           } else if (nextIdx === 3) {
@@ -676,7 +692,7 @@ export default function App() {
                   
                   setPopup({
                     title: 'SUPERVISOR RAKA',
-                    message: '*Supervisor tersenyum*\n\nAda satu teknik lagi. Tidak semua data memiliki pasangan.\n\nCoba lihat semua pengunjung sekaligus, lalu bandingkan dengan seluruh rekaman kamera — termasuk yang tidak cocok.',
+                    message: nextStory,
                     onClose: () => {
                       setPopup(null);
                       setAppState('TERM');
@@ -691,6 +707,7 @@ export default function App() {
               }
             });
           } else {
+            if (nextStory) showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           }
@@ -699,7 +716,7 @@ export default function App() {
             // STEP 4: After Rizky Hidayat exact search (0 rows)
             setNotebookContent(prev => prev + '\n\nTidak ditemukan.\nApakah dia memang tidak pernah diberitakan?');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Atau... Kamu mencari dengan cara yang salah.', () => {
+            showSupervisorPopup(nextStory, () => {
               setPopup({
                 title: 'Supervisor Raka',
                 message: 'Tidak semua orang ditulis dengan nama lengkap. Kadang hanya nama depan. Kadang hanya nama belakang. Gunakan pencarian yang lebih fleksibel.',
@@ -714,7 +731,7 @@ export default function App() {
             // STEP 5: After LIKE '%Rizky%' (Found)
             setNotebookContent(prev => prev + '\n\n?\nRizky pernah mengalami kecelakaan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Menarik. Rizky ternyata penyintas kecelakaan. Sekarang coba cari nama Andi.', () => {
+            showSupervisorPopup(nextStory, () => {
               setAppState('TERM');
               setQueryString('');
             });
@@ -722,7 +739,7 @@ export default function App() {
             // STEP 6: After LIKE '%Andi%' (0 rows)
             setNotebookContent(prev => prev + '\n\nAndi\ntidak pernah muncul.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Andi bersih di media. Tapi coba perhatikan nama perusahaan di artikel kecelakaan Rizky: PT Arunika Logistics. Coba telusuri kata itu.', () => {
+            showSupervisorPopup(nextStory, () => {
               setAppState('TERM');
               setQueryString('');
             });
@@ -730,7 +747,7 @@ export default function App() {
             // STEP 7 & 8: After LIKE '%Arunika%' (Found articles)
             setNotebookContent(prev => prev + '\n\nArunika\n↓\nKecelakaan\n↓\nRizky\n\nSopir truk menghilang.\nRizky adalah penyintas kecelakaan.');
             setAppState('NOTEBOOK');
-            showSupervisorPopup('Delapan tahun lalu... Ada orang yang juga menghilang. Saya menemukan sesuatu. Nama perusahaan itu masih aktif.', () => {
+            showSupervisorPopup(nextStory, () => {
               setPopup({
                 title: 'NEW DATABASE UNLOCKED',
                 message: 'COMPANIES\n\nUnlocked',
@@ -742,6 +759,7 @@ export default function App() {
               });
             });
           } else {
+            if (nextStory) showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
           }
@@ -749,51 +767,55 @@ export default function App() {
           if (nextIdx === 1) {
              setNotebookContent(prev => prev + '\n\nLead Investigator ID: 52');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Sama seperti foreign key. Cari siapa nomor 52 di tabel persons.', () => {
+             showSupervisorPopup(nextStory, () => {
                setAppState('TERM');
                setQueryString('');
              });
           } else if (nextIdx === 2) {
              setNotebookContent(prev => prev + '\n\nID 52 tidak ditemukan di persons.');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Tidak mungkin. Kalau seseorang menghapus identitas, apakah datanya benar-benar hilang? Coba cari ID investigatornya dulu, lalu langsung pakai hasil itu di query yang sama — tanpa mengetik ulang angkanya secara manual.', () => {
+             showSupervisorPopup(nextStory, () => {
                setAppState('TERM');
                setQueryString('');
              });
           } else if (nextIdx === 3) {
              setNotebookContent(prev => prev + '\n\nRecord person benar-benar hilang.');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Menarik... Berarti bukan datanya yang hilang, tapi record-nya sudah dihapus. Tapi apakah evidence miliknya juga hilang? Coba cara yang sama di tabel evidence.', () => {
+             showSupervisorPopup(nextStory, () => {
                setAppState('TERM');
                setQueryString('');
              });
           } else if (nextIdx === 4) {
              setNotebookContent(prev => prev + '\n\nNotebook Polisi masih ada di Evidence.');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Pesan di Notebook: "Jangan percaya database. Percayalah pada ketidakkonsistenannya."\n\nIni catatan seorang polisi, bukan korban. Cek apakah ada tersangka (suspects) untuk kasus ini.', () => {
+             showSupervisorPopup(nextStory, () => {
                setAppState('TERM');
                setQueryString('');
              });
+          } else {
+             if (nextStory) showSupervisorPopup(nextStory);
+             setAppState('TERM');
+             setQueryString('');
           }
         } else if (currentLevelId === 10) {
           if (nextIdx === 1) {
              setNotebookContent(prev => prev + '\n\nSulit mengikuti percakapan.');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Archive email sangat berantakan. Coba susun dulu email yang relevan sebagai hasil sementara, supaya lebih mudah dibaca urutannya.', () => {
+             showSupervisorPopup(nextStory, () => {
                setAppState('TERM');
                setQueryString('');
              });
           } else if (nextIdx === 2) {
              setNotebookContent(prev => prev + '\n\nEmail terakhir (ID 204) telah dihapus.');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Jika email utama hilang, cek di tabel deleted. Coba kelompokkan dulu hasilnya sebagai langkah sementara.', () => {
+             showSupervisorPopup(nextStory, () => {
                setAppState('TERM');
                setQueryString('');
              });
           } else if (nextIdx === 3) {
              setNotebookContent(prev => prev + '\n\nEmail terakhir: "Jangan percaya..."');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Pesan itu terpotong. Cek lampiran (attachments) yang berkaitan dengan email Arunika — kelompokkan dulu ID email yang relevan sebagai langkah awal.', () => {
+             showSupervisorPopup(nextStory, () => {
                setAppState('TERM');
                setQueryString('');
              });
@@ -804,30 +826,39 @@ export default function App() {
                setAppState('REPORT');
                setQueryString('');
              });
+          } else {
+             if (nextStory) showSupervisorPopup(nextStory);
+             setAppState('TERM');
+             setQueryString('');
           }
         } else if (currentLevelId === 11) {
           if (nextIdx === 1) {
              setNotebookContent(prev => prev + '\n\n15 lokasi. 15 waktu. Masih terlalu banyak. Aku harus mengurutkannya.');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Data mentah sulit dianalisis. Kita butuh urutan kronologis yang pasti.', () => {
+             showSupervisorPopup(nextStory, () => {
                setAppState('TERM');
                setQueryString('');
              });
           } else if (nextIdx === 2) {
              setAppState('TIMELINE');
-             showSupervisorPopup('Gunakan LEAD() untuk membandingkan baris saat ini dengan baris berikutnya. Cari kendaraan yang mengikuti Budi.', () => {
+             showSupervisorPopup(nextStory, () => {
                setAppState('TERM');
                setQueryString('');
              });
           } else if (nextIdx === 3) {
              setNotebookContent(prev => prev + '\n\nIni bukan kebetulan. Mereka mengikuti Budi.');
              setAppState('EVIDENCE');
-             showSupervisorPopup('Critical Evidence Unlocked: Vehicle Tailing Pattern. Sekarang cari siapa yang mematikan kamera di system_logs.', () => {
+             showSupervisorPopup(nextStory, () => {
                setAppState('TERM');
                setQueryString('');
              });
+          } else {
+             if (nextStory) showSupervisorPopup(nextStory);
+             setAppState('TERM');
+             setQueryString('');
           }
         } else {
+          if (nextStory) showSupervisorPopup(nextStory);
           setAppState('TERM');
           setQueryString('');
         }

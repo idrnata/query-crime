@@ -40,49 +40,49 @@ export const chapter3: Level = {
     {
       id: 1,
       story: 'Cari data kunjungan Budi Santoso di rumah sakit.',
-      goal: 'Query tabel visitors untuk Budi Santoso.',
+      goal: 'Lihat catatan riwayat kunjungan Budi Santoso di tabel visitors.',
       availableTokens: ['SELECT', '*', 'FROM', 'visitors', 'WHERE', 'visitor_name', '=', "'Budi Santoso'"],
       validateResult: (res) => res && res.length >= 1 && res[0].patient_id === 41
     },
     {
       id: 2,
       story: 'Dapatkan data pasien dengan ID 41.',
-      goal: 'Query tabel patients untuk ID 41.',
+      goal: 'Cari data pasien yang memiliki ID 41 di tabel patients.',
       availableTokens: ['SELECT', '*', 'FROM', 'patients', 'WHERE', 'id', '=', '41'],
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Rizky Hidayat'
     },
     {
       id: 3,
       story: 'Rizky memiliki emergency_contact bernomor 7. Cari siapa itu.',
-      goal: 'Cari data di citizens dengan ID 7.',
+      goal: 'Cari identitas warga dengan ID 7 di tabel citizens.',
       availableTokens: ['SELECT', '*', 'FROM', 'citizens', 'WHERE', 'id', '=', '7'],
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Andi Prasetyo'
     },
     {
       id: 4,
       story: 'Cari kendaraan milik Andi Prasetyo (Owner ID 7).',
-      goal: 'Cari data di vehicles untuk owner_id 7.',
+      goal: 'Cari kendaraan yang terdaftar atas nama owner_id 7 di tabel vehicles.',
       availableTokens: ['SELECT', '*', 'FROM', 'vehicles', 'WHERE', 'owner_id', '=', '7'],
       validateResult: (res) => res && res.length === 1 && res[0].plate_number === 'B 2841 PT'
     },
     {
       id: 5,
       story: 'Cek data parkir untuk plat nomor B 2841 PT.',
-      goal: 'Cari data di parking untuk plat B 2841 PT.',
+      goal: 'Periksa catatan parkir untuk plat B 2841 PT di tabel parking.',
       availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'plate_number', '=', "'B 2841 PT'"],
       validateResult: (res) => res && res.length === 1 && res[0].exit_time === '11:34'
     },
     {
       id: 6,
       story: 'Bagus. Sekarang aku ingin tahu nama pemilik dan plat kendaraannya sekaligus — tanpa harus bolak-balik dua tabel. Bisa?',
-      goal: 'Gabungkan citizens dan vehicles.',
+      goal: 'Gabungkan tabel citizens dan vehicles untuk melihat nama pemilik dan plat nomor.',
       availableTokens: ['SELECT', 'c.name', ',', 'v.plate_number', 'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id'],
       validateResult: (res) => res && res.length >= 1 && res[0].name !== undefined && res[0].plate_number !== undefined
     },
     {
       id: 7,
       story: 'Sekarang cari kendaraan milik Andi Prasetyo dengan cara yang sama.',
-      goal: 'Query gabungan dengan filter nama Andi Prasetyo.',
+      goal: 'Gabungkan tabel citizens dan vehicles khusus untuk nama Andi Prasetyo.',
       availableTokens: ['SELECT', 'c.name', ',', 'v.plate_number', 'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id', 'WHERE', 'c.name', '=', "'Andi Prasetyo'"],
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Andi Prasetyo'
     }
