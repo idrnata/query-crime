@@ -9,6 +9,7 @@ interface MenuScreenProps {
   clearBlink: (id: string) => void;
   setAppState: (state: AppState) => void;
   onAppLaunch?: (id: string) => void;
+  hasUnreadInbox?: boolean;
 }
 
 export const MenuScreen: React.FC<MenuScreenProps> = ({ 
@@ -17,7 +18,8 @@ export const MenuScreen: React.FC<MenuScreenProps> = ({
   ALL_APPS, 
   clearBlink, 
   setAppState,
-  onAppLaunch
+  onAppLaunch,
+  hasUnreadInbox
 }) => {
   const isDev = typeof window !== 'undefined' && (
     window.location.hostname.includes('dev-') || 
@@ -47,7 +49,9 @@ export const MenuScreen: React.FC<MenuScreenProps> = ({
           const Icon = app.icon;
           const isDevApp = app.id === 'DEV_CONSOLE';
           const isUnlocked = isDevApp ? true : unlockedApps.includes(app.id);
-          const isBlinking = isDevApp ? false : blinkingApps.includes(app.id);
+          const isBlinking = isDevApp 
+            ? false 
+            : (app.id === 'INBOX' ? (hasUnreadInbox ?? blinkingApps.includes(app.id)) : blinkingApps.includes(app.id));
           
           return (
             <button 

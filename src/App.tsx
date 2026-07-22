@@ -67,7 +67,7 @@ export default function App() {
   const [nameInput, setNameInput] = useState<string>('');
   const [popup, setPopup] = useState<{title: string, message: string, onClose: () => void} | null>(null);
   
-  const [blinkingApps, setBlinkingApps] = useState<string[]>(['INBOX']);
+  const [blinkingApps, setBlinkingApps] = useState<string[]>([]);
   const [notebookContent, setNotebookContent] = useState<string>('Kemungkinan pemilik kendaraan...');
 
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -519,7 +519,6 @@ export default function App() {
       if (nextIdx < length) {
         if (currentLevelId === 1) {
           if (nextIdx === 2) { 
-            triggerBlink('INBOX');
             showSupervisorPopup('Bagus. Sekarang cari tahu siapa Owner ID 482.');
             setAppState('TERM');
             setQueryString('');
@@ -528,7 +527,6 @@ export default function App() {
             setAppState('NOTEBOOK');
             setQueryString('');
             setTimeout(() => {
-               triggerBlink('INBOX');
                showSupervisorPopup('Bagus. Sekarang cari tahu apakah mobil itu masih berada di rumah sakit.');
             }, 3000);
           }
@@ -1423,6 +1421,7 @@ export default function App() {
             clearBlink={clearBlink} 
             setAppState={setAppState} 
             onAppLaunch={() => {}}
+            hasUnreadInbox={messages.some((m: any) => !m.read)}
           />
         );
       case 'INBOX':
@@ -1793,7 +1792,14 @@ export default function App() {
              onClick={() => {
                if (appState === 'HOME') setAppState('MENU');
                else if (appState === 'MENU') {
-                  const target = blinkingApps.length > 0 ? blinkingApps[0] : 'INBOX';
+                  const hasUnread = messages.some((m: any) => !m.read);
+                  const activeBlinking = blinkingApps.filter(a => a !== 'INBOX');
+                  let target = 'INBOX';
+                  if (hasUnread) {
+                     target = 'INBOX';
+                  } else if (activeBlinking.length > 0) {
+                     target = activeBlinking[0];
+                  }
                   setAppState(target as AppState);
                }
                else handleEnter();
