@@ -781,21 +781,21 @@ export default function App() {
           if (nextIdx === 1) {
              setNotebookContent(prev => prev + '\n\nSulit mengikuti percakapan.');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Archive email sangat berantakan. Gunakan WITH untuk menyusun result bertahap agar lebih mudah dibaca.', () => {
+             showSupervisorPopup('Archive email sangat berantakan. Coba susun dulu email yang relevan sebagai hasil sementara, supaya lebih mudah dibaca urutannya.', () => {
                setAppState('TERM');
                setQueryString('');
              });
           } else if (nextIdx === 2) {
              setNotebookContent(prev => prev + '\n\nEmail terakhir (ID 204) telah dihapus.');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Jika email utama hilang, cek di tabel deleted. Gunakan CTE untuk memproses thread yang sama.', () => {
+             showSupervisorPopup('Jika email utama hilang, cek di tabel deleted. Coba kelompokkan dulu hasilnya sebagai langkah sementara.', () => {
                setAppState('TERM');
                setQueryString('');
              });
           } else if (nextIdx === 3) {
              setNotebookContent(prev => prev + '\n\nEmail terakhir: "Jangan percaya..."');
              setAppState('NOTEBOOK');
-             showSupervisorPopup('Pesan itu terpotong. Cek lampiran (attachments) yang berkaitan dengan email Arunika menggunakan CTE dan subquery.', () => {
+             showSupervisorPopup('Pesan itu terpotong. Cek lampiran (attachments) yang berkaitan dengan email Arunika — kelompokkan dulu ID email yang relevan sebagai langkah awal.', () => {
                setAppState('TERM');
                setQueryString('');
              });
@@ -1227,7 +1227,7 @@ export default function App() {
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CRIMINAL RECORDS\n  (persons, cases, suspects, evidence)\n\nNew query capabilities unlocked: SUBQUERY (Nested SELECT)';
     } else if (currentLevelId === 10) {
       popupTitle = 'ACCESS GRANTED';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- EMAIL SERVER ARCHIVE\n  (emails, deleted, attachments)\n\nNew query capabilities unlocked: WITH (CTE)';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- EMAIL SERVER ARCHIVE\n  (emails, deleted, attachments)';
     } else if (currentLevelId === 11) {
       popupTitle = 'FINAL DATABASE ACCESS';
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- TRAFFIC CAMERA LOGS\n  (camera_logs, system_logs)\n\nNew query capabilities unlocked: WINDOW FUNCTIONS (ROW_NUMBER, LEAD, LAG)';

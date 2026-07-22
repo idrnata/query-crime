@@ -10,7 +10,7 @@ export const chapter10: Level = {
   },
   files: {
     title: 'Police Mail Archive Index',
-    content: 'DATABASE - MAIL SERVER ARCHIVE\n\nTables:\n- emails (id, thread_id, sender, receiver, subject, body, sent_at)\n- deleted (id, thread_id, sender, receiver, subject, body, sent_at)\n- attachments (id, email_id, file_name)\n\nNOTICE: Access to deleted items is restricted. Use temporary views or CTEs for complex reconstruction.',
+    content: 'DATABASE - MAIL SERVER ARCHIVE\n\nTables:\n- emails (id, thread_id, sender, receiver, subject, body, sent_at)\n- deleted (id, thread_id, sender, receiver, subject, body, sent_at)\n- attachments (id, email_id, file_name)\n\nNOTICE: Access to deleted items is restricted. Complex reconstruction may require combining multiple queries in stages.',
   },
   database: {
     emails: [
@@ -34,7 +34,7 @@ export const chapter10: Level = {
     {
       id: 1,
       story: 'Temukan email yang berkaitan dengan kecelakaan Arunika di tabel emails.',
-      goal: "SELECT * FROM emails WHERE subject LIKE '%Arunika%';",
+      goal: "Cari email yang berkaitan dengan kecelakaan Arunika (subject mengandung kata 'Arunika') di tabel emails.",
       availableTokens: ['SELECT', '*', 'FROM', 'emails', 'WHERE', 'subject', 'LIKE', "'%Arunika%'"],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -44,8 +44,8 @@ export const chapter10: Level = {
     },
     {
       id: 2,
-      story: 'Gunakan Common Table Expression (WITH) untuk menyusun email Arunika berdasarkan waktu kirim agar lebih mudah dibaca.',
-      goal: "WITH arunika_emails AS (SELECT * FROM emails WHERE subject LIKE '%Arunika%') SELECT * FROM arunika_emails ORDER BY sent_at;",
+      story: 'Archive email ini sangat berantakan. Coba susun dulu email yang berkaitan dengan Arunika sebagai satu kelompok sementara, baru urutkan berdasarkan waktu kirim.',
+      goal: 'Kelompokkan dulu email yang berkaitan dengan Arunika sebagai hasil sementara, lalu tampilkan hasilnya terurut berdasarkan waktu kirim.',
       availableTokens: ['WITH', 'arunika_emails', 'AS', '(', 'SELECT', '*', 'FROM', 'emails', 'WHERE', 'subject', 'LIKE', "'%Arunika%'", ')', 'SELECT', '*', 'FROM', 'arunika_emails', 'ORDER', 'BY', 'sent_at'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -55,8 +55,8 @@ export const chapter10: Level = {
     },
     {
       id: 3,
-      story: 'Satu email (ID 204) isinya kosong. Cek apakah ada pesan terakhir yang dihapus di tabel deleted yang memiliki thread_id yang sama (18). Gunakan CTE.',
-      goal: "WITH deleted_mail AS (SELECT * FROM deleted WHERE thread_id=18) SELECT * FROM deleted_mail;",
+      story: 'Satu email (ID 204) isinya kosong. Cek apakah ada pesan terakhir yang dihapus di tabel deleted yang memiliki thread_id yang sama (18) — kelompokkan dulu hasil pencarian di tabel deleted sebagai langkah sementara.',
+      goal: 'Kelompokkan dulu pesan di tabel deleted dengan thread_id 18 sebagai hasil sementara, lalu tampilkan isinya.',
       availableTokens: ['WITH', 'deleted_mail', 'AS', '(', 'SELECT', '*', 'FROM', 'deleted', 'WHERE', 'thread_id', '=', '18', ')', 'SELECT', '*', 'FROM', 'deleted_mail'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -66,8 +66,8 @@ export const chapter10: Level = {
     },
     {
       id: 4,
-      story: 'Sekarang cari lampiran (attachments) yang berkaitan dengan email Arunika menggunakan CTE dan subquery.',
-      goal: "WITH suspicious_email AS (SELECT id FROM emails WHERE subject LIKE '%Arunika%') SELECT * FROM attachments WHERE email_id IN (SELECT id FROM suspicious_email);",
+      story: 'Sekarang cari lampiran (attachments) yang berkaitan dengan email Arunika — kelompokkan dulu ID email yang relevan sebagai langkah sementara, baru cocokkan dengan tabel attachments.',
+      goal: 'Kelompokkan dulu ID email yang berkaitan dengan Arunika sebagai hasil sementara, lalu cari attachments yang email_id-nya cocok dengan hasil tersebut.',
       availableTokens: ['WITH', 'suspicious_email', 'AS', '(', 'SELECT', 'id', 'FROM', 'emails', 'WHERE', 'subject', 'LIKE', "'%Arunika%'", ')', 'SELECT', '*', 'FROM', 'attachments', 'WHERE', 'email_id', 'IN', '(', 'SELECT', 'id', 'FROM', 'suspicious_email', ')'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -85,6 +85,6 @@ export const chapter10: Level = {
       'Tidak ada data maintenance.'
     ],
     correctIndex: 2,
-    conclusion: 'Semua clue mulai terhubung.\nKamera tidak rusak. Kamera dijadwalkan mati.\n\nSeseorang di kepolisian atau IT Dept bekerja sama dengan Arunika.\nDan sekarang... Supervisor Raka hilang.\n\n*** CHAPTER 10 COMPLETE ***\nReward: +850 XP\nRank: Senior Digital Investigator\nUnlocked: Email Database, CTE (WITH), Recovered Deleted Mail'
+    conclusion: 'Semua clue mulai terhubung.\nKamera tidak rusak. Kamera dijadwalkan mati.\n\nSeseorang di kepolisian atau IT Dept bekerja sama dengan Arunika.\nDan sekarang... Supervisor Raka hilang.\n\n*** CHAPTER 10 COMPLETE ***\nUnlocked: Email Database, Recovered Deleted Mail'
   }
 };
