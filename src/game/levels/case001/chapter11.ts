@@ -10,7 +10,7 @@ export const chapter11: Level = {
   },
   files: {
     title: 'Traffic Camera Database Index',
-    content: 'DATABASE - TRAFFIC & LOGISTICS MONITORING\n\nTables:\n- camera_logs (camera_id, plate_number, capture_time, location)\n- system_logs (user_id, action, timestamp)\n\nAdvanced Analysis Tools:\n- Window Functions (ROW_NUMBER, LAG, LEAD) enabled for sequencing.',
+    content: 'DATABASE - TRAFFIC & LOGISTICS MONITORING\n\nTables:\n- camera_logs (camera_id, plate_number, capture_time, location)\n- system_logs (user_id, action, timestamp)\n\nAdvanced Analysis Tools: Multi-vehicle sequencing and comparison enabled.',
   },
   database: {
     camera_logs: [
@@ -32,7 +32,7 @@ export const chapter11: Level = {
     {
       id: 1,
       story: 'Temukan seluruh perjalanan mobil Budi (B2841PT) dan urutkan berdasarkan waktu.',
-      goal: 'Urutkan riwayat pergerakan kendaraan B2841PT berdasarkan waktu penangkapan kamera.',
+      goal: 'Cari seluruh catatan camera_logs untuk plat B2841PT, diurutkan dari waktu paling awal.',
       availableTokens: ['SELECT', '*', 'FROM', 'camera_logs', 'WHERE', 'plate_number', '=', "'B2841PT'", 'ORDER', 'BY', 'capture_time'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -42,8 +42,8 @@ export const chapter11: Level = {
     },
     {
       id: 2,
-      story: 'Gunakan Window Function ROW_NUMBER() untuk memberi nomor urut pada setiap capture kendaraan.',
-      goal: 'Beri nomor urut pada setiap kemunculan kendaraan dengan fungsi ROW_NUMBER().',
+      story: 'Beri nomor urut pada setiap capture kendaraan, supaya urutan kemunculannya di tiap kamera lebih mudah dibaca — per kendaraan, dari yang paling awal.',
+      goal: 'Tampilkan plate_number, capture_time, dan nomor urut kemunculan tiap kendaraan — dikelompokkan per plat nomor, diurutkan dari capture_time paling awal.',
       availableTokens: ['SELECT', 'plate_number', ',', 'capture_time', ',', 'ROW_NUMBER', '(', ')', 'OVER', '(', 'PARTITION', 'BY', 'plate_number', 'ORDER', 'BY', 'capture_time', ')', 'AS', 'sequence', 'FROM', 'camera_logs'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -53,8 +53,8 @@ export const chapter11: Level = {
     },
     {
       id: 3,
-      story: 'Lihat kendaraan apa yang muncul SETELAH kendaraan lain menggunakan LEAD(). Urutkan berdasarkan capture_time untuk melihat pola tailing.',
-      goal: 'Gunakan fungsi LEAD() untuk mendeteksi kendaraan berikutnya yang muncul setelah setiap penangkapan kamera.',
+      story: 'Lihat kendaraan apa yang muncul SETELAH kendaraan lain di titik yang sama, dengan mengurutkan seluruh capture berdasarkan waktunya.',
+      goal: 'Tampilkan plate_number, capture_time, dan plat kendaraan berikutnya yang muncul setelah baris ini — diurutkan berdasarkan capture_time.',
       availableTokens: ['SELECT', 'plate_number', ',', 'capture_time', ',', 'LEAD', '(', 'plate_number', ')', 'OVER', '(', 'ORDER', 'BY', 'capture_time', ')', 'AS', 'next_vehicle', 'FROM', 'camera_logs'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -65,7 +65,7 @@ export const chapter11: Level = {
     {
       id: 4,
       story: 'Cari siapa yang mematikan kamera di tabel system_logs.',
-      goal: 'Cari log aktivitas yang mematikan kamera (Disable Camera) di tabel system_logs.',
+      goal: "Cari log di tabel system_logs dengan action 'Disable Camera'.",
       availableTokens: ['SELECT', '*', 'FROM', 'system_logs', 'WHERE', 'action', '=', "'Disable Camera'"],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -83,6 +83,6 @@ export const chapter11: Level = {
       'Semua kamera rusak secara alami.'
     ],
     correctIndex: 1,
-    conclusion: 'Ini bukan kebetulan.\nMereka mengikuti Budi.\n\ndan sekarang... Mereka tahu di mana kita berada.\n\n*** CHAPTER 11 COMPLETE ***\nReward: +1000 XP\nRank: Chief Digital Investigator\nUnlocked: Traffic Camera, ROW_NUMBER(), LAG(), LEAD()'
+    conclusion: 'Ini bukan kebetulan.\nMereka mengikuti Budi.\n\ndan sekarang... Mereka tahu di mana kita berada.\n\n*** CHAPTER 11 COMPLETE ***\nUnlocked: Traffic Camera'
   }
 };

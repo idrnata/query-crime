@@ -841,7 +841,7 @@ export default function App() {
              });
           } else if (nextIdx === 2) {
              setAppState('TIMELINE');
-             showSupervisorPopup(nextStory, () => {
+             showSupervisorPopup('Coba bandingkan setiap baris dengan baris tepat setelahnya, berdasarkan urutan waktu. Cari kendaraan yang selalu muncul tepat setelah Budi di titik yang sama.', () => {
                setAppState('TERM');
                setQueryString('');
              });
@@ -1259,7 +1259,7 @@ export default function App() {
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- EMAIL SERVER ARCHIVE\n  (emails, deleted, attachments)';
     } else if (currentLevelId === 11) {
       popupTitle = 'FINAL DATABASE ACCESS';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- TRAFFIC CAMERA LOGS\n  (camera_logs, system_logs)\n\nNew query capabilities unlocked: WINDOW FUNCTIONS (ROW_NUMBER, LEAD, LAG)';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- TRAFFIC CAMERA LOGS\n  (camera_logs, system_logs)';
     }
     
     setPopup({
