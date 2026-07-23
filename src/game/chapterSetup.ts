@@ -25,6 +25,9 @@ export function getInitialNotebookForChapter(chapterId: number): string {
   if (chapterId >= 7) {
     content += '\n\nSeseorang menghapus sebagian data perusahaan.';
   }
+  if (chapterId >= 11) {
+    content += '\n\nMobil B7710XR mengikuti Budi.';
+  }
   return content;
 }
 

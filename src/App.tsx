@@ -857,6 +857,32 @@ export default function App() {
              setAppState('TERM');
              setQueryString('');
           }
+        } else if (currentLevelId === 12) {
+          if (nextIdx === 1) {
+             setNotebookContent(prev => prev + '\n\nB7710XR muncul di Police HQ pada 14:00.');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup(nextStory, () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 2) {
+             setNotebookContent(prev => prev + '\n\nBadge B-118 digunakan pada 13:58 di Visitor Entrance.');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup(nextStory, () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 3) {
+             setNotebookContent(prev => prev + '\n\nPemilik Badge B-118: Yusuf Hamdani (Administrasi Umum).');
+             showSupervisorPopup('Cari tahu lebih lanjut atau buat laporan investigasi akhir.', () => {
+               setAppState('REPORT');
+               setQueryString('');
+             });
+          } else {
+             if (nextStory) showSupervisorPopup(nextStory);
+             setAppState('TERM');
+             setQueryString('');
+          }
         } else {
           if (nextStory) showSupervisorPopup(nextStory);
           setAppState('TERM');
@@ -1260,6 +1286,9 @@ export default function App() {
     } else if (currentLevelId === 11) {
       popupTitle = 'FINAL DATABASE ACCESS';
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- TRAFFIC CAMERA LOGS\n  (camera_logs, system_logs)';
+    } else if (currentLevelId === 12) {
+      popupTitle = 'INTERNAL AFFAIRS ACCESS';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- POLICE INTERNAL DATABASE\n  (personnel, badge_logs)';
     }
     
     setPopup({

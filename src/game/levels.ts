@@ -10,6 +10,7 @@ import { chapter8 } from './levels/case001/chapter8';
 import { chapter9 } from './levels/case001/chapter9';
 import { chapter10 } from './levels/case001/chapter10';
 import { chapter11 } from './levels/case001/chapter11';
+import { chapter12 } from './levels/case001/chapter12';
 
 export const LEVELS: Level[] = [
   chapter1,
@@ -22,6 +23,7 @@ export const LEVELS: Level[] = [
   chapter8,
   chapter9,
   chapter10,
-  chapter11
+  chapter11,
+  chapter12
 ];
 

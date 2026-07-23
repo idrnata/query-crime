@@ -28,7 +28,8 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
     'Companies', 'Accounts', 'Transactions', 'Branches',
     'Persons', 'Cases', 'Suspects', 'Evidence',
     'Emails', 'Deleted', 'Attachments',
-    'Camera Logs', 'System Logs'
+    'Camera Logs', 'System Logs',
+    'Personnel', 'Badge Logs'
   ];
 
   return (
@@ -67,7 +68,8 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
                              ((t === 'Accounts' || t === 'Transactions' || t === 'Branches') && currentLevelId < 8) ||
                              ((t === 'Persons' || t === 'Cases' || t === 'Suspects' || t === 'Evidence') && currentLevelId < 9) ||
                              ((t === 'Emails' || t === 'Deleted' || t === 'Attachments') && currentLevelId < 10) ||
-                             ((t === 'Camera Logs' || t === 'System Logs') && currentLevelId < 11);
+                             ((t === 'Camera Logs' || t === 'System Logs') && currentLevelId < 11) ||
+                             ((t === 'Personnel' || t === 'Badge Logs') && currentLevelId < 12);
             
             const tableName = t.toLowerCase().replace(/\s+/g, '_');
             
