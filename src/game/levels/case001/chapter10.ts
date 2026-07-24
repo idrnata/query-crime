@@ -34,7 +34,7 @@ export const chapter10: Level = {
     {
       id: 1,
       story: 'Temukan email yang berkaitan dengan kasus kecelakaan Arunika di tabel emails.',
-      goal: "Cari email bertema 'Arunika' (subject LIKE '%Arunika%') di tabel emails.",
+      goal: "Cari email yang berkaitan dengan kecelakaan Arunika (subject mengandung kata 'Arunika') di tabel emails.",
       availableTokens: ['SELECT', '*', 'FROM', 'emails', 'WHERE', 'subject', 'LIKE', "'%Arunika%'"],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -44,8 +44,8 @@ export const chapter10: Level = {
     },
     {
       id: 2,
-      story: 'Arsip email ini berantakan. Kelompokkan email terkait Arunika ke dalam tabel sementara (CTE WITH), lalu urutkan berdasarkan waktu kirim.',
-      goal: 'Kelompokkan email terkait Arunika menggunakan CTE (WITH), lalu urutkan berdasarkan sent_at.',
+      story: 'Archive email ini sangat berantakan. Coba susun dulu email yang berkaitan dengan Arunika sebagai satu kelompok sementara, baru urutkan berdasarkan waktu kirim.',
+      goal: 'Kelompokkan dulu email yang berkaitan dengan Arunika sebagai hasil sementara, lalu tampilkan hasilnya terurut berdasarkan waktu kirim.',
       availableTokens: ['WITH', 'arunika_emails', 'AS', '(', 'SELECT', '*', 'FROM', 'emails', 'WHERE', 'subject', 'LIKE', "'%Arunika%'", ')', 'SELECT', '*', 'FROM', 'arunika_emails', 'ORDER', 'BY', 'sent_at'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -55,8 +55,8 @@ export const chapter10: Level = {
     },
     {
       id: 3,
-      story: 'Satu email (ID 204) isinya kosong. Cek pesan yang dihapus di tabel deleted dengan thread_id 18 menggunakan tabel sementara (CTE WITH).',
-      goal: 'Kelompokkan pesan di tabel deleted dengan thread_id 18 menggunakan CTE (WITH).',
+      story: 'Satu email (ID 204) isinya kosong. Cek apakah ada pesan terakhir yang dihapus di tabel deleted yang memiliki thread_id yang sama (18) — kelompokkan dulu hasil pencarian di tabel deleted sebagai langkah sementara.',
+      goal: 'Kelompokkan dulu pesan di tabel deleted dengan thread_id 18 sebagai hasil sementara, lalu tampilkan isinya.',
       availableTokens: ['WITH', 'deleted_mail', 'AS', '(', 'SELECT', '*', 'FROM', 'deleted', 'WHERE', 'thread_id', '=', '18', ')', 'SELECT', '*', 'FROM', 'deleted_mail'],
       validateResult: (res, query) => {
         if (!query) return false;
@@ -66,8 +66,8 @@ export const chapter10: Level = {
     },
     {
       id: 4,
-      story: 'Cari lampiran (attachments) dari email terkait Arunika dengan menggabungkan tabel sementara (CTE WITH) dan filter IN.',
-      goal: 'Cari lampiran (attachments) dari email bertema Arunika menggunakan CTE (WITH).',
+      story: 'Sekarang cari lampiran (attachments) yang berkaitan dengan email Arunika — kelompokkan dulu ID email yang relevan sebagai langkah sementara, baru cocokkan dengan tabel attachments.',
+      goal: 'Kelompokkan dulu ID email yang berkaitan dengan Arunika sebagai hasil sementara, lalu cari attachments yang email_id-nya cocok dengan hasil tersebut.',
       availableTokens: ['WITH', 'suspicious_email', 'AS', '(', 'SELECT', 'id', 'FROM', 'emails', 'WHERE', 'subject', 'LIKE', "'%Arunika%'", ')', 'SELECT', '*', 'FROM', 'attachments', 'WHERE', 'email_id', 'IN', '(', 'SELECT', 'id', 'FROM', 'suspicious_email', ')'],
       validateResult: (res, query) => {
         if (!query) return false;

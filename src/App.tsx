@@ -1305,7 +1305,7 @@ export default function App() {
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- FINANCIAL BANK DATABASE\n  (accounts, transactions, branches)';
     } else if (currentLevelId === 9) {
       popupTitle = 'NEW DATABASE ACCESS';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CRIMINAL RECORDS\n  (persons, cases, suspects, evidence)\n\nNew query capabilities unlocked: SUBQUERY (Nested SELECT)';
+      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CRIMINAL RECORDS\n  (persons, cases, suspects, evidence)';
     } else if (currentLevelId === 10) {
       popupTitle = 'ACCESS GRANTED';
       popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- EMAIL SERVER ARCHIVE\n  (emails, deleted, attachments)';
