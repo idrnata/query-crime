@@ -874,6 +874,13 @@ export default function App() {
              });
           } else if (nextIdx === 3) {
              setNotebookContent(prev => prev + '\n\nPemilik Badge B-118: Yusuf Hamdani (Administrasi Umum).');
+             setAppState('NOTEBOOK');
+             showSupervisorPopup(nextStory, () => {
+               setAppState('TERM');
+               setQueryString('');
+             });
+          } else if (nextIdx === 4) {
+             setNotebookContent(prev => prev + '\n\nYusuf Hamdani tidak tercatat sebagai tersangka di kasus Arunika lama.');
              showSupervisorPopup('Cari tahu lebih lanjut atau buat laporan investigasi akhir.', () => {
                setAppState('REPORT');
                setQueryString('');
@@ -1146,6 +1153,25 @@ export default function App() {
           setTimeout(() => setCallStatus('CONNECTING'), 1500);
           setTimeout(() => setCallStatus('ACTIVE'), 3000);
         }, 1000);
+      } else if (currentLevelId === 12) {
+        // Ending Chapter 12 - Epilog call with Raka
+        setIsFlickering(true);
+        setTimeout(() => {
+          setIsFlickering(false);
+          setPopup({
+            title: 'SYSTEM',
+            message: 'Incoming call: Raka (Nomor Tidak Dikenal)',
+            onClose: () => {
+              setPopup(null);
+              setActiveCallContact({ id: 'raka', name: 'Raka', phone: 'UNKNOWN' });
+              setCallStatus('DIALING');
+              setAppState('CALLING');
+              setCallStep(1212);
+              setTimeout(() => setCallStatus('CONNECTING'), 1200);
+              setTimeout(() => setCallStatus('ACTIVE'), 2400);
+            }
+          });
+        }, 1500);
       } else {
         setAppState('QUEST_COMPLETE');
       }
@@ -1654,6 +1680,19 @@ export default function App() {
                   setIsLevelComplete(true);
                   setAppState('QUEST_COMPLETE');
                 }, 3000);
+                return;
+              }
+
+              if (activeCallContact?.id === 'raka' && callStep === 1212) {
+                setPopup({
+                  title: 'EPILOGUE',
+                  message: 'Delapan tahun lalu, sebuah kecelakaan menghapus tiga nyawa dan satu identitas.\nHari ini, kau menemukan siapa yang menghapusnya — tapi bukan siapa yang memerintahkan penghapusan itu.\n\nRaka selamat. Kasus lama ditutup ulang, kali ini dengan benar.\nTapi Unknown Number belum pernah tertangkap. PT Arunika Logistics masih beroperasi.\nDan seseorang, di suatu tempat, masih tahu persis di mana kau berada.\n\n*** CASE #001: COMPLETE ***\n\nKau bukan lagi Rookie Investigator.\n\n*** CASE #002 AKAN SEGERA DIMULAI ***',
+                  onClose: () => {
+                    setPopup(null);
+                    setIsLevelComplete(true);
+                    setAppState('QUEST_COMPLETE');
+                  }
+                });
                 return;
               }
               

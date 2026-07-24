@@ -80,6 +80,29 @@ const RAKA_ENDING_DIALOGUE = [
   }
 ];
 
+const RAKA_CH12_DIALOGUE = [
+  {
+    text: "...Ini aku. Maaf baru bisa kontak lagi sekarang.",
+    choices: [
+      { text: "Kamu di mana? Kamu baik-baik saja?", nextStep: 1 },
+      { text: "Aku menemukan siapa yang membuka akses untuk mobil Arunika di HQ.", nextStep: 1 }
+    ]
+  },
+  {
+    text: "Aku aman. Untuk sekarang. Badge B-118... Yusuf, staf administrasi. Dia bukan dalangnya — dia cuma disuruh, atau dibayar, atau diancam. Aku belum tahu yang mana.",
+    choices: [
+      { text: "Jadi siapa yang sebenarnya mengendalikan semua ini?", nextStep: 2 },
+      { text: "Apa yang harus kita lakukan sekarang?", nextStep: 2 }
+    ]
+  },
+  {
+    text: "Aku tidak tahu. Belum. Tapi kamu baru saja membuktikan sesuatu yang penting: kamu bisa menemukan orang yang tidak ingin ditemukan. Itu bukan kemampuan yang kupunya delapan tahun lalu. Istirahatlah dulu. Kasus ini belum selesai — tapi untuk malam ini, cukup.",
+    choices: [
+      { text: "...Baik, Pak.", nextStep: -1 }
+    ]
+  }
+];
+
 export const CallingScreen: React.FC<CallingScreenProps> = ({
   callStatus,
   activeCallContact,
@@ -88,18 +111,24 @@ export const CallingScreen: React.FC<CallingScreenProps> = ({
 }) => {
   const [dinaStep, setDinaStep] = useState(0);
   const [rakaStep, setRakaStep] = useState(0);
+  const [ch12Step, setCh12Step] = useState(0);
+
+  const isDina = activeCallContact?.id === 'dina';
+  const isRakaEnding = activeCallContact?.id === 'raka' && callStep === 666; // Use special code for ending Ch6
+  const isRakaCh12 = activeCallContact?.id === 'raka' && callStep === 1212; // Special code for Ch12
 
   const handleChoiceSelect = (nextStep: number) => {
     if (nextStep === -1) {
       handleHangUp();
     } else {
-      if (activeCallContact?.id === 'dina') setDinaStep(nextStep);
-      if (activeCallContact?.id === 'raka') setRakaStep(nextStep);
+      if (isDina) setDinaStep(nextStep);
+      if (isRakaEnding) setRakaStep(nextStep);
+      if (isRakaCh12) setCh12Step(nextStep);
     }
   };
 
-  const isDina = activeCallContact?.id === 'dina';
-  const isRakaEnding = activeCallContact?.id === 'raka' && callStep === 666; // Use special code for ending
+  const currentDialogueList = isDina ? DINA_DIALOGUE : isRakaEnding ? RAKA_ENDING_DIALOGUE : isRakaCh12 ? RAKA_CH12_DIALOGUE : null;
+  const currentDialogueStep = isDina ? dinaStep : isRakaEnding ? rakaStep : isRakaCh12 ? ch12Step : 0;
 
   return (
     <div className="flex flex-col h-full bg-[#1b2118] text-[#8cb07d] p-6 items-center justify-between text-center overflow-y-auto">
@@ -119,13 +148,16 @@ export const CallingScreen: React.FC<CallingScreenProps> = ({
             {/* Dialogue Bubble */}
             <div className="bg-[#8cb07d]/10 border-2 border-[#8cb07d] p-5 w-full rounded-lg text-left animate-in zoom-in-95 duration-300">
                <div className="text-xs font-semibold leading-relaxed italic text-[#8cb07d]">
-                  {(() => {
+                   {(() => {
                     if (!activeCallContact) return "...";
                     if (isDina) {
                       return DINA_DIALOGUE[dinaStep]?.text || "...";
                     }
                     if (isRakaEnding) {
                       return RAKA_ENDING_DIALOGUE[rakaStep]?.text || "...";
+                    }
+                    if (isRakaCh12) {
+                      return RAKA_CH12_DIALOGUE[ch12Step]?.text || "...";
                     }
                     if (activeCallContact.id === 'raka') {
                       const scripts = [
@@ -144,12 +176,12 @@ export const CallingScreen: React.FC<CallingScreenProps> = ({
             </div>
 
             {/* Conversation Choices / Dialogue Options */}
-            {((isDina && DINA_DIALOGUE[dinaStep]) || (isRakaEnding && RAKA_ENDING_DIALOGUE[rakaStep])) && (
+            {(currentDialogueList && currentDialogueList[currentDialogueStep]) && (
               <div className="flex flex-col gap-2 mt-2 w-full text-left animate-in fade-in-50 duration-500">
                 <div className="text-[10px] uppercase tracking-widest opacity-60 font-bold mb-1 flex items-center gap-1.5 px-1">
                   <MessageSquare size={10} /> SELECT DIALOGUE:
                 </div>
-                {(isDina ? DINA_DIALOGUE[dinaStep] : RAKA_ENDING_DIALOGUE[rakaStep]).choices.map((choice, index) => (
+                {currentDialogueList[currentDialogueStep].choices.map((choice, index) => (
                   <button
                     key={index}
                     onClick={() => handleChoiceSelect(choice.nextStep)}

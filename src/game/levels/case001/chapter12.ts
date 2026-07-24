@@ -10,7 +10,7 @@ export const chapter12: Level = {
   },
   files: {
     title: 'Internal Affairs Access Index',
-    content: 'POLICE INTERNAL DATABASE\n\nTables:\n- personnel (id, badge_id, name, role)\n- badge_logs (badge_id, gate, access_time)\n- camera_logs (dari arsip lalu lintas)',
+    content: 'POLICE INTERNAL DATABASE\n\nTables:\n- personnel (id, badge_id, name, role)\n- badge_logs (badge_id, gate, access_time)\n- camera_logs (arsip lalu lintas)\n- cases, suspects (arsip criminal records lama)',
   },
   database: {
     camera_logs: [
@@ -23,6 +23,13 @@ export const chapter12: Level = {
     personnel: [
       { id: 1, badge_id: 'B-118', name: 'Yusuf Hamdani', role: 'Administrasi Umum' },
       { id: 2, badge_id: 'B-042', name: 'Siti Marlina', role: 'IT Support' }
+    ],
+    cases: [
+      { case_id: 1, title: 'Traffic Accident Arunika', lead_investigator: 52, status: 'Closed' },
+      { case_id: 2, title: 'Warehouse Theft', lead_investigator: 12, status: 'Open' }
+    ],
+    suspects: [
+      { id: 101, case_id: 2, name: 'Unknown' }
     ]
   },
   objectives: [
@@ -58,13 +65,24 @@ export const chapter12: Level = {
         const q = query.toLowerCase().replace(/\s+/g, ' ');
         return q.includes('personnel') && q.includes('b-118') && res && res.length === 1 && res[0].name === 'Yusuf Hamdani';
       }
+    },
+    {
+      id: 4,
+      story: 'Cek apakah Yusuf Hamdani pernah tercatat sebagai tersangka di kasus Arunika lama — cari case_id-nya dulu, lalu langsung pakai di query yang sama.',
+      goal: 'Cari data di tabel suspects yang case_id-nya sama dengan case_id dari kasus Arunika, dengan menyisipkan pencarian kasus itu langsung di dalam query ini.',
+      availableTokens: ['SELECT', '*', 'FROM', 'suspects', 'WHERE', 'case_id', '=', '(', 'SELECT', 'case_id', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
+      validateResult: (res, query) => {
+        if (!query) return false;
+        const q = query.toLowerCase().replace(/\s+/g, ' ');
+        return q.includes('suspects') && q.includes('case_id') && q.includes('(') && q.includes('select') && res && res.length === 0;
+      }
     }
   ],
   report: {
     question: 'Apa kesimpulan akhir Case #001?',
     options: [
       'Kasus ditutup total, semua pelaku tertangkap.',
-      'Badge staf administrasi Police HQ (B-118) dipakai untuk membuka akses bagi kendaraan PT Arunika Logistics, mengonfirmasi ada pihak di dalam kepolisian yang membantu menutupi kasus lama. Dalang utama masih belum teridentifikasi.',
+      'Badge staf administrasi Police HQ (B-118, Yusuf Hamdani) dipakai untuk membuka akses bagi kendaraan PT Arunika Logistics. Yusuf tidak pernah tercatat sebagai tersangka resmi kasus lama — ia kemungkinan cuma dimanfaatkan sebagai celah akses, bukan dalang. Pihak yang sebenarnya mengendalikan operasi ini masih belum teridentifikasi.',
       'PT Arunika Logistics sepenuhnya tidak bersalah.',
       'Supervisor Raka adalah dalang di balik semuanya.'
     ],
