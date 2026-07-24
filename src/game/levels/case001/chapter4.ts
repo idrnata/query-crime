@@ -56,7 +56,7 @@ export const chapter4: Level = {
     {
       id: 2,
       story: 'Jangan fokus ke orangnya. Fokus ke pasien yang mereka kunjungi.',
-      goal: 'Hubungkan tabel visitors (alias v) dan patients (alias p) berdasarkan patient_id untuk melihat siapa menemui siapa di rentang waktu tersebut.',
+      goal: 'Hubungkan tabel visitors dan patients berdasarkan patient_id untuk melihat siapa menemui siapa di rentang waktu tersebut.',
       availableTokens: [
         'SELECT', 'v.visitor_name', ',', 'p.name', ',', 'v.visit_time', 
         'FROM', 'visitors', 'v', 'JOIN', 'patients', 'p', 'ON', 'v.patient_id', '=', 'p.id', 
@@ -74,7 +74,7 @@ export const chapter4: Level = {
     {
       id: 4,
       story: 'Data Rudi sangat minim. Bagaimana kalau Rudi memiliki kendaraan terdaftar? Coba periksa.',
-      goal: 'Hubungkan citizens (alias c) dan vehicles (alias v) untuk mencari plat nomor kendaraan Rudi Hartono.',
+      goal: 'Hubungkan citizens dan vehicles untuk mencari plat nomor kendaraan Rudi Hartono.',
       availableTokens: [
         'SELECT', 'c.name', ',', 'v.plate_number', 
         'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id', 
@@ -92,7 +92,7 @@ export const chapter4: Level = {
     {
       id: 6,
       story: 'Ada tiga kendaraan. Sekarang hubungkan semuanya untuk mengetahui siapa pemilik dari kendaraan-kendaraan tersebut.',
-      goal: 'Hubungkan tabel parking (alias p), vehicles (alias v), dan citizens (alias c) sekaligus untuk menampilkan nama pemilik, plat nomor, dan waktu keluar dari ketiga kendaraan tersebut.',
+      goal: 'Hubungkan tabel parking, vehicles, dan citizens sekaligus untuk menampilkan nama pemilik, plat nomor, dan waktu keluar dari ketiga kendaraan tersebut.',
       availableTokens: [
         'SELECT', 'c.name', ',', 'v.plate_number', ',', 'p.exit_time', 
         'FROM', 'parking', 'p', 
