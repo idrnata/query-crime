@@ -20,12 +20,13 @@ Mainkan game langsung melalui tautan berikut:
 
 Seorang warga bernama **Budi Santoso** dilaporkan hilang setelah mengunjungi kerabat di Rumah Sakit Harapan Bangsa. Tugas Anda sebagai penyelidik digital adalah melacak perjalanannya, menganalisis CCTV, mengungkap aliran dana gelap **PT Arunika Logistics**, hingga menemukan konspirasi besar yang mengarah pada hilangnya atasan Anda sendiri, **Supervisor Raka**.
 
-Game ini terdiri dari **11 Bab (Chapters)** yang membimbing Anda menguasai SQL dari tingkat dasar hingga tingkat lanjut:
+Game ini terdiri dari **12 Bab (Chapters)** yang membimbing Anda menguasai SQL dari tingkat dasar hingga tingkat sintesis kasus akhir:
 * **Chapter 1-2**: Dasar-dasar kueri (`SELECT`, `FROM`, `WHERE`, `ORDER BY`).
 * **Chapter 3-5**: Menghubungkan tabel dan relasi CCTV (`JOIN`, `LEFT JOIN`).
 * **Chapter 6-7**: Pelacakan sejarah perusahaan dan rute kendaraan GPS (`LIMIT`, filter lanjutan).
-* **Chapter 8-9**: Menganalisis aliran dana transaksi mencurigakan (`GROUP BY`, `COUNT`, `HAVING`).
-* **Chapter 10-11**: Rekonstruksi thread pesan terfragmentasi dan menghadapi ancaman siber (`WITH`/CTE, subqueries).
+* **Chapter 8-9**: Menganalisis aliran dana transaksi mencurigakan (`GROUP BY`, `COUNT`, `HAVING`, subqueries).
+* **Chapter 10-11**: Rekonstruksi thread pesan terfragmentasi dan menghadapi ancaman siber (`WITH`/CTE, traffic logs).
+* **Chapter 12 (Finale & Epilog)**: Mengungkap "Orang di Dalam" Police HQ, sintesis subquery & `BETWEEN`, panggilan telepon epilog dari Supervisor Raka, serta penutupan resmi **Case #001**.
 
 ---
 
@@ -98,7 +99,7 @@ npm run build
 ├── src/
 │   ├── components/        # Komponen UI Reusable & Layar Ponsel (Screens)
 │   ├── constants/         # Konfigurasi ikon dan meta aplikasi
-│   ├── game/              # Konfigurasi level cerita (Chapter 1 - 11) dan sistem penyimpanan
+│   ├── game/              # Konfigurasi level cerita (Chapter 1 - 12) dan sistem penyimpanan
 │   ├── utils/             # Fungsi utilitas (format tanggal, dsb.)
 │   ├── App.tsx            # Komponen root & pengatur state game utama
 │   ├── index.css          # Kustomisasi gaya global dan Tailwind CSS
