@@ -544,19 +544,7 @@ export default function App() {
             showSupervisorPopup
           });
         } else if (currentLevelId === 2) {
-          if (nextIdx === 1) {
-            showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          }
-          else if (nextIdx === 2) {
-            // Found Dina.
-            setNotebookContent(prev => prev + '\n\nDina Santoso: Kemungkinan anggota keluarga.');
-            setAppState('NOTEBOOK');
-            showSupervisorPopup(nextStory);
-            setQueryString('');
-          }
-          else if (nextIdx === 3) {
+          if (nextIdx === 3) {
             // Got phone numbers.
             const newContacts = contacts.find(c => c.name === 'Dina Santoso') 
               ? contacts 
@@ -581,16 +569,13 @@ export default function App() {
               return newMessages;
             });
             setSelectedMessageId(null);
-          }
-          else if (nextIdx === 4) {
-            showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          }
-          else {
-            if (nextStory) showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
+          } else {
+            runObjectiveTransition(currentLevelId, nextIdx, nextStory, {
+              appendNotebook: (text) => setNotebookContent(prev => prev + '\n\n' + text),
+              setAppState,
+              setQueryString,
+              showSupervisorPopup
+            });
           }
         } else if (currentLevelId === 3) {
           if (nextIdx === 5) {
@@ -748,37 +733,19 @@ export default function App() {
              setQueryString('');
           }
         } else if (currentLevelId === 12) {
-          if (nextIdx === 1) {
-             setNotebookContent(prev => prev + '\n\nB7710XR muncul di Police HQ pada 14:00.');
-             setAppState('NOTEBOOK');
-             showSupervisorPopup(nextStory, () => {
-               setAppState('TERM');
-               setQueryString('');
-             });
-          } else if (nextIdx === 2) {
-             setNotebookContent(prev => prev + '\n\nBadge B-118 digunakan pada 13:58 di Visitor Entrance.');
-             setAppState('NOTEBOOK');
-             showSupervisorPopup(nextStory, () => {
-               setAppState('TERM');
-               setQueryString('');
-             });
-          } else if (nextIdx === 3) {
-             setNotebookContent(prev => prev + '\n\nPemilik Badge B-118: Yusuf Hamdani (Administrasi Umum).');
-             setAppState('NOTEBOOK');
-             showSupervisorPopup(nextStory, () => {
-               setAppState('TERM');
-               setQueryString('');
-             });
-          } else if (nextIdx === 4) {
+          if (nextIdx === 4) {
              setNotebookContent(prev => prev + '\n\nYusuf Hamdani tidak tercatat sebagai tersangka di kasus Arunika lama.');
              showSupervisorPopup('Cari tahu lebih lanjut atau buat laporan investigasi akhir.', () => {
                setAppState('REPORT');
                setQueryString('');
              });
           } else {
-             if (nextStory) showSupervisorPopup(nextStory);
-             setAppState('TERM');
-             setQueryString('');
+            runObjectiveTransition(currentLevelId, nextIdx, nextStory, {
+              appendNotebook: (text) => setNotebookContent(prev => prev + '\n\n' + text),
+              setAppState,
+              setQueryString,
+              showSupervisorPopup
+            });
           }
         } else {
           if (nextStory) showSupervisorPopup(nextStory);

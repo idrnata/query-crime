@@ -64,6 +64,21 @@ export const OBJECTIVE_TRANSITIONS: Record<number, ChapterTransitions> = {
     1: { notebookAppend: 'Sulit mengikuti percakapan.', showNotebookFirst: true, returnToTermAfterPopup: true },
     2: { notebookAppend: 'Email terakhir (ID 204) telah dihapus.', showNotebookFirst: true, returnToTermAfterPopup: true },
     3: { notebookAppend: 'Email terakhir: "Jangan percaya..."', showNotebookFirst: true, returnToTermAfterPopup: true }
+  },
+  // Chapter 2: nextIdx 3 custom (reveal kontak Dina — ubah contacts, blink
+  // app, pindah ke INBOX, nambah message baru). nextIdx 1/4/default gak
+  // perlu didaftar (jatuh ke DEFAULT_STEP, sama kayak sebelumnya).
+  2: {
+    2: { notebookAppend: 'Dina Santoso: Kemungkinan anggota keluarga.', showNotebookFirst: true }
+  },
+  // Chapter 12: nextIdx 4 custom (notebookAppend TANPA pindah ke NOTEBOOK
+  // dulu, teks popup custom bukan dari story, tujuan akhir REPORT bukan
+  // TERM — beda dari pola Ch10 nextIdx4 meski sekilas mirip, makanya
+  // sengaja gak disamain).
+  12: {
+    1: { notebookAppend: 'B7710XR muncul di Police HQ pada 14:00.', showNotebookFirst: true, returnToTermAfterPopup: true },
+    2: { notebookAppend: 'Badge B-118 digunakan pada 13:58 di Visitor Entrance.', showNotebookFirst: true, returnToTermAfterPopup: true },
+    3: { notebookAppend: 'Pemilik Badge B-118: Yusuf Hamdani (Administrasi Umum).', showNotebookFirst: true, returnToTermAfterPopup: true }
   }
 };
 
