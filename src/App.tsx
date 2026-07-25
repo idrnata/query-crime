@@ -7,6 +7,7 @@ import { ALL_APPS } from './constants/apps';
 import { formatTime, formatDate } from './utils/date';
 import { getInitialNotebookForChapter, getChapterSetupData } from './game/chapterSetup';
 import { getMissionAcceptedPopup } from './constants/missionPopups';
+import { runObjectiveTransition, hasCustomLogic } from './game/objectiveTransitions';
 
 interface SaveProgressOverrides {
   levelId?: number;
@@ -535,39 +536,13 @@ export default function App() {
       if (nextIdx < length) {
         const nextStory = currentLevel.objectives[nextIdx]?.story;
 
-        if (currentLevelId === 1) {
-          if (nextIdx === 1) {
-            showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          }
-          else if (nextIdx === 2) { 
-            showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          }
-          else if (nextIdx === 3) { 
-            setAppState('NOTEBOOK');
-            setQueryString('');
-            setTimeout(() => {
-               showSupervisorPopup(nextStory);
-            }, 3000);
-          }
-          else if (nextIdx === 4) {
-            showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          }
-          else if (nextIdx === 5) {
-            showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          }
-          else {
-            if (nextStory) showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          }
+        if (!hasCustomLogic(currentLevelId)) {
+          runObjectiveTransition(currentLevelId, nextIdx, nextStory, {
+            appendNotebook: (text) => setNotebookContent(prev => prev + '\n\n' + text),
+            setAppState,
+            setQueryString,
+            showSupervisorPopup
+          });
         } else if (currentLevelId === 2) {
           if (nextIdx === 1) {
             showSupervisorPopup(nextStory);
@@ -649,37 +624,6 @@ export default function App() {
           } else if (nextIdx === 6) {
             showSupervisorPopup(nextStory);
             setAppState('TERM');
-            setQueryString('');
-          } else {
-            if (nextStory) showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          }
-        } else if (currentLevelId === 4) {
-          if (nextIdx === 1) {
-            setNotebookContent(prev => prev + '\n\nData terlalu banyak. Perlu difilter.\nAda dua orang lain yang berada di lokasi hampir bersamaan.');
-            setAppState('NOTEBOOK');
-            showSupervisorPopup(nextStory);
-            setQueryString('');
-          } else if (nextIdx === 2) {
-            setNotebookContent(prev => prev + '\n\nRudi juga mengunjungi Rizky.');
-            setAppState('NOTEBOOK');
-            showSupervisorPopup(nextStory);
-            setQueryString('');
-          } else if (nextIdx === 3) {
-            setNotebookContent(prev => prev + '\n\nData Rudi tidak lengkap.');
-            setAppState('NOTEBOOK');
-            showSupervisorPopup(nextStory);
-            setQueryString('');
-          } else if (nextIdx === 4) {
-            setNotebookContent(prev => prev + '\n\nRudi tidak memiliki kendaraan.');
-            setAppState('NOTEBOOK');
-            showSupervisorPopup(nextStory);
-            setQueryString('');
-          } else if (nextIdx === 5) {
-            setNotebookContent(prev => prev + '\n\nAda tiga kendaraan.');
-            setAppState('NOTEBOOK');
-            showSupervisorPopup(nextStory);
             setQueryString('');
           } else {
             if (nextStory) showSupervisorPopup(nextStory);
@@ -778,40 +722,6 @@ export default function App() {
             if (nextStory) showSupervisorPopup(nextStory);
             setAppState('TERM');
             setQueryString('');
-          }
-        } else if (currentLevelId === 9) {
-          if (nextIdx === 1) {
-             setNotebookContent(prev => prev + '\n\nLead Investigator ID: 52');
-             setAppState('NOTEBOOK');
-             showSupervisorPopup(nextStory, () => {
-               setAppState('TERM');
-               setQueryString('');
-             });
-          } else if (nextIdx === 2) {
-             setNotebookContent(prev => prev + '\n\nID 52 tidak ditemukan di persons.');
-             setAppState('NOTEBOOK');
-             showSupervisorPopup(nextStory, () => {
-               setAppState('TERM');
-               setQueryString('');
-             });
-          } else if (nextIdx === 3) {
-             setNotebookContent(prev => prev + '\n\nRecord person benar-benar hilang.');
-             setAppState('NOTEBOOK');
-             showSupervisorPopup(nextStory, () => {
-               setAppState('TERM');
-               setQueryString('');
-             });
-          } else if (nextIdx === 4) {
-             setNotebookContent(prev => prev + '\n\nNotebook Polisi masih ada di Evidence.');
-             setAppState('NOTEBOOK');
-             showSupervisorPopup(nextStory, () => {
-               setAppState('TERM');
-               setQueryString('');
-             });
-          } else {
-             if (nextStory) showSupervisorPopup(nextStory);
-             setAppState('TERM');
-             setQueryString('');
           }
         } else if (currentLevelId === 10) {
           if (nextIdx === 1) {
