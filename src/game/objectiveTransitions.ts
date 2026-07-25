@@ -47,6 +47,23 @@ export const OBJECTIVE_TRANSITIONS: Record<number, ChapterTransitions> = {
     2: { notebookAppend: 'ID 52 tidak ditemukan di persons.', showNotebookFirst: true, returnToTermAfterPopup: true },
     3: { notebookAppend: 'Record person benar-benar hilang.', showNotebookFirst: true, returnToTermAfterPopup: true },
     4: { notebookAppend: 'Notebook Polisi masih ada di Evidence.', showNotebookFirst: true, returnToTermAfterPopup: true }
+  },
+  // Chapter 3 & 10: BUKAN semua objective didaftarkan di sini — cuma yang
+  // seragam. nextIdx yang gak disebut (Ch3 objective 5, Ch10 objective 4)
+  // tetap custom code di App.tsx karena masing-masing punya sequence unik
+  // (Ch3: nested popup "NEW LESSON" sebelum popup story; Ch10: tujuan akhir
+  // REPORT bukan TERM, dan teks popup bukan dari story field). Kedua chapter
+  // ini TETAP ada di CHAPTERS_WITH_CUSTOM_LOGIC (lihat di bawah) — cuma
+  // bagian internal branch-nya di App.tsx yang sekarang manggil
+  // runObjectiveTransition buat sub-case yang seragam, biar gak duplikasi
+  // boilerplate notebook+popup+state.
+  3: {
+    3: { notebookAppend: 'Semua data saling terhubung. Cari hubungan antar tabel.', showNotebookFirst: true }
+  },
+  10: {
+    1: { notebookAppend: 'Sulit mengikuti percakapan.', showNotebookFirst: true, returnToTermAfterPopup: true },
+    2: { notebookAppend: 'Email terakhir (ID 204) telah dihapus.', showNotebookFirst: true, returnToTermAfterPopup: true },
+    3: { notebookAppend: 'Email terakhir: "Jangan percaya..."', showNotebookFirst: true, returnToTermAfterPopup: true }
   }
 };
 

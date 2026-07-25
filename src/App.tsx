@@ -593,24 +593,7 @@ export default function App() {
             setQueryString('');
           }
         } else if (currentLevelId === 3) {
-          if (nextIdx === 1) {
-            showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          } else if (nextIdx === 2) {
-            showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          } else if (nextIdx === 3) {
-            setNotebookContent(prev => prev + '\n\nSemua data saling terhubung. Cari hubungan antar tabel.');
-            setAppState('NOTEBOOK');
-            showSupervisorPopup(nextStory);
-            setQueryString('');
-          } else if (nextIdx === 4) {
-            showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
-          } else if (nextIdx === 5) {
+          if (nextIdx === 5) {
             setPopup({
               title: 'NEW LESSON',
               message: 'Kadang jawaban tidak ada di satu tabel. Kamu bisa menggabungkan data dari dua tabel sekaligus.',
@@ -621,14 +604,13 @@ export default function App() {
                 setQueryString('');
               }
             });
-          } else if (nextIdx === 6) {
-            showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
           } else {
-            if (nextStory) showSupervisorPopup(nextStory);
-            setAppState('TERM');
-            setQueryString('');
+            runObjectiveTransition(currentLevelId, nextIdx, nextStory, {
+              appendNotebook: (text) => setNotebookContent(prev => prev + '\n\n' + text),
+              setAppState,
+              setQueryString,
+              showSupervisorPopup
+            });
           }
         } else if (currentLevelId === 5) {
           if (nextIdx === 1) {
@@ -724,28 +706,7 @@ export default function App() {
             setQueryString('');
           }
         } else if (currentLevelId === 10) {
-          if (nextIdx === 1) {
-             setNotebookContent(prev => prev + '\n\nSulit mengikuti percakapan.');
-             setAppState('NOTEBOOK');
-             showSupervisorPopup(nextStory, () => {
-               setAppState('TERM');
-               setQueryString('');
-             });
-          } else if (nextIdx === 2) {
-             setNotebookContent(prev => prev + '\n\nEmail terakhir (ID 204) telah dihapus.');
-             setAppState('NOTEBOOK');
-             showSupervisorPopup(nextStory, () => {
-               setAppState('TERM');
-               setQueryString('');
-             });
-          } else if (nextIdx === 3) {
-             setNotebookContent(prev => prev + '\n\nEmail terakhir: "Jangan percaya..."');
-             setAppState('NOTEBOOK');
-             showSupervisorPopup(nextStory, () => {
-               setAppState('TERM');
-               setQueryString('');
-             });
-          } else if (nextIdx === 4) {
+          if (nextIdx === 4) {
              setNotebookContent(prev => prev + '\n\nMaintenance? Kamera Offline di Chapter 5... Clue terhubung.');
              setAppState('NOTEBOOK');
              showSupervisorPopup('Jadwal Maintenance:\n- 11:24 Start\n- 11:31 End\n\nKamera tidak rusak. Seseorang mematikannya.', () => {
@@ -753,9 +714,12 @@ export default function App() {
                setQueryString('');
              });
           } else {
-             if (nextStory) showSupervisorPopup(nextStory);
-             setAppState('TERM');
-             setQueryString('');
+            runObjectiveTransition(currentLevelId, nextIdx, nextStory, {
+              appendNotebook: (text) => setNotebookContent(prev => prev + '\n\n' + text),
+              setAppState,
+              setQueryString,
+              showSupervisorPopup
+            });
           }
         } else if (currentLevelId === 11) {
           if (nextIdx === 1) {
