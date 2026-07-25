@@ -1,5 +1,6 @@
 import React from 'react';
 import { Database, ArrowRight, Terminal, Lock } from 'lucide-react';
+import { TABLE_UNLOCK_RULES, isTableLocked } from '../../constants/tableUnlocks';
 
 interface DBListScreenProps {
   currentLevel: any;
@@ -22,15 +23,7 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
   showSupervisorPopup,
   currentObjectiveIndex
 }) => {
-  const tableNames = [
-    'Vehicles', 'Owners', 'Citizens', 'Visitors', 
-    'Patients', 'Parking', 'Cameras', 'Footage', 'Articles', 
-    'Companies', 'Accounts', 'Transactions', 'Branches',
-    'Persons', 'Cases', 'Suspects', 'Evidence',
-    'Emails', 'Deleted', 'Attachments',
-    'Camera Logs', 'System Logs',
-    'Personnel', 'Badge Logs'
-  ];
+  const tableNames = TABLE_UNLOCK_RULES.map(r => r.label);
 
   return (
     <div className="flex flex-col h-full">
@@ -60,16 +53,7 @@ export const DBListScreen: React.FC<DBListScreenProps> = ({
           <div className="h-4"></div>
 
           {tableNames.map(t => {
-            const isLocked = (t === 'Citizens' && currentLevelId < 2) || 
-                             ((t === 'Visitors' || t === 'Patients') && currentLevelId < 2) ||
-                             ((t === 'Cameras' || t === 'Footage') && currentLevelId < 5) ||
-                             (t === 'Articles' && currentLevelId < 6) ||
-                             (t === 'Companies' && (currentLevelId < 6 || currentObjectiveIndex < 3)) ||
-                             ((t === 'Accounts' || t === 'Transactions' || t === 'Branches') && currentLevelId < 8) ||
-                             ((t === 'Persons' || t === 'Cases' || t === 'Suspects' || t === 'Evidence') && currentLevelId < 9) ||
-                             ((t === 'Emails' || t === 'Deleted' || t === 'Attachments') && currentLevelId < 10) ||
-                             ((t === 'Camera Logs' || t === 'System Logs') && currentLevelId < 11) ||
-                             ((t === 'Personnel' || t === 'Badge Logs') && currentLevelId < 12);
+            const isLocked = isTableLocked(t, currentLevelId, currentObjectiveIndex);
             
             const tableName = t.toLowerCase().replace(/\s+/g, '_');
             

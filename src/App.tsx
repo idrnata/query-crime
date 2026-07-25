@@ -6,6 +6,22 @@ import { PlayerStats, AppState, EvidenceMetadata } from './types';
 import { ALL_APPS } from './constants/apps';
 import { formatTime, formatDate } from './utils/date';
 import { getInitialNotebookForChapter, getChapterSetupData } from './game/chapterSetup';
+import { getMissionAcceptedPopup } from './constants/missionPopups';
+
+interface SaveProgressOverrides {
+  levelId?: number;
+  objectiveIndex?: number;
+  unlockedLevelIds?: number[];
+  hasAcceptedMission?: boolean;
+  unlockedApps?: string[];
+  notebookContent?: string;
+  contacts?: any[];
+  witnesses?: any[];
+  messages?: any[];
+  stats?: PlayerStats;
+  playerName?: string;
+  evidenceMetadata?: Record<string, EvidenceMetadata>;
+}
 
 // Components
 import { StatusBar } from './components/ui/StatusBar';
@@ -215,7 +231,7 @@ export default function App() {
       if (changed) {
         setContacts(newContacts);
         setUnlockedApps(newApps);
-        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent, newContacts);
+        saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps: newApps, notebookContent, contacts: newContacts });
       }
     }
   }, [currentLevelId, currentObjectiveIndex, contacts.length, unlockedApps.length, witnesses.length]);
@@ -226,7 +242,7 @@ export default function App() {
       if (!unlockedApps.includes('MAP')) {
         const newApps = [...unlockedApps, 'MAP'];
         setUnlockedApps(newApps);
-        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent);
+        saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps: newApps, notebookContent });
       }
     }
   }, [currentLevelId, hasAcceptedMission, unlockedApps.length]);
@@ -263,20 +279,20 @@ export default function App() {
     */
   }, [appState, hasAcceptedMission, selectedMessageId, currentLevelId]);
 
-  const saveProgress = (levelId: number, objectiveIndex: number, unlockedLvl: number[], accepted: boolean, apps: string[], notebook?: string, currentContacts?: any[], currentWitnesses?: any[], currentMessages?: any[], currentStats?: PlayerStats, name?: string, meta?: Record<string, EvidenceMetadata>) => {
+  const saveProgress = (overrides: SaveProgressOverrides = {}) => {
     saveGame({ 
-      currentLevelId: levelId, 
-      currentObjectiveIndex: objectiveIndex, 
-      unlockedLevelIds: unlockedLvl, 
-      hasAcceptedMission: accepted, 
-      unlockedApps: apps,
-      notebookContent: notebook || notebookContent,
-      contacts: currentContacts || contacts,
-      witnesses: currentWitnesses || witnesses,
-      messages: currentMessages || messages,
-      stats: currentStats || stats,
-      playerName: name || playerName,
-      evidenceMetadata: meta || evidenceMetadata
+      currentLevelId: overrides.levelId ?? currentLevelId, 
+      currentObjectiveIndex: overrides.objectiveIndex ?? currentObjectiveIndex, 
+      unlockedLevelIds: overrides.unlockedLevelIds ?? unlockedLevelIds, 
+      hasAcceptedMission: overrides.hasAcceptedMission ?? hasAcceptedMission, 
+      unlockedApps: overrides.unlockedApps ?? unlockedApps,
+      notebookContent: overrides.notebookContent ?? notebookContent,
+      contacts: overrides.contacts ?? contacts,
+      witnesses: overrides.witnesses ?? witnesses,
+      messages: overrides.messages ?? messages,
+      stats: overrides.stats ?? stats,
+      playerName: overrides.playerName ?? playerName,
+      evidenceMetadata: overrides.evidenceMetadata ?? evidenceMetadata
     });
   };
 
@@ -305,7 +321,7 @@ export default function App() {
     setSelectedMessageId(null);
     setNotebookContent(initialNotebook);
     
-    saveProgress(chapterId, 0, newUnlocked, false, baseApps, initialNotebook, initialContacts, initialWitnesses, reconstructedMessages);
+    saveProgress({ levelId: chapterId, objectiveIndex: 0, unlockedLevelIds: newUnlocked, hasAcceptedMission: false, unlockedApps: baseApps, notebookContent: initialNotebook, contacts: initialContacts, witnesses: initialWitnesses, messages: reconstructedMessages });
     setAppState('HOME');
     showSupervisorPopup(`Chapter ${chapterId} berhasil di-reset. Silakan buka Inbox untuk membaca instruksi misi.`);
   };
@@ -316,18 +332,18 @@ export default function App() {
       if (hasUnread) {
         const updated = prev.map(m => m.id === id ? { ...m, read: true } : m);
         
-        saveProgress(
-          currentLevelId,
-          currentObjectiveIndex,
+        saveProgress({
+          levelId: currentLevelId,
+          objectiveIndex: currentObjectiveIndex,
           unlockedLevelIds,
           hasAcceptedMission,
           unlockedApps,
           notebookContent,
           contacts,
           witnesses,
-          updated,
+          messages: updated,
           stats
-        );
+        });
         
         return updated;
       }
@@ -350,7 +366,7 @@ export default function App() {
     
     setPlayerName(trimmedName);
     setShowNameInput(false);
-    saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, trimmedName);
+    saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName: trimmedName });
     
     setTimeout(() => {
       showSupervisorPopup(`Selamat datang ${trimmedName} di Minor Crime Division. Ini bukan kasus besar. Tapi beginilah semua detektif memulai kariernya.`);
@@ -481,9 +497,9 @@ export default function App() {
       setStats(newStats);
       
       if (met) {
-        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, newStats);
+        saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats: newStats });
       } else {
-        saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, newStats);
+        saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats: newStats });
       }
     } catch (e: any) {
       setErrorMessage(e.message || "SYNTAX ERROR");
@@ -494,7 +510,7 @@ export default function App() {
       const newStats = { ...stats };
       newStats.queriesRun += 1;
       setStats(newStats);
-      saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, newStats);
+      saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats: newStats });
     }
   };
 
@@ -513,7 +529,7 @@ export default function App() {
       
       const nextIdx = currentObjectiveIndex + 1;
       setCurrentObjectiveIndex(nextIdx);
-      saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, finalApps, notebookContent, finalContacts, finalWitnesses, finalMessages, finalStats);
+      saveProgress({ levelId: currentLevelId, objectiveIndex: nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps: finalApps, notebookContent, contacts: finalContacts, witnesses: finalWitnesses, messages: finalMessages, stats: finalStats });
       
       const length = currentLevel?.objectives.length || 0;
       if (nextIdx < length) {
@@ -586,7 +602,7 @@ export default function App() {
                  read: false
               };
               const newMessages = [...prev, newMsg];
-              saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, newContacts, witnesses, newMessages);
+              saveProgress({ levelId: currentLevelId, objectiveIndex: nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts: newContacts, witnesses, messages: newMessages });
               return newMessages;
             });
             setSelectedMessageId(null);
@@ -898,7 +914,7 @@ export default function App() {
     }
   } else {
     // Level complete flow - Save progress first to ensure consistency
-    saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, finalApps, notebookContent, finalContacts, finalWitnesses, finalMessages, finalStats);
+    saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps: finalApps, notebookContent, contacts: finalContacts, witnesses: finalWitnesses, messages: finalMessages, stats: finalStats });
 
       if (currentLevelId === 5) {
         setAppState('HOME');
@@ -936,7 +952,7 @@ export default function App() {
                             read: false
                           };
                           const updatedMessages = [...prev, techMsg];
-                          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, newNote, contacts, witnesses, updatedMessages);
+                          saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent: newNote, contacts, witnesses, messages: updatedMessages });
                           return updatedMessages;
                         });
                         triggerBlink('INBOX');
@@ -1002,7 +1018,7 @@ export default function App() {
                             read: false
                           };
                           const updatedMsgs = [...prevMsgs, anonMsg];
-                          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, updatedNote, contacts, witnesses, updatedMsgs);
+                          saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent: updatedNote, contacts, witnesses, messages: updatedMsgs });
                           return updatedMsgs;
                         });
                         triggerBlink('INBOX');
@@ -1213,9 +1229,9 @@ export default function App() {
         if (!unlockedLevelIds.includes(currentLevelId + 1) && currentLevelId < LEVELS.length) {
           const newUnlocked = [...unlockedLevelIds, currentLevelId + 1];
           setUnlockedLevelIds(newUnlocked);
-          saveProgress(currentLevelId + 1, 0, newUnlocked, false, newApps, notebookContent, contacts, witnesses, newMessages, newStats);
+          saveProgress({ levelId: currentLevelId + 1, objectiveIndex: 0, unlockedLevelIds: newUnlocked, hasAcceptedMission: false, unlockedApps: newApps, notebookContent, contacts, witnesses, messages: newMessages, stats: newStats });
         } else {
-          saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent, contacts, witnesses, newMessages, newStats);
+          saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps: newApps, notebookContent, contacts, witnesses, messages: newMessages, stats: newStats });
         }
         
         return newMessages;
@@ -1274,48 +1290,9 @@ export default function App() {
     }
     
     setUnlockedApps(newApps);
-    setMessages(prevMsgs => { saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, true, newApps, notebookContent, contacts, witnesses, prevMsgs, stats); return prevMsgs; });
+    setMessages(prevMsgs => { saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission: true, unlockedApps: newApps, notebookContent, contacts, witnesses, messages: prevMsgs, stats }); return prevMsgs; });
     
-    let popupTitle = 'SYSTEM';
-    let popupMessage = 'Mission Accepted. Objective updated in Case Files.';
-    
-    if (currentLevelId === 1) {
-      popupTitle = 'MISSION ACCEPTED';
-      popupMessage = 'ACCESS GRANTED TO:\n- VEHICLES DATABASE\n- OWNERS DATABASE\n- PARKING LOGS\n\nAnalyze the tables to identify the owner of vehicle B1734QAZ.';
-    } else if (currentLevelId === 2) {
-      popupTitle = 'NEW DATABASE ACCESS';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CITIZENS DATABASE (citizens, visitors, patients)\n- CONTACTS APP UNLOCKED\n\nVerify if Budi Santoso\'s address matches citizens registration data.';
-    } else if (currentLevelId === 3) {
-      popupTitle = 'DATA UPDATED';
-      popupMessage = 'MISSION ACCEPTED\n\nDATA UPDATED:\n- Parking Log (entri baru)\n\nNew query capabilities unlocked: menggabungkan dua tabel sekaligus';
-    } else if (currentLevelId === 4) {
-      popupTitle = 'NEW INVESTIGATION TOOL';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW FEATURE UNLOCKED:\n- CHRONOLOGICAL TIMELINE SCREEN';
-    } else if (currentLevelId === 5) {
-      popupTitle = 'CCTV SYSTEM GRANTED';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CCTV DATABASE (cameras, footage)';
-    } else if (currentLevelId === 6) {
-      popupTitle = 'DIGITAL ARCHIVE ACCESS';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- POLICE SECURE BROWSER\n- COMPANIES DATABASE\n\nSupervisor Raka:\nKamera memang mati selama enam menit. Tapi orang tidak bisa menghapus semua jejaknya. Setiap orang meninggalkan jejak digital. Saya membuka akses ke Arsip Digital Nasional.';
-    } else if (currentLevelId === 7) {
-      popupTitle = 'GPS TRACKING INTERFACE';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW APP UNLOCKED:\n- GPS MAPS TRACKER\n  (locations, routes, checkpoints)';
-    } else if (currentLevelId === 8) {
-      popupTitle = 'FINANCIAL AUDIT GRANTED';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- FINANCIAL BANK DATABASE\n  (accounts, transactions, branches)';
-    } else if (currentLevelId === 9) {
-      popupTitle = 'NEW DATABASE ACCESS';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- CRIMINAL RECORDS\n  (persons, cases, suspects, evidence)';
-    } else if (currentLevelId === 10) {
-      popupTitle = 'ACCESS GRANTED';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- EMAIL SERVER ARCHIVE\n  (emails, deleted, attachments)';
-    } else if (currentLevelId === 11) {
-      popupTitle = 'FINAL DATABASE ACCESS';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- TRAFFIC CAMERA LOGS\n  (camera_logs, system_logs)';
-    } else if (currentLevelId === 12) {
-      popupTitle = 'INTERNAL AFFAIRS ACCESS';
-      popupMessage = 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- POLICE INTERNAL DATABASE\n  (personnel, badge_logs)';
-    }
+    const { title: popupTitle, message: popupMessage } = getMissionAcceptedPopup(currentLevelId);
     
     setPopup({
       title: popupTitle,
@@ -1378,7 +1355,7 @@ export default function App() {
                 setPopup(null);
                 const nextIdx = 4;
                 setCurrentObjectiveIndex(nextIdx);
-                setMessages(prevMsgs => { saveProgress(currentLevelId, nextIdx, unlockedLevelIds, hasAcceptedMission, newApps, newNote, contacts, witnesses, prevMsgs, stats); return prevMsgs; });
+                setMessages(prevMsgs => { saveProgress({ levelId: currentLevelId, objectiveIndex: nextIdx, unlockedLevelIds, hasAcceptedMission, unlockedApps: newApps, notebookContent: newNote, contacts, witnesses, messages: prevMsgs, stats }); return prevMsgs; });
               }
             });
           }
@@ -1465,7 +1442,7 @@ export default function App() {
           reviewedCount: existing.reviewedCount + 1
         }
       };
-      saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName, newMeta);
+      saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName, evidenceMetadata: newMeta });
       return newMeta;
     });
   }, [currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName, evidenceMetadata]);
@@ -1487,7 +1464,7 @@ export default function App() {
           criticalAt: status === 'Critical Evidence' && existing.status !== 'Critical Evidence' ? { chapter: currentLevelId, step: currentObjectiveIndex + 1 } : existing.criticalAt
         }
       };
-      saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName, newMeta);
+      saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName, evidenceMetadata: newMeta });
       return newMeta;
     });
   }, [currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats, playerName, evidenceMetadata]);
@@ -1627,7 +1604,7 @@ export default function App() {
             notebookContent={notebookContent} 
             setNotebookContent={(val) => {
               setNotebookContent(val);
-              saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, val);
+              saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent: val });
             }} 
             setAppState={setAppState} 
           />
@@ -1711,7 +1688,7 @@ export default function App() {
                 
                 triggerBlink('WITNESSES');
                 setAppState('WITNESSES');
-                saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, newApps, notebookContent, contacts, newWitnesses, messages, stats);
+                saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps: newApps, notebookContent, contacts, witnesses: newWitnesses, messages, stats });
                 
                 setPopup({
                   title: 'NEW APP UNLOCKED',
@@ -1749,7 +1726,7 @@ export default function App() {
             stats={stats} 
             setAppState={setAppState} 
             handleSaveGame={() => {
-               saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent);
+               saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent });
                showSupervisorPopup("Investigation data has been saved to local memory.");
             }} 
             handleResetGame={() => {
@@ -1785,18 +1762,18 @@ export default function App() {
             onSetObjectiveIndex={(idx) => {
               setCurrentObjectiveIndex(idx);
               setIsObjectiveMet(false);
-              saveProgress(currentLevelId, idx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats);
+              saveProgress({ levelId: currentLevelId, objectiveIndex: idx, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats });
             }}
             onSetAppState={setAppState}
             onUnlockAllApps={() => {
               const allAppIds = ALL_APPS.map(app => app.id);
               setUnlockedApps(allAppIds);
-              saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, allAppIds, notebookContent, contacts, witnesses, messages, stats);
+              saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps: allAppIds, notebookContent, contacts, witnesses, messages, stats });
             }}
             onSetBattery={(amount) => {
               setStats(prev => {
                 const updated = { ...prev, battery: amount };
-                saveProgress(currentLevelId, currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, updated);
+                saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats: updated });
                 return updated;
               });
             }}
