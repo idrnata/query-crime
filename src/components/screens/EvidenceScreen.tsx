@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, History, Eye, Info } from 'lucide-react';
 import { EvidenceMetadata } from '../../types';
+import { getVisibleEvidence } from '../../constants/evidenceRegistry';
 
 interface EvidenceScreenProps {
   currentLevelId: number;
@@ -25,99 +26,12 @@ export const EvidenceScreen: React.FC<EvidenceScreenProps> = ({
 }) => {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  const allEvidence = [
-    // Level 1
-    { id: 'plate_1734', level: 1, label: 'Plate', value: 'B 1734 QAZ' },
-    { id: 'vehicle_avanza', level: 1, label: 'Vehicle', value: 'Silver Avanza' },
-    // Level 2
-    { id: 'patient_rizky', level: 2, label: 'Patient', value: 'Rizky Hidayat' },
-    { id: 'hospital_room', level: 2, label: 'Hospital', value: 'Room 402' },
-    // Level 3
-    { id: 'owner_andi', level: 3, label: 'Owner', value: 'Andi Prasetyo' },
-    { id: 'relation_colleague', level: 3, label: 'Relation', value: 'Colleague' },
-    // Level 4
-    { id: 'gap_8min', level: 4, label: 'Gap', value: '8 Minutes' },
-    { id: 'suspect_rudi', level: 4, label: 'Suspect', value: 'Rudi Hartono' },
-    // Level 5
-    { id: 'cam_offline', level: 5, label: 'Camera Offline', value: 'CAM-03 (Main Gate) Offline' },
-    { id: 'missing_footage', level: 5, label: 'Missing Footage', value: '6 Minutes Offline at 11:25-11:31' },
-    { id: 'visitor_no_match', level: 5, label: 'Visitor Without Match', value: 'Andi Prasetyo has no CCTV record' },
-    { id: 'timeline_updated', level: 5, label: 'Timeline Updated', value: 'Timeline sequence adjusted' },
-    // Level 6
-    { level: 6, id: 'accident_survivor', label: 'Evidence', value: 'Accident Survivor' },
-    { level: 6, id: 'old_accident', label: 'History', value: 'Old Accident' },
-    { level: 6, id: 'arunika_assoc', label: 'Company', value: 'PT Arunika Logistics' },
-    { level: 6, id: 'missing_driver', label: 'Missing Person', value: 'Missing Driver' },
-    { level: 6, id: 'corrupted', label: 'Status', value: 'Corrupted Company Record' },
-    // Level 7
-    { level: 7, id: 'warehouse_loc', label: 'Location', value: 'Arunika Warehouse' },
-    { level: 7, id: 'suspicious_route', label: 'Route', value: 'Suspicious 57m Delay' },
-    { level: 7, id: 'arunika_fleet', label: 'Activity', value: 'Fleet B 7710 XR detected' },
-    { level: 7, id: 'hacked_map', label: 'Warning', value: 'Red Lines / Hacked Map' },
-    // Level 8
-    { level: 8, id: 'unknown_acc', label: 'Financial', value: 'Unknown Account Found' },
-    { level: 8, id: 'hush_money', label: 'Payments', value: '48 Hush Money Transactions' },
-    { level: 8, id: 'surveillance', label: 'Threat', value: 'Supervisor Surveillance Photo' },
-    { level: 8, id: 'stop_dies', label: 'Warning', value: 'STOP OR HE DIES' },
-    // Level 9
-    { level: 9, id: 'missing_investigator', label: 'Missing Person', value: 'Missing Investigator (ID 52)' },
-    { level: 9, id: 'archived_notebook', label: 'Archived File', value: 'Digital Notebook Polisi' },
-    { level: 9, id: 'deleted_record', label: 'Status', value: 'Deleted Criminal Record' },
-    { level: 9, id: 'empty_suspects', label: 'Case Result', value: 'Empty Suspect List' },
-    // Level 10
-    { level: 10, id: 'recovered_email', label: 'Email', value: 'Recovered Email (Raka/52)' },
-    { level: 10, id: 'camera_maint', label: 'Schedule', value: 'Camera Maintenance Schedule' },
-    { level: 10, id: 'warehouse_blueprint', label: 'Asset', value: 'Warehouse Blueprint' },
-    { level: 10, id: 'employee_list_ev', label: 'People', value: 'Arunika Employee List' },
-    // Level 11
-    { level: 11, id: 'tailing_pattern', label: 'Critical', value: 'Vehicle Tailing Pattern' },
-    { level: 11, id: 'hq_visit', label: 'Suspicious', value: 'Police HQ Visit (XR)' },
-    { level: 11, id: 'admin_disable', label: 'Sabotage', value: 'Admin Camera Override' }
-  ];
-  
-  const evidenceItems = allEvidence.filter(e => {
-    if (e.level < currentLevelId) return true;
-    if (e.level > currentLevelId) return false;
-    
-    // For the current level, check if evidence is actually unlocked yet
-    if (e.level === 1) return unlockedApps.includes('EVIDENCE');
-    if (e.level === 5) return notebookContent.includes('06 minutes\nNo Footage');
-    if (e.level === 6) {
-      if (e.id === 'accident_survivor') return notebookContent.includes('Rizky pernah');
-      if (e.id === 'old_accident') return notebookContent.includes('Arunika');
-      if (e.id === 'arunika_assoc') return notebookContent.includes('Arunika');
-      if (e.id === 'missing_driver') return notebookContent.includes('Sopir');
-      return isLevelComplete;
-    }
-    if (e.level === 7) {
-      if (e.id === 'warehouse_loc') return notebookContent.includes('Warehouse');
-      if (e.id === 'suspicious_route') return notebookContent.includes('delay');
-      return isLevelComplete;
-    }
-    if (e.level === 8) {
-      if (e.id === 'unknown_acc') return notebookContent.includes('Unknown Account');
-      return isLevelComplete;
-    }
-    if (e.level === 9) {
-      if (e.id === 'missing_investigator') return notebookContent.includes('ID 52');
-      if (e.id === 'archived_notebook') return notebookContent.includes('Notebook Polisi');
-      if (e.id === 'deleted_record') return notebookContent.includes('Record person');
-      if (e.id === 'empty_suspects') return notebookContent.includes('Tidak ada tersangka');
-      return isLevelComplete;
-    }
-    if (e.level === 10) {
-      if (e.id === 'recovered_email') return notebookContent.includes('Email terakhir');
-      if (e.id === 'camera_maint') return notebookContent.includes('Maintenance?');
-      return isLevelComplete;
-    }
-    if (e.level === 11) {
-      if (e.id === 'tailing_pattern') return notebookContent.includes('mengikuti Budi');
-      if (e.id === 'admin_disable') return currentObjectiveIndex >= 4;
-      return isLevelComplete;
-    }
-    
-    // For other levels, evidence unlocks when the level is marked as complete
-    return isLevelComplete;
+  const evidenceItems = getVisibleEvidence({
+    currentLevelId,
+    currentObjectiveIndex,
+    isLevelComplete,
+    unlockedApps,
+    notebookContent,
   });
 
   const selectedItem = evidenceItems.find(e => e.id === selectedId);

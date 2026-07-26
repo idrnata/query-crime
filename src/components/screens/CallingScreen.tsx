@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Mic, PhoneOff, MessageSquare } from 'lucide-react';
 
 interface CallingScreenProps {
@@ -8,7 +8,17 @@ interface CallingScreenProps {
   handleHangUp: () => void;
 }
 
-const DINA_DIALOGUE = [
+interface DialogueChoice {
+  text: string;
+  nextStep: number;
+}
+
+interface DialogueStep {
+  text: string;
+  choices: DialogueChoice[];
+}
+
+const DINA_DIALOGUE: DialogueStep[] = [
   {
     text: "Halo? Siapa ini? Ada yang bisa saya bantu?",
     choices: [
@@ -59,7 +69,7 @@ const DINA_DIALOGUE = [
   }
 ];
 
-const RAKA_ENDING_DIALOGUE = [
+const RAKA_ENDING_DIALOGUE: DialogueStep[] = [
   {
     text: "Saya rasa kita tidak lagi menyelidiki orang hilang.",
     choices: [
@@ -80,7 +90,7 @@ const RAKA_ENDING_DIALOGUE = [
   }
 ];
 
-const RAKA_CH12_DIALOGUE = [
+const RAKA_CH12_DIALOGUE: DialogueStep[] = [
   {
     text: "...Ini aku. Maaf baru bisa kontak lagi sekarang.",
     choices: [
@@ -103,32 +113,63 @@ const RAKA_CH12_DIALOGUE = [
   }
 ];
 
+// Registry dialog percakapan, keyed by `${contactId}:${callStep}`. Nambah
+// dialog baru = nambah 1 entri di sini, gak perlu nambah useState/boolean
+// flag/ternary baru di komponen ini. Kalau kombinasi contactId+callStep gak
+// ada di sini, dianggap bukan dialog terskrip — fallback ke teks generik
+// (lihat getFallbackText di bawah).
+const DIALOGUE_REGISTRY: Record<string, DialogueStep[]> = {
+  'dina:0': DINA_DIALOGUE,
+  'raka:666': RAKA_ENDING_DIALOGUE,
+  'raka:1212': RAKA_CH12_DIALOGUE,
+};
+
+function getDialogueKey(contactId?: string, callStep?: number): string {
+  return `${contactId}:${callStep}`;
+}
+
+function getFallbackText(activeCallContact: any, callStep: number): string {
+  if (!activeCallContact) return "...";
+  if (activeCallContact.id === 'raka') {
+    const scripts = [
+      "Detektif, apa ada perkembangan? Kami menunggu laporanmu.",
+      "Andi Prasetyo belum ditemukan. Cek terus database.",
+      "Fokus pada log parkir. Di sana kuncinya."
+    ];
+    return scripts[callStep % scripts.length];
+  }
+  if (activeCallContact.id === 'budi') {
+    return "Nomor yang Anda tuju sedang tidak aktif atau berada di luar jangkauan.";
+  }
+  return "Halo? Siapa ini? Saya sibuk.";
+}
+
 export const CallingScreen: React.FC<CallingScreenProps> = ({
   callStatus,
   activeCallContact,
   callStep,
   handleHangUp
 }) => {
-  const [dinaStep, setDinaStep] = useState(0);
-  const [rakaStep, setRakaStep] = useState(0);
-  const [ch12Step, setCh12Step] = useState(0);
+  const [dialogueStep, setDialogueStep] = useState(0);
 
-  const isDina = activeCallContact?.id === 'dina';
-  const isRakaEnding = activeCallContact?.id === 'raka' && callStep === 666; // Use special code for ending Ch6
-  const isRakaCh12 = activeCallContact?.id === 'raka' && callStep === 1212; // Special code for Ch12
+  const dialogueKey = getDialogueKey(activeCallContact?.id, callStep);
+  const currentDialogueList = DIALOGUE_REGISTRY[dialogueKey] ?? null;
+
+  // Reset progress dialog begitu masuk ke sesi telepon yang beda (contactId
+  // atau callStep berubah). Tanpa ini, progress dialog lama bisa "nyangkut"
+  // kebawa ke sesi telepon berikutnya karena sekarang cuma ada 1 state,
+  // bukan 1 state terpisah per dialog seperti sebelumnya.
+  useEffect(() => {
+    setDialogueStep(0);
+  }, [dialogueKey]);
 
   const handleChoiceSelect = (nextStep: number) => {
     if (nextStep === -1) {
       handleHangUp();
-    } else {
-      if (isDina) setDinaStep(nextStep);
-      if (isRakaEnding) setRakaStep(nextStep);
-      if (isRakaCh12) setCh12Step(nextStep);
+    } else if (currentDialogueList) {
+      setDialogueStep(nextStep);
     }
   };
-
-  const currentDialogueList = isDina ? DINA_DIALOGUE : isRakaEnding ? RAKA_ENDING_DIALOGUE : isRakaCh12 ? RAKA_CH12_DIALOGUE : null;
-  const currentDialogueStep = isDina ? dinaStep : isRakaEnding ? rakaStep : isRakaCh12 ? ch12Step : 0;
 
   return (
     <div className="flex flex-col h-full bg-[#1b2118] text-[#8cb07d] p-6 items-center justify-between text-center overflow-y-auto">
@@ -148,40 +189,19 @@ export const CallingScreen: React.FC<CallingScreenProps> = ({
             {/* Dialogue Bubble */}
             <div className="bg-[#8cb07d]/10 border-2 border-[#8cb07d] p-5 w-full rounded-lg text-left animate-in zoom-in-95 duration-300">
                <div className="text-xs font-semibold leading-relaxed italic text-[#8cb07d]">
-                   {(() => {
-                    if (!activeCallContact) return "...";
-                    if (isDina) {
-                      return DINA_DIALOGUE[dinaStep]?.text || "...";
-                    }
-                    if (isRakaEnding) {
-                      return RAKA_ENDING_DIALOGUE[rakaStep]?.text || "...";
-                    }
-                    if (isRakaCh12) {
-                      return RAKA_CH12_DIALOGUE[ch12Step]?.text || "...";
-                    }
-                    if (activeCallContact.id === 'raka') {
-                      const scripts = [
-                        "Detektif, apa ada perkembangan? Kami menunggu laporanmu.",
-                        "Andi Prasetyo belum ditemukan. Cek terus database.",
-                        "Fokus pada log parkir. Di sana kuncinya."
-                      ];
-                      return scripts[callStep % scripts.length];
-                    }
-                    if (activeCallContact.id === 'budi') {
-                      return "Nomor yang Anda tuju sedang tidak aktif atau berada di luar jangkauan.";
-                    }
-                    return "Halo? Siapa ini? Saya sibuk.";
-                  })()}
+                  {currentDialogueList
+                    ? (currentDialogueList[dialogueStep]?.text || "...")
+                    : getFallbackText(activeCallContact, callStep)}
                </div>
             </div>
 
             {/* Conversation Choices / Dialogue Options */}
-            {(currentDialogueList && currentDialogueList[currentDialogueStep]) && (
+            {(currentDialogueList && currentDialogueList[dialogueStep]) && (
               <div className="flex flex-col gap-2 mt-2 w-full text-left animate-in fade-in-50 duration-500">
                 <div className="text-[10px] uppercase tracking-widest opacity-60 font-bold mb-1 flex items-center gap-1.5 px-1">
                   <MessageSquare size={10} /> SELECT DIALOGUE:
                 </div>
-                {currentDialogueList[currentDialogueStep].choices.map((choice, index) => (
+                {currentDialogueList[dialogueStep].choices.map((choice, index) => (
                   <button
                     key={index}
                     onClick={() => handleChoiceSelect(choice.nextStep)}
