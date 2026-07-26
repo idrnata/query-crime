@@ -66,7 +66,7 @@ Saksi mata di tempat kejadian menyebutkan adanya kejanggalan dalam penanganan ba
       story: 'Cari apakah PT Arunika membayar seseorang. Lihat semua transaksi dari sender PT Arunika Logistics.',
       goal: 'Lihat seluruh transaksi keuangan dengan pengirim PT Arunika Logistics.',
       availableTokens: ['SELECT', '*', 'FROM', 'transactions', 'WHERE', 'sender', '=', "'PT Arunika Logistics'"],
-      hint: "Gunakan 'SELECT * FROM transactions WHERE sender = \'PT Arunika Logistics\''.",
+      hint: "Cari di tabel transactions, baris yang sender-nya cocok dengan nama perusahaan itu.",
       validateResult: (res) => res && res.length === 54 && res.every(r => r.sender === 'PT Arunika Logistics')
     },
     {
@@ -74,7 +74,7 @@ Saksi mata di tempat kejadian menyebutkan adanya kejanggalan dalam penanganan ba
       story: 'Data transaksi sangat panjang. Kelompokkan data transaksi berdasarkan penerima untuk mempermudah analisis.',
       goal: 'Kelompokkan transaksi PT Arunika Logistics berdasarkan penerima (receiver).',
       availableTokens: ['SELECT', 'receiver', 'FROM', 'transactions', 'WHERE', 'sender', '=', "'PT Arunika Logistics'", 'GROUP', 'BY', 'receiver'],
-      hint: "Gunakan 'SELECT receiver FROM transactions WHERE sender = \'PT Arunika Logistics\' GROUP BY receiver'.",
+      hint: "Dari hasil sebelumnya, kelompokkan berdasarkan penerima supaya nama yang sama gak muncul berkali-kali.",
       validateResult: (res) => res && res.length === 6 && res.some(r => r.receiver === 'Unknown Account')
     },
     {
@@ -82,7 +82,7 @@ Saksi mata di tempat kejadian menyebutkan adanya kejanggalan dalam penanganan ba
       story: 'Kelompok penerima sudah terbentuk. Sekarang hitung berapa frekuensi transaksi yang diterima oleh masing-masing pihak.',
       goal: 'Hitung jumlah transaksi untuk setiap penerima dari PT Arunika Logistics.',
       availableTokens: ['SELECT', 'receiver', 'COUNT(*)', 'FROM', 'transactions', 'WHERE', 'sender', '=', "'PT Arunika Logistics'", 'GROUP', 'BY', 'receiver'],
-      hint: "Gunakan 'SELECT receiver, COUNT(*) FROM transactions WHERE sender = \'PT Arunika Logistics\' GROUP BY receiver'.",
+      hint: "Sama seperti pengelompokan sebelumnya, tapi sekalian hitung ada berapa transaksi di tiap kelompok.",
       validateResult: (res) => res && res.length === 6 && res.some(r => r.receiver === 'Unknown Account' && (r['COUNT(*)'] === 48 || r['count(*)'] === 48 || r['count'] === 48))
     },
     {
@@ -90,7 +90,7 @@ Saksi mata di tempat kejadian menyebutkan adanya kejanggalan dalam penanganan ba
       story: 'Ada anomali frekuensi transaksi rutin. Saring kelompok penerima yang memiliki transaksi berulang lebih dari lima kali.',
       goal: 'Filter penerima transaksi yang memiliki frekuensi kirim lebih dari 5 kali.',
       availableTokens: ['SELECT', 'receiver', 'COUNT(*)', 'FROM', 'transactions', 'GROUP', 'BY', 'receiver', 'HAVING', 'COUNT(*)', '>', '5'],
-      hint: "Gunakan HAVING: 'SELECT receiver, COUNT(*) FROM transactions GROUP BY receiver HAVING COUNT(*) > 5'.",
+      hint: "Dari hasil pengelompokan dan penghitungan tadi, saring supaya cuma kelompok dengan jumlah transaksi lebih dari 5 yang ditampilkan.",
       validateResult: (res) => res && res.length === 1 && res[0].receiver === 'Unknown Account' && (res[0]['COUNT(*)'] === 48 || res[0]['count(*)'] === 48 || res[0]['count'] === 48)
     }
   ],

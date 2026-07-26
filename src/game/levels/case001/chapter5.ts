@@ -75,7 +75,7 @@ export const chapter5: Level = {
       story: 'Jangan berharap ada video. Sistem lama hanya menyimpan metadata. Pertama, cari kamera yang merekam pintu utama (Main Gate).',
       goal: 'Cari kamera yang merekam pintu utama (Main Gate).',
       availableTokens: ['SELECT', '*', 'FROM', 'cameras'],
-      hint: "Gunakan 'SELECT * FROM cameras'.",
+      hint: "Tampilkan semua baris di tabel cameras.",
       validateResult: (res) => res && res.length === 4 && res.find(r => r.location === 'Main Gate' && r.camera_id === 'CAM-03')
     },
     {
@@ -83,7 +83,7 @@ export const chapter5: Level = {
       story: 'Cari Budi. Apakah ada bukti visual dia masuk?',
       goal: 'Cari rekaman Budi Santoso di CCTV.',
       availableTokens: ['SELECT', '*', 'FROM', 'footage', 'WHERE', 'person_name', '=', "'Budi Santoso'"],
-      hint: "Gunakan 'SELECT * FROM footage WHERE person_name = \'Budi Santoso\''.",
+      hint: "Cari di tabel footage, baris yang person_name-nya cocok dengan nama yang dicari.",
       validateResult: (res) => res && res.length === 1 && res[0].capture_time === '09:18'
     },
     {
@@ -91,7 +91,7 @@ export const chapter5: Level = {
       story: 'Sekarang cari Rizky. Kapan dia terekam kamera?',
       goal: 'Cari rekaman Rizky Hidayat di CCTV.',
       availableTokens: ['SELECT', '*', 'FROM', 'footage', 'WHERE', 'person_name', '=', "'Rizky Hidayat'"],
-      hint: "Gunakan 'SELECT * FROM footage WHERE person_name = \'Rizky Hidayat\''.",
+      hint: "Sama seperti sebelumnya, ganti nama yang dicari.",
       validateResult: (res) => res && res.length === 1 && res[0].capture_time === '11:31'
     },
     {
@@ -99,7 +99,7 @@ export const chapter5: Level = {
       story: 'Tampilkan semua pengunjung rumah sakit, lalu bandingkan dengan seluruh rekaman kamera sekaligus — termasuk yang tidak cocok.',
       goal: 'Bandingkan data pengunjung (visitors) dengan rekaman CCTV (footage), termasuk pengunjung yang tidak muncul di rekaman manapun.',
       availableTokens: ['SELECT', 'v.visitor_name', ',', 'f.capture_time', 'FROM', 'visitors', 'v', 'LEFT', 'JOIN', 'footage', 'f', 'ON', 'v.visitor_name', '=', 'f.person_name'],
-      hint: "Gunakan LEFT JOIN: 'SELECT v.visitor_name, f.capture_time FROM visitors v LEFT JOIN footage f ON v.visitor_name = f.person_name'.",
+      hint: "Gabungkan visitors dan footage lewat nama, tapi pakai jenis gabungan yang tetap menampilkan pengunjungnya meskipun dia gak punya rekaman footage sama sekali — bukan cuma yang cocok doang.",
       validateResult: (res) => res && res.length === 4 && res.find(r => r.visitor_name === 'Andi Prasetyo' && r.capture_time === null)
     }
   ],

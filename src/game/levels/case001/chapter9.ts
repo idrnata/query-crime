@@ -37,7 +37,7 @@ export const chapter9: Level = {
       story: 'Buka arsip Criminal Records. Cari data kasus kecelakaan Arunika di tabel cases.',
       goal: "Cari data kasus berjuluk 'Arunika' di tabel cases.",
       availableTokens: ['SELECT', '*', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'"],
-      hint: "Gunakan 'SELECT * FROM cases WHERE title LIKE \'%Arunika%\''.",
+      hint: "Cari di tabel cases, baris yang title-nya mengandung kata 'Arunika'.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -49,7 +49,7 @@ export const chapter9: Level = {
       story: 'Kasus itu ditangani oleh investigator ID 52. Periksa identitas investigator tersebut di tabel persons.',
       goal: "Cari data warga/personil dengan ID 52 di tabel persons.",
       availableTokens: ['SELECT', '*', 'FROM', 'persons', 'WHERE', 'id', '=', '52'],
-      hint: "Gunakan 'SELECT * FROM persons WHERE id = 52'.",
+      hint: "Cari di tabel persons, baris yang id-nya sama dengan 52 — kalau hasilnya kosong, itu jawaban yang valid.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -61,7 +61,7 @@ export const chapter9: Level = {
       story: 'Record ID 52 kosong di persons. Cari personil yang menangani kasus Arunika tanpa mengetik ID-nya secara manual — gunakan hasil pencarian sebelumnya langsung di dalam query ini.',
       goal: "Cari data person yang ID-nya sama dengan lead_investigator dari kasus Arunika, dengan menyisipkan pencarian kasus Arunika langsung di dalam query ini.",
       availableTokens: ['SELECT', '*', 'FROM', 'persons', 'WHERE', 'id', '=', '(', 'SELECT', 'lead_investigator', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
-      hint: "Gunakan Subquery: 'SELECT * FROM persons WHERE id = (SELECT lead_investigator FROM cases WHERE title LIKE \'%Arunika%\')'.",
+      hint: "Daripada ngetik angka ID investigator secara manual, taruh query pencarian kasus Arunika (yang hasilnya angka lead_investigator) langsung di dalam tanda kurung, di posisi yang harusnya diisi angka ID itu.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -73,7 +73,7 @@ export const chapter9: Level = {
       story: 'Identitasnya disunting, namun bukti kasus mungkin masih tertinggal. Cari barang bukti (evidence) milik penyidik kasus Arunika, dengan cara yang sama seperti sebelumnya.',
       goal: "Cari evidence yang owner_id-nya sama dengan lead_investigator dari kasus Arunika, dengan menyisipkan pencarian kasus Arunika di dalam query yang sama.",
       availableTokens: ['SELECT', '*', 'FROM', 'evidence', 'WHERE', 'owner_id', '=', '(', 'SELECT', 'lead_investigator', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
-      hint: "Gunakan Subquery: 'SELECT * FROM evidence WHERE owner_id = (SELECT lead_investigator FROM cases WHERE title LIKE \'%Arunika%\')'.",
+      hint: "Cara yang sama seperti sebelumnya — taruh pencarian kasus Arunika di dalam tanda kurung — tapi sekarang buat tabel evidence dengan kolom owner_id.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -85,7 +85,7 @@ export const chapter9: Level = {
       story: 'Periksa apakah ada daftar tersangka (suspects) resmi yang tercatat untuk kasus kecelakaan Arunika ini.',
       goal: "Cari suspects yang case_id-nya sama dengan case_id dari kasus Arunika, dengan menyisipkan pencarian kasus Arunika di dalam query yang sama.",
       availableTokens: ['SELECT', '*', 'FROM', 'suspects', 'WHERE', 'case_id', '=', '(', 'SELECT', 'case_id', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
-      hint: "Gunakan Subquery: 'SELECT * FROM suspects WHERE case_id = (SELECT case_id FROM cases WHERE title LIKE \'%Arunika%\')'.",
+      hint: "Pola yang sama lagi, tapi buat tabel suspects dengan kolom case_id — perhatikan kamu butuh case_id-nya kali ini, bukan lead_investigator.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');

@@ -38,7 +38,7 @@ export const chapter1: Level = {
       story: 'Sebelum mencari seseorang, lihat dulu isi databasenya.',
       goal: 'Lihat seluruh data kendaraan.',
       availableTokens: ['SELECT', '*', 'FROM', 'vehicles', 'WHERE', '=', "'B1734QAZ'"],
-      hint: "Gunakan 'SELECT * FROM vehicles' untuk menampilkan seluruh data kendaraan.",
+      hint: "Tampilkan semua baris di tabel vehicles dulu, tanpa filter apapun — lihat kolom apa aja yang ada.",
       validateResult: (res) => res && res.length === 4 && res[0].plate_number !== undefined && res[0].brand !== undefined
     },
     {
@@ -46,7 +46,7 @@ export const chapter1: Level = {
       story: 'Database menampilkan ribuan kendaraan. Nomor polisi sesuai laporan adalah B1734QAZ.',
       goal: 'Temukan kendaraan B1734QAZ.',
       availableTokens: ['SELECT', '*', 'FROM', 'vehicles', 'WHERE', 'plate_number', '=', "'B1734QAZ'"],
-      hint: "Gunakan 'SELECT * FROM vehicles WHERE plate_number = \'B1734QAZ\'' untuk mencari plat tersebut.",
+      hint: "Cari di tabel vehicles, baris yang plate_number-nya cocok persis dengan plat yang disebut di laporan.",
       validateResult: (res) => res && res.length === 1 && res[0].plate_number === 'B1734QAZ'
     },
     {
@@ -54,7 +54,7 @@ export const chapter1: Level = {
       story: 'Bagus. Sekarang cari tahu siapa Owner ID 482.',
       goal: 'Cari pemilik dengan Owner ID 482 di tabel owners.',
       availableTokens: ['SELECT', '*', 'FROM', 'owners', 'WHERE', 'id', '=', '482'],
-      hint: "Gunakan 'SELECT * FROM owners WHERE id = 482'.",
+      hint: "Cari di tabel owners, baris yang id-nya sama dengan angka owner_id yang kamu temukan sebelumnya.",
       validateResult: (res) => res && res.length === 1 && res[0].id === 482
     },
     {
@@ -62,7 +62,7 @@ export const chapter1: Level = {
       story: 'Bagus. Sekarang cari tahu apakah mobil itu masih berada di rumah sakit.',
       goal: 'Periksa riwayat parkir (parking) untuk plat B1734QAZ.',
       availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'plate_number', '=', "'B1734QAZ'"],
-      hint: "Gunakan 'SELECT * FROM parking WHERE plate_number = \'B1734QAZ\''.",
+      hint: "Cari di tabel parking, baris yang plate_number-nya cocok dengan plat itu.",
       validateResult: (res) => res && res.length === 1 && res[0].plate_number === 'B1734QAZ'
     },
     {
@@ -70,7 +70,7 @@ export const chapter1: Level = {
       story: 'Mobil masuk 3 hari lalu dan exit_time adalah NULL (belum keluar).',
       goal: 'Cari semua kendaraan yang belum keluar (exit_time IS NULL).',
       availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'exit_time', 'IS', 'NULL'],
-      hint: "Gunakan 'SELECT * FROM parking WHERE exit_time IS NULL'.",
+      hint: "Cari di tabel parking, baris yang kolom exit_time-nya masih kosong (belum ada isinya).",
       validateResult: (res) => res && res.length === 3 && res.every(r => r.exit_time === null)
     },
     {
@@ -78,7 +78,7 @@ export const chapter1: Level = {
       story: 'Mobil mana yang paling lama berada di sana?',
       goal: 'Urutkan kendaraan yang belum keluar berdasarkan waktu masuk (entry_time).',
       availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'exit_time', 'IS', 'NULL', 'ORDER', 'BY', 'entry_time'],
-      hint: "Gunakan 'SELECT * FROM parking WHERE exit_time IS NULL ORDER BY entry_time'.",
+      hint: "Dari hasil kendaraan yang belum keluar, urutkan berdasarkan entry_time supaya yang paling lama parkir ada di urutan paling atas.",
       validateResult: (res) => res && res.length === 3 && res[0].plate_number === 'B1734QAZ'
     }
   ],

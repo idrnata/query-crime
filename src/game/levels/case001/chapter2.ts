@@ -43,7 +43,7 @@ export const chapter2: Level = {
       story: 'Pastikan apakah data owner kendaraan sama dengan data kependudukan.',
       goal: 'Cari data Budi Santoso di tabel citizens.',
       availableTokens: ['SELECT', '*', 'FROM', 'citizens', 'WHERE', 'name', '=', "'Budi Santoso'"],
-      hint: "Gunakan 'SELECT * FROM citizens WHERE name = \'Budi Santoso\''.",
+      hint: "Cari di tabel citizens, baris yang name-nya cocok persis dengan nama yang kamu cari.",
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Budi Santoso'
     },
     {
@@ -51,7 +51,7 @@ export const chapter2: Level = {
       story: 'Cari apakah dia tinggal sendirian.',
       goal: 'Cari orang lain yang tinggal di Jl Melati 15.',
       availableTokens: ['SELECT', '*', 'FROM', 'citizens', 'WHERE', 'address', '=', "'Jl Melati 15'"],
-      hint: "Gunakan 'SELECT * FROM citizens WHERE address = \'Jl Melati 15\''.",
+      hint: "Cari di tabel citizens, baris yang address-nya sama dengan alamat itu — bisa lebih dari satu orang yang tinggal di situ.",
       validateResult: (res) => res && res.length === 2
     },
     {
@@ -59,7 +59,7 @@ export const chapter2: Level = {
       story: 'Kamu menemukan Dina Santoso di alamat yang sama. Hubungi dia.',
       goal: 'Dapatkan nama dan nomor telepon dari Jl Melati 15.',
       availableTokens: ['SELECT', 'name', ',', 'phone', 'FROM', 'citizens', 'WHERE', 'address', '=', "'Jl Melati 15'"],
-      hint: "Gunakan 'SELECT name, phone FROM citizens WHERE address = \'Jl Melati 15\''.",
+      hint: "Sama seperti pencarian alamat sebelumnya, tapi kali ini cuma tampilkan kolom name dan phone-nya aja, gak usah semua kolom.",
       validateResult: (res) => res && res.length === 2 && res[0].phone !== undefined
     },
     {
@@ -67,7 +67,7 @@ export const chapter2: Level = {
       story: 'Dina Santoso mengatakan kakaknya (Budi) mengunjungi seseorang di RS Harapan Bangsa. Akses Hospital Database kini terbuka.',
       goal: 'Lihat daftar pengunjung (visitors) di rumah sakit.',
       availableTokens: ['SELECT', '*', 'FROM', 'visitors'],
-      hint: "Gunakan 'SELECT * FROM visitors'.",
+      hint: "Tampilkan semua baris di tabel visitors tanpa filter.",
       validateResult: (res) => res && res.length >= 1
     },
     {
@@ -75,7 +75,7 @@ export const chapter2: Level = {
       story: 'Budi Santoso mengunjungi Ward C pada jam 09:20. Cari tahu siapa pasiennya.',
       goal: 'Cari data pasien dengan ID yang dikunjungi Budi.',
       availableTokens: ['SELECT', '*', 'FROM', 'patients', 'WHERE', 'id', '=', '10'],
-      hint: "Gunakan 'SELECT * FROM patients WHERE id = 10'.",
+      hint: "Dari hasil kunjungan Budi kamu udah tau angka patient_id-nya — cari di tabel patients, baris yang id-nya sama dengan angka itu.",
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Rizky Hidayat'
     }
   ],

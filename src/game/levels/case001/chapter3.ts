@@ -42,7 +42,7 @@ export const chapter3: Level = {
       story: 'Cari data kunjungan Budi Santoso di rumah sakit.',
       goal: 'Lihat catatan riwayat kunjungan Budi Santoso di tabel visitors.',
       availableTokens: ['SELECT', '*', 'FROM', 'visitors', 'WHERE', 'visitor_name', '=', "'Budi Santoso'"],
-      hint: "Gunakan 'SELECT * FROM visitors WHERE visitor_name = \'Budi Santoso\''.",
+      hint: "Cari di tabel visitors, baris yang visitor_name-nya cocok dengan nama yang kamu cari.",
       validateResult: (res) => res && res.length >= 1 && res[0].patient_id === 41
     },
     {
@@ -50,7 +50,7 @@ export const chapter3: Level = {
       story: 'Dapatkan data pasien dengan ID 41.',
       goal: 'Cari data pasien yang memiliki ID 41 di tabel patients.',
       availableTokens: ['SELECT', '*', 'FROM', 'patients', 'WHERE', 'id', '=', '41'],
-      hint: "Gunakan 'SELECT * FROM patients WHERE id = 41'.",
+      hint: "Cari di tabel patients, baris yang id-nya sama dengan angka patient_id dari hasil sebelumnya.",
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Rizky Hidayat'
     },
     {
@@ -58,7 +58,7 @@ export const chapter3: Level = {
       story: 'Rizky memiliki emergency_contact bernomor 7. Cari siapa itu.',
       goal: 'Cari identitas warga dengan ID 7 di tabel citizens.',
       availableTokens: ['SELECT', '*', 'FROM', 'citizens', 'WHERE', 'id', '=', '7'],
-      hint: "Gunakan 'SELECT * FROM citizens WHERE id = 7'.",
+      hint: "Cari di tabel citizens, baris yang id-nya sama dengan angka emergency_contact dari hasil sebelumnya.",
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Andi Prasetyo'
     },
     {
@@ -66,7 +66,7 @@ export const chapter3: Level = {
       story: 'Cari kendaraan milik Andi Prasetyo (Owner ID 7).',
       goal: 'Cari kendaraan yang terdaftar atas nama owner_id 7 di tabel vehicles.',
       availableTokens: ['SELECT', '*', 'FROM', 'vehicles', 'WHERE', 'owner_id', '=', '7'],
-      hint: "Gunakan 'SELECT * FROM vehicles WHERE owner_id = 7'.",
+      hint: "Cari di tabel vehicles, baris yang owner_id-nya sama dengan ID orang yang baru kamu temukan.",
       validateResult: (res) => res && res.length === 1 && res[0].plate_number === 'B 2841 PT'
     },
     {
@@ -74,7 +74,7 @@ export const chapter3: Level = {
       story: 'Cek data parkir untuk plat nomor B 2841 PT.',
       goal: 'Periksa catatan parkir untuk plat B 2841 PT di tabel parking.',
       availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'plate_number', '=', "'B 2841 PT'"],
-      hint: "Gunakan 'SELECT * FROM parking WHERE plate_number = \'B 2841 PT\''.",
+      hint: "Cari di tabel parking, baris yang plate_number-nya cocok dengan plat kendaraan itu.",
       validateResult: (res) => res && res.length === 1 && res[0].exit_time === '11:34'
     },
     {
@@ -82,7 +82,7 @@ export const chapter3: Level = {
       story: 'Bagus. Sekarang aku ingin tahu nama pemilik dan plat kendaraannya sekaligus — tanpa harus bolak-balik dua tabel. Bisa?',
       goal: 'Gabungkan tabel citizens dan vehicles untuk melihat nama pemilik dan plat nomor.',
       availableTokens: ['SELECT', 'c.name', ',', 'v.plate_number', 'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id'],
-      hint: "Gunakan JOIN: 'SELECT c.name, v.plate_number FROM citizens c JOIN vehicles v ON c.id = v.owner_id'.",
+      hint: "Gabungkan tabel citizens dan vehicles lewat kolom yang menghubungkan keduanya — id pemilik di satu tabel harus sama dengan owner_id di tabel lain — lalu tampilkan nama dan plat nomornya.",
       validateResult: (res) => res && res.length >= 1 && res[0].name !== undefined && res[0].plate_number !== undefined
     },
     {
@@ -90,7 +90,7 @@ export const chapter3: Level = {
       story: 'Sekarang cari kendaraan milik Andi Prasetyo dengan cara yang sama.',
       goal: 'Gabungkan tabel citizens dan vehicles khusus untuk nama Andi Prasetyo.',
       availableTokens: ['SELECT', 'c.name', ',', 'v.plate_number', 'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id', 'WHERE', 'c.name', '=', "'Andi Prasetyo'"],
-      hint: "Gunakan JOIN: 'SELECT c.name, v.plate_number FROM citizens c JOIN vehicles v ON c.id = v.owner_id WHERE c.name = \'Andi Prasetyo\''.",
+      hint: "Sama seperti gabungan tabel sebelumnya, tinggal tambahkan filter nama supaya cuma 'Andi Prasetyo' yang muncul.",
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Andi Prasetyo'
     }
   ],

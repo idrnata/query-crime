@@ -60,7 +60,7 @@ export const chapter6: Level = {
       story: 'Cari apakah Rizky pernah muncul di berita menggunakan nama lengkap (Rizky Hidayat).',
       goal: "Cari artikel dengan judul persis 'Rizky Hidayat' di tabel articles.",
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'title', '=', "'Rizky Hidayat'"],
-      hint: "Gunakan 'SELECT * FROM articles WHERE title = \'Rizky Hidayat\''.",
+      hint: "Cari di tabel articles, baris yang title-nya SAMA PERSIS dengan nama itu — kalau hasilnya kosong, itu jawaban yang valid untuk objective ini.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -72,7 +72,7 @@ export const chapter6: Level = {
       story: 'Coba gunakan pencarian yang lebih fleksibel untuk menemukan berita tentang Rizky.',
       goal: "Cari artikel yang judulnya mengandung kata 'Rizky', menggunakan pencarian yang lebih fleksibel.",
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'title', 'LIKE', "'%Rizky%'"],
-      hint: "Gunakan 'SELECT * FROM articles WHERE title LIKE \'%Rizky%\''.",
+      hint: "Coba pencarian yang lebih fleksibel — cari judul yang MENGANDUNG kata itu, bukan yang sama persis kayak sebelumnya.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -84,7 +84,7 @@ export const chapter6: Level = {
       story: 'Cari apakah nama Andi atau Prasetyo pernah disebut publik di isi artikel.',
       goal: "Cari artikel yang isinya menyebut nama 'Andi', menggunakan pencarian yang lebih fleksibel.",
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Andi%'"],
-      hint: "Gunakan 'SELECT * FROM articles WHERE content LIKE \'%Andi%\''.",
+      hint: "Sama seperti pencarian fleksibel sebelumnya, tapi sekarang di kolom content, bukan title.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -96,7 +96,7 @@ export const chapter6: Level = {
       story: 'Cari semua artikel yang mengandung kata "Arunika".',
       goal: "Cari semua artikel yang isinya menyebut kata 'Arunika'.",
       availableTokens: ['SELECT', '*', 'FROM', 'articles', 'WHERE', 'content', 'LIKE', "'%Arunika%'"],
-      hint: "Gunakan 'SELECT * FROM articles WHERE content LIKE \'%Arunika%\''.",
+      hint: "Sama caranya lagi, ganti kata yang dicari.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -108,7 +108,7 @@ export const chapter6: Level = {
       story: 'Cari data perusahaan PT Arunika Logistics di database perusahaan.',
       goal: "Cari data perusahaan PT Arunika Logistics di tabel companies.",
       availableTokens: ['SELECT', '*', 'FROM', 'companies', 'WHERE', 'company_name', 'LIKE', "'%Arunika%'"],
-      hint: "Gunakan 'SELECT * FROM companies WHERE company_name LIKE \'%Arunika%\''.",
+      hint: "Cari di tabel companies, baris yang company_name-nya mengandung kata itu.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
