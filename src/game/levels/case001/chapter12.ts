@@ -38,6 +38,7 @@ export const chapter12: Level = {
       story: 'Tinjau ulang kapan mobil PT Arunika Logistics (B7710XR) pernah muncul di Police HQ.',
       goal: 'Cari catatan camera_logs dengan plate_number B7710XR dan location Police HQ.',
       availableTokens: ['SELECT', '*', 'FROM', 'camera_logs', 'WHERE', 'plate_number', '=', "'B7710XR'", 'AND', 'location', '=', "'Police HQ'"],
+      hint: "Gunakan 'SELECT * FROM camera_logs WHERE plate_number = \'B7710XR\' AND location = \'Police HQ\''.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -49,6 +50,7 @@ export const chapter12: Level = {
       story: 'Cari siapa yang menggunakan badge akses di Police HQ tepat di sekitar jam 14:00 hari itu.',
       goal: 'Cari data di tabel badge_logs dengan waktu akses antara 13:55 dan 14:05.',
       availableTokens: ['SELECT', '*', 'FROM', 'badge_logs', 'WHERE', 'access_time', 'BETWEEN', "'13:55'", 'AND', "'14:05'"],
+      hint: "Gunakan 'SELECT * FROM badge_logs WHERE access_time BETWEEN \'13:55\' AND \'14:05\''.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -60,6 +62,7 @@ export const chapter12: Level = {
       story: 'Cari siapa pemilik badge B-118 di tabel personnel.',
       goal: 'Cari data personnel dengan badge_id B-118.',
       availableTokens: ['SELECT', '*', 'FROM', 'personnel', 'WHERE', 'badge_id', '=', "'B-118'"],
+      hint: "Gunakan 'SELECT * FROM personnel WHERE badge_id = \'B-118\''.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -71,6 +74,7 @@ export const chapter12: Level = {
       story: 'Cek apakah Yusuf Hamdani pernah tercatat sebagai tersangka di kasus Arunika lama — cari case_id-nya dulu, lalu langsung pakai di query yang sama.',
       goal: 'Cari data di tabel suspects yang case_id-nya sama dengan case_id dari kasus Arunika, dengan menyisipkan pencarian kasus itu langsung di dalam query ini.',
       availableTokens: ['SELECT', '*', 'FROM', 'suspects', 'WHERE', 'case_id', '=', '(', 'SELECT', 'case_id', 'FROM', 'cases', 'WHERE', 'title', 'LIKE', "'%Arunika%'", ')'],
+      hint: "Gunakan Subquery: 'SELECT * FROM suspects WHERE case_id = (SELECT case_id FROM cases WHERE title LIKE \'%Arunika%\')'.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');

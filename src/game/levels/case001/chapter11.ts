@@ -34,6 +34,7 @@ export const chapter11: Level = {
       story: 'Temukan seluruh perjalanan mobil Budi (B2841PT) dan urutkan berdasarkan waktu.',
       goal: 'Cari seluruh catatan camera_logs untuk plat B2841PT, diurutkan dari waktu paling awal.',
       availableTokens: ['SELECT', '*', 'FROM', 'camera_logs', 'WHERE', 'plate_number', '=', "'B2841PT'", 'ORDER', 'BY', 'capture_time'],
+      hint: "Gunakan 'SELECT * FROM camera_logs WHERE plate_number = \'B2841PT\' ORDER BY capture_time'.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -45,6 +46,7 @@ export const chapter11: Level = {
       story: 'Beri nomor urut pada setiap capture kendaraan, supaya urutan kemunculannya di tiap kamera lebih mudah dibaca — per kendaraan, dari yang paling awal.',
       goal: 'Tampilkan plate_number, capture_time, dan nomor urut kemunculan tiap kendaraan — dikelompokkan per plat nomor, diurutkan dari capture_time paling awal.',
       availableTokens: ['SELECT', 'plate_number', ',', 'capture_time', ',', 'ROW_NUMBER', '(', ')', 'OVER', '(', 'PARTITION', 'BY', 'plate_number', 'ORDER', 'BY', 'capture_time', ')', 'AS', 'sequence', 'FROM', 'camera_logs'],
+      hint: "Gunakan ROW_NUMBER(): 'SELECT plate_number, capture_time, ROW_NUMBER() OVER (PARTITION BY plate_number ORDER BY capture_time) AS sequence FROM camera_logs'.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -56,6 +58,7 @@ export const chapter11: Level = {
       story: 'Lihat kendaraan apa yang muncul SETELAH kendaraan lain di titik yang sama, dengan mengurutkan seluruh capture berdasarkan waktunya.',
       goal: 'Tampilkan plate_number, capture_time, dan plat kendaraan berikutnya yang muncul setelah baris ini — diurutkan berdasarkan capture_time.',
       availableTokens: ['SELECT', 'plate_number', ',', 'capture_time', ',', 'LEAD', '(', 'plate_number', ')', 'OVER', '(', 'ORDER', 'BY', 'capture_time', ')', 'AS', 'next_vehicle', 'FROM', 'camera_logs'],
+      hint: "Gunakan LEAD(): 'SELECT plate_number, capture_time, LEAD(plate_number) OVER (ORDER BY capture_time) AS next_vehicle FROM camera_logs'.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
@@ -67,6 +70,7 @@ export const chapter11: Level = {
       story: 'Cari siapa yang mematikan kamera di tabel system_logs.',
       goal: "Cari log di tabel system_logs dengan action 'Disable Camera'.",
       availableTokens: ['SELECT', '*', 'FROM', 'system_logs', 'WHERE', 'action', '=', "'Disable Camera'"],
+      hint: "Gunakan 'SELECT * FROM system_logs WHERE action = \'Disable Camera\''.",
       validateResult: (res, query) => {
         if (!query) return false;
         const q = query.toLowerCase().replace(/\s+/g, ' ');
