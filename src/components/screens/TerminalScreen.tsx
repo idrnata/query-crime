@@ -1,5 +1,6 @@
 import React from 'react';
-import { Terminal, CornerDownLeft, Delete } from 'lucide-react';
+import { Terminal, CornerDownLeft, Delete, Lightbulb } from 'lucide-react';
+import { getObjectiveHint } from '../../utils/hintHelper';
 
 interface TerminalScreenProps {
   activeTable: string;
@@ -11,6 +12,9 @@ interface TerminalScreenProps {
   currentLevelId: number;
   unlockedLevelIds: number[];
   currentLevel: any;
+  failedAttempts: number;
+  hintThreshold: number;
+  onShowHint: () => void;
 }
 
 export const TerminalScreen: React.FC<TerminalScreenProps> = ({
@@ -22,8 +26,15 @@ export const TerminalScreen: React.FC<TerminalScreenProps> = ({
   handleDeleteWord,
   currentLevelId,
   unlockedLevelIds,
-  currentLevel
+  currentLevel,
+  failedAttempts,
+  hintThreshold,
+  onShowHint
 }) => {
+  const hintText = getObjectiveHint(currentObjective);
+  const hintUnlocked = failedAttempts >= hintThreshold;
+  const attemptsRemaining = Math.max(0, hintThreshold - failedAttempts);
+
   return (
     <div className="flex flex-col h-full">
       <div className="text-sm font-bold flex items-center justify-between border-b-2 border-[#1b2118] p-2 shrink-0 bg-[#1b2118] text-[#8cb07d]">
@@ -64,6 +75,22 @@ export const TerminalScreen: React.FC<TerminalScreenProps> = ({
             title="Delete Word (Backspace)"
           >
             <Delete size={20} />
+          </button>
+          <button
+            onClick={hintUnlocked ? onShowHint : undefined}
+            disabled={!hintUnlocked}
+            className={`flex-1 font-bold py-3 flex items-center justify-center border-2 border-[#1b2118] transition-colors ${
+              hintUnlocked
+                ? 'bg-transparent text-[#1b2118] active:bg-[#1b2118] active:text-[#8cb07d] cursor-pointer'
+                : 'bg-[#1b2118]/10 text-[#1b2118]/40 cursor-not-allowed'
+            }`}
+            title={
+              hintUnlocked
+                ? 'Lihat petunjuk'
+                : `Coba dulu ${attemptsRemaining}x lagi sebelum petunjuk terbuka.`
+            }
+          >
+            <Lightbulb size={20} />
           </button>
         </div>
 

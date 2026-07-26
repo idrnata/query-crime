@@ -51,6 +51,7 @@ export const chapter4: Level = {
       story: 'Cari siapa saja yang berada di rumah sakit antara pukul 09:00 dan 09:30.',
       goal: "Cari semua pengunjung yang datang di rentang waktu 09:00 sampai 09:30 pada tabel visitors.",
       availableTokens: ['SELECT', '*', 'FROM', 'visitors', 'WHERE', 'visit_time', 'BETWEEN', "'09:00'", 'AND', "'09:30'"],
+      hint: "Gunakan 'SELECT * FROM visitors WHERE visit_time BETWEEN \'09:00\' AND \'09:30\''.",
       validateResult: (res) => res && res.length === 3 && res.some(r => r.visitor_name === 'Budi Santoso')
     },
     {
@@ -62,6 +63,7 @@ export const chapter4: Level = {
         'FROM', 'visitors', 'v', 'JOIN', 'patients', 'p', 'ON', 'v.patient_id', '=', 'p.id', 
         'WHERE', 'visit_time', 'BETWEEN', "'09:00'", 'AND', "'09:30'"
       ],
+      hint: "Gunakan JOIN antara visitors dan patients: 'SELECT v.visitor_name, p.name, v.visit_time FROM visitors v JOIN patients p ON v.patient_id = p.id WHERE visit_time BETWEEN \'09:00\' AND \'09:30\''.",
       validateResult: (res) => res && res.length === 3 && res.filter(r => r['p.name'] === 'Rizky Hidayat' || r['name'] === 'Rizky Hidayat').length === 2
     },
     {
@@ -69,6 +71,7 @@ export const chapter4: Level = {
       story: 'Rudi Hartono ternyata mengunjungi pasien yang sama dengan Budi (Rizky Hidayat). Sekarang, cari identitas Rudi Hartono.',
       goal: "Cari data Rudi Hartono di tabel citizens.",
       availableTokens: ['SELECT', '*', 'FROM', 'citizens', 'WHERE', 'name', '=', "'Rudi Hartono'"],
+      hint: "Gunakan 'SELECT * FROM citizens WHERE name = \'Rudi Hartono\''.",
       validateResult: (res) => res && res.length === 1 && res[0].name === 'Rudi Hartono'
     },
     {
@@ -80,6 +83,7 @@ export const chapter4: Level = {
         'FROM', 'citizens', 'c', 'JOIN', 'vehicles', 'v', 'ON', 'c.id', '=', 'v.owner_id', 
         'WHERE', 'c.name', '=', "'Rudi Hartono'"
       ],
+      hint: "Gunakan 'SELECT c.name, v.plate_number FROM citizens c JOIN vehicles v ON c.id = v.owner_id WHERE c.name = \'Rudi Hartono\''.",
       validateResult: (res) => res && res.length === 0
     },
     {
@@ -87,6 +91,7 @@ export const chapter4: Level = {
       story: 'Rudi tidak memiliki kendaraan pribadi terdaftar. Atau dia memakai kendaraan orang lain. Cari semua kendaraan yang keluar sekitar pukul 11:30.',
       goal: "Query tabel parking untuk mencari semua kendaraan yang keluar antara pukul '11:25' dan '11:40'.",
       availableTokens: ['SELECT', '*', 'FROM', 'parking', 'WHERE', 'exit_time', 'BETWEEN', "'11:25'", 'AND', "'11:40'"],
+      hint: "Gunakan 'SELECT * FROM parking WHERE exit_time BETWEEN \'11:25\' AND \'11:40\''.",
       validateResult: (res) => res && res.length === 3
     },
     {
@@ -100,6 +105,7 @@ export const chapter4: Level = {
         'JOIN', 'citizens', 'c', 'ON', 'v.owner_id', '=', 'c.id', 
         'WHERE', 'p.exit_time', 'BETWEEN', "'11:25'", 'AND', "'11:40'"
       ],
+      hint: "Gunakan JOIN tiga tabel (parking, vehicles, citizens): 'SELECT c.name, v.plate_number, p.exit_time FROM parking p JOIN vehicles v ON p.plate_number = v.plate_number JOIN citizens c ON v.owner_id = c.id WHERE p.exit_time BETWEEN \'11:25\' AND \'11:40\''.",
       validateResult: (res) => res && res.length === 3 && res.some(r => r.name === 'Andi Prasetyo' || r['c.name'] === 'Andi Prasetyo')
     }
   ],

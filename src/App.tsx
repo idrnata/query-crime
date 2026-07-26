@@ -8,6 +8,7 @@ import { formatTime, formatDate } from './utils/date';
 import { getInitialNotebookForChapter, getChapterSetupData } from './game/chapterSetup';
 import { getMissionAcceptedPopup } from './constants/missionPopups';
 import { runObjectiveTransition, hasCustomLogic } from './game/objectiveTransitions';
+import { getObjectiveHint } from './utils/hintHelper';
 
 interface SaveProgressOverrides {
   levelId?: number;
@@ -75,6 +76,7 @@ export default function App() {
   const [isHackedMap, setIsHackedMap] = useState<boolean>(false);
   const [isLevelComplete, setIsLevelComplete] = useState<boolean>(false);
   const [isObjectiveMet, setIsObjectiveMet] = useState<boolean>(false);
+  const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [hasShownCCTVWarning, setHasShownCCTVWarning] = useState<boolean>(false);
   
   const [activeTable, setActiveTable] = useState<string>('');
@@ -407,6 +409,29 @@ export default function App() {
     }
   }, [appState]);
 
+  // Reset hitungan percobaan gagal begitu pindah objective ATAU pindah
+  // chapter — sengaja pakai useEffect (bukan reset manual di tiap tempat
+  // yang nge-set currentObjectiveIndex, ada 7 titik berbeda) biar gak ada
+  // yang keluput. Threshold hint dihitung dari counter ini di TerminalScreen.
+  useEffect(() => {
+    setFailedAttempts(0);
+  }, [currentLevelId, currentObjectiveIndex]);
+
+  const HINT_THRESHOLD = 2;
+
+  const handleShowHint = () => {
+    const hintText = getObjectiveHint(currentObjective);
+    if (!hintText) return;
+    const newStats = { ...stats, hintsUsed: stats.hintsUsed + 1 };
+    setStats(newStats);
+    saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats: newStats });
+    setPopup({
+      title: 'PETUNJUK',
+      message: hintText,
+      onClose: () => setPopup(null)
+    });
+  };
+
   // Show Supervisor CCTV metadata warning when opening DB_LIST in Chapter 5
   useEffect(() => {
     if (appState === 'DB_LIST' && currentLevelId === 5 && !hasShownCCTVWarning) {
@@ -500,6 +525,7 @@ export default function App() {
       if (met) {
         saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats: newStats });
       } else {
+        setFailedAttempts(prev => prev + 1);
         saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission, unlockedApps, notebookContent, contacts, witnesses, messages, stats: newStats });
       }
     } catch (e: any) {
@@ -507,6 +533,7 @@ export default function App() {
       setQueryResult(null);
       setIsObjectiveMet(false);
       setAppState('RESULT');
+      setFailedAttempts(prev => prev + 1);
       
       const newStats = { ...stats };
       newStats.queriesRun += 1;
@@ -1382,6 +1409,9 @@ export default function App() {
             currentLevelId={currentLevelId} 
             unlockedLevelIds={unlockedLevelIds} 
             currentLevel={currentLevel} 
+            failedAttempts={failedAttempts}
+            hintThreshold={HINT_THRESHOLD}
+            onShowHint={handleShowHint}
           />
         );
       case 'RESULT':

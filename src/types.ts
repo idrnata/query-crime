@@ -4,6 +4,7 @@ export interface Objective {
   goal: string;
   availableTokens: string[];
   validateResult: (result: any[], query?: string) => boolean;
+  hint?: string;
 }
 
 export interface Level {
