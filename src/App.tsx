@@ -326,7 +326,10 @@ export default function App() {
     
     saveProgress({ levelId: chapterId, objectiveIndex: 0, unlockedLevelIds: newUnlocked, hasAcceptedMission: false, unlockedApps: baseApps, notebookContent: initialNotebook, contacts: initialContacts, witnesses: initialWitnesses, messages: reconstructedMessages });
     setAppState('HOME');
-    showSupervisorPopup(`Chapter ${chapterId} berhasil di-reset. Silakan buka Inbox untuk membaca instruksi misi.`);
+    const targetLevel = LEVELS.find(l => l.id === chapterId);
+    const chNum = targetLevel?.chapterNumber ?? (targetLevel?.caseId === 'CASE002' ? chapterId - 12 : chapterId);
+    const chFormatted = String(chNum).padStart(2, '0');
+    showSupervisorPopup(`Chapter ${chFormatted} (${targetLevel?.caseId || 'CASE001'}) berhasil di-reset. Silakan buka Inbox untuk membaca instruksi misi.`);
   };
 
   const markMessageAsRead = useCallback((id: string) => {

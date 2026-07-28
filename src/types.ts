@@ -9,6 +9,8 @@ export interface Objective {
 
 export interface Level {
   id: number;
+  caseId?: string;
+  chapterNumber?: number;
   title: string;
   mail: { sender: string; subject: string; body: string };
   files: { title: string; content: string };

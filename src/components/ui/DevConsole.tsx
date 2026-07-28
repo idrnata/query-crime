@@ -101,6 +101,8 @@ export const DevConsole: React.FC<DevConsoleProps> = ({
           <div className="flex flex-col gap-1">
             {levels.map((lvl) => {
               const isActive = lvl.id === currentLevelId;
+              const chNum = lvl.chapterNumber ?? (lvl.caseId === 'CASE002' ? lvl.id - 12 : lvl.id);
+              const chNumFormatted = String(chNum).padStart(2, '0');
               return (
                 <button
                   key={lvl.id}
@@ -113,7 +115,7 @@ export const DevConsole: React.FC<DevConsoleProps> = ({
                       : 'bg-[#1b2118] border-[#8cb07d]/20 hover:border-[#8cb07d]/50 text-[#8cb07d]'
                   }`}
                 >
-                  <span className="truncate">Ch {lvl.id}: {lvl.title}</span>
+                  <span className="truncate">Ch {chNumFormatted}: {lvl.title}</span>
                   <ChevronRight size={10} className={isActive ? 'text-[#1b2118]' : 'text-[#8cb07d]/40'} />
                 </button>
               );

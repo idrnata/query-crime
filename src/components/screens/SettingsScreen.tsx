@@ -71,13 +71,15 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
               {levels.map((lvl) => {
                 const isUnlocked = unlockedLevelIds.includes(lvl.id);
                 const isCurrent = lvl.id === currentLevelId;
+                const chNum = lvl.chapterNumber ?? (lvl.caseId === 'CASE002' ? lvl.id - 12 : lvl.id);
+                const chNumFormatted = String(chNum).padStart(2, '0');
                 
                 return (
                   <button
                     key={lvl.id}
                     disabled={!isUnlocked}
                     onClick={() => {
-                      if (confirm(`Are you sure you want to restart CH ${lvl.id}: ${lvl.title}? Progress for this chapter will be reset.`)) {
+                      if (confirm(`Are you sure you want to restart CH ${chNumFormatted}: ${lvl.title}? Progress for this chapter will be reset.`)) {
                         onJumpToChapter(lvl.id);
                       }
                     }}
@@ -90,7 +92,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     }`}
                   >
                     <div className="truncate pr-2">
-                      CH {lvl.id}: {lvl.title}
+                      CH {chNumFormatted}: {lvl.title}
                     </div>
                     <div className="shrink-0">
                       {isCurrent ? (
