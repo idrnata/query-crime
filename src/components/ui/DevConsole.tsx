@@ -115,7 +115,7 @@ export const DevConsole: React.FC<DevConsoleProps> = ({
                       : 'bg-[#1b2118] border-[#8cb07d]/20 hover:border-[#8cb07d]/50 text-[#8cb07d]'
                   }`}
                 >
-                  <span className="truncate">Ch {chNumFormatted}: {lvl.title}</span>
+                  <span className="truncate">{lvl.title}</span>
                   <ChevronRight size={10} className={isActive ? 'text-[#1b2118]' : 'text-[#8cb07d]/40'} />
                 </button>
               );

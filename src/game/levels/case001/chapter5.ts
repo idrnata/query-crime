@@ -2,7 +2,9 @@ import { Level } from '../../../types';
 
 export const chapter5: Level = {
   id: 5,
-  title: 'Case #001: Bukti yang Bertentangan',
+  caseId: 'CASE001',
+  chapterNumber: 5,
+  title: 'Case #001: Ch 05 - Bukti yang Bertentangan',
   mail: {
     sender: 'Supervisor Raka',
     subject: 'Data CCTV Baru',

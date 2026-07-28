@@ -2,7 +2,9 @@ import { Level } from '../../../types';
 
 export const chapter6: Level = {
   id: 6,
-  title: 'Case #001: Jejak Digital',
+  caseId: 'CASE001',
+  chapterNumber: 6,
+  title: 'Case #001: Ch 06 - Jejak Digital',
   mail: {
     sender: 'Supervisor Raka',
     subject: 'Akses Arsip Digital',

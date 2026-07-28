@@ -25,7 +25,9 @@ for (let idx = 1; idx <= 48; idx++) {
 
 export const chapter8: Level = {
   id: 8,
-  title: 'Case #001: Pola yang Disembunyikan',
+  caseId: 'CASE001',
+  chapterNumber: 8,
+  title: 'Case #001: Ch 08 - Pola yang Disembunyikan',
   mail: {
     sender: 'Supervisor Raka',
     subject: 'Gudang Kosong & Izin Transaksi',

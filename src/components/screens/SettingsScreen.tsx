@@ -79,7 +79,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     key={lvl.id}
                     disabled={!isUnlocked}
                     onClick={() => {
-                      if (confirm(`Are you sure you want to restart CH ${chNumFormatted}: ${lvl.title}? Progress for this chapter will be reset.`)) {
+                      if (confirm(`Are you sure you want to restart ${lvl.title}? Progress for this chapter will be reset.`)) {
                         onJumpToChapter(lvl.id);
                       }
                     }}
@@ -92,7 +92,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({
                     }`}
                   >
                     <div className="truncate pr-2">
-                      CH {chNumFormatted}: {lvl.title}
+                      {lvl.title}
                     </div>
                     <div className="shrink-0">
                       {isCurrent ? (

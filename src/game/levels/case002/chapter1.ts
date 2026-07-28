@@ -5,7 +5,7 @@ export const chapter1: Level = {
   id: 13,
   caseId: 'CASE002',
   chapterNumber: 1,
-  title: 'Case #002: Rutinitas yang Terganggu',
+  title: 'Case #002: Ch 01 - Rutinitas yang Terganggu',
   mail: {
     sender: 'Supervisor Raka',
     subject: 'Laporan Kecil',
