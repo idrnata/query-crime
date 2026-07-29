@@ -122,12 +122,20 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
     if (parenLevel !== 0) continue;
 
     if (tokens[k].toUpperCase() === 'JOIN') {
-      if (k > 0 && tokens[k-1].toUpperCase() === 'LEFT') {
-        continue; // Already handled when LEFT was checked
+      let startIndex = k;
+      let isLeft = false;
+      if (k > 0) {
+        const prev = tokens[k - 1].toUpperCase();
+        if (prev === 'LEFT') {
+          startIndex = k - 1;
+          isLeft = true;
+        } else if (['INNER', 'RIGHT', 'FULL', 'CROSS'].includes(prev)) {
+          startIndex = k - 1;
+        }
       }
-      joinStarts.push({ index: k, isLeft: false });
-    } else if (tokens[k].toUpperCase() === 'LEFT' && tokens[k+1]?.toUpperCase() === 'JOIN') {
-      joinStarts.push({ index: k, isLeft: true });
+      if (!joinStarts.some(j => j.index === startIndex)) {
+        joinStarts.push({ index: startIndex, isLeft });
+      }
     }
   }
   
@@ -149,11 +157,15 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
   const getRowVal = (row: any, colName: string) => {
     if (!row) return undefined;
     const keys = Object.keys(row);
-    const exactKey = keys.find(k => k.toLowerCase() === colName.toLowerCase());
+    let exactKey = keys.find(k => k.toLowerCase() === colName.toLowerCase());
+    if (!exactKey && colName.includes('.')) {
+      const fieldName = colName.split('.')[1];
+      exactKey = keys.find(k => k.toLowerCase() === fieldName.toLowerCase());
+    }
     return exactKey ? row[exactKey] : undefined;
   };
 
-  let mainTableTokens = tokens.slice(fromIdx + 1, mainTableEnd);
+  let mainTableTokens = tokens.slice(fromIdx + 1, mainTableEnd).filter(t => t.toUpperCase() !== 'AS');
   let mainTable = mainTableTokens[0];
   let mainAlias = mainTableTokens.length > 1 ? mainTableTokens[1] : null;
   
@@ -161,32 +173,35 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
   let results = exactTableName ? [...db[exactTableName]] : null;
   if (!results) throw new Error(`TABLE NOT FOUND: ${mainTable}`);
   
-  // give fields alias prefix if alias exists
-  if (mainAlias) {
-    results = results.map(row => {
-        let prefixed: any = {};
-        for(let k in row) {
-            prefixed[`${mainAlias}.${k}`] = row[k];
-            prefixed[k] = row[k]; // keep original for simple queries
-        }
-        return prefixed;
-    });
-  }
+  // give fields table prefix and alias prefix
+  results = results.map(row => {
+      let prefixed: any = {};
+      for (let k in row) {
+          prefixed[`${mainTable}.${k}`] = row[k];
+          if (mainAlias) {
+              prefixed[`${mainAlias}.${k}`] = row[k];
+          }
+          prefixed[k] = row[k]; // keep original for simple queries
+      }
+      return prefixed;
+  });
 
   // Process sequential JOINs
   for (let j = 0; j < joinStarts.length; j++) {
     const { index: start, isLeft } = joinStarts[j];
     const nextBoundary = (j + 1 < joinStarts.length) 
       ? joinStarts[j+1].index 
-      : ([whereIdx, orderIdx, limitIdx, tokens.length].filter(x => x !== -1).sort((a,b)=>a-b)[0]);
+      : ([whereIdx, groupByIdx, havingIdx, orderIdx, limitIdx, tokens.length].filter(x => x !== -1).sort((a,b)=>a-b)[0]);
       
     const joinBlock = tokens.slice(start, nextBoundary);
     const onRelIdx = joinBlock.findIndex(t => t.toUpperCase() === 'ON');
     if (onRelIdx === -1) throw new Error("SYNTAX ERROR: JOIN requires ON");
     
-    const joinTableIdx = isLeft ? 2 : 1;
-    const joinTable = joinBlock[joinTableIdx];
-    const joinAlias = (onRelIdx > joinTableIdx + 1) ? joinBlock[joinTableIdx + 1] : null;
+    const tokensBeforeOn = joinBlock.slice(0, onRelIdx)
+      .filter(t => !['INNER', 'LEFT', 'RIGHT', 'FULL', 'CROSS', 'JOIN', 'OUTER', 'AS'].includes(t.toUpperCase()));
+    
+    const joinTable = tokensBeforeOn[0];
+    const joinAlias = tokensBeforeOn.length > 1 ? tokensBeforeOn[1] : null;
     
     const exactJoinTableName = Object.keys(db).find(k => k.toLowerCase() === joinTable.toLowerCase());
     if (!exactJoinTableName) throw new Error(`TABLE NOT FOUND: ${joinTable}`);
@@ -199,20 +214,21 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
       let matched = false;
       for (let r2 of joinRows) {
          let r2Prefixed: any = {};
-         if (joinAlias) {
-             for(let k in r2) {
+         for (let k in r2) {
+             r2Prefixed[`${joinTable}.${k}`] = r2[k];
+             if (joinAlias) {
                  r2Prefixed[`${joinAlias}.${k}`] = r2[k];
-                 r2Prefixed[k] = r2[k];
              }
-         } else {
-             r2Prefixed = r2;
+             r2Prefixed[k] = r2[k];
          }
 
          let combined = {...r1, ...r2Prefixed};
          let left = onTokens[0];
          let op = onTokens[1]; // '='
          let right = onTokens[2];
-         if (combined[left] == combined[right]) {
+         let valLeft = getRowVal(combined, left);
+         let valRight = getRowVal(combined, right);
+         if (valLeft == valRight) {
             joined.push(combined);
             matched = true;
          }
@@ -223,6 +239,7 @@ export function executeSql(query: string, db: Record<string, any[]>): any[] {
         let r2Null: any = {};
         let sampleRow = joinRows[0] || {};
         for (let k in sampleRow) {
+           r2Null[`${joinTable}.${k}`] = null;
            if (joinAlias) r2Null[`${joinAlias}.${k}`] = null;
            r2Null[k] = null;
         }

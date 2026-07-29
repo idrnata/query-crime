@@ -28,7 +28,11 @@ export const TimelineScreen: React.FC<TimelineScreenProps> = ({ currentLevelId, 
     { time: '11:20', event: 'Andi Prasetyo masuk area rumah sakit (Parkir).', condition: () => currentLevelId >= 3 },
     { time: '11:25', event: 'Kamera CAM-03 (Main Gate) mati selama 6 menit.', condition: () => currentLevelId >= 5 && notebookContent.includes('06 minutes') },
     { time: '11:31', event: 'Rizky Hidayat terdeteksi keluar dari lobby.', condition: () => currentLevelId >= 5 && notebookContent.includes('Data mulai banyak') },
-    { time: '11:34', event: 'Mobil Andi (B 2841 PT) keluar dari area parkir.', condition: () => currentLevelId >= 4 }
+    { time: '11:34', event: 'Mobil Andi (B 2841 PT) keluar dari area parkir.', condition: () => currentLevelId >= 4 },
+    { time: '13:58', event: 'Badge B-118 (Yusuf Hamdani) dipindai di Visitor Entrance Police HQ.', condition: () => currentLevelId >= 12 },
+    { time: '14:00', event: 'Armada PT Arunika Logistics (B 7710 XR) terdeteksi di Police HQ.', condition: () => currentLevelId >= 12 },
+    { time: 'CASE #002 - 01:00', event: 'Catatan sinkronisasi alamat Herlina Wijaya menunjukkan perbedaan lokasi registered_address vs address.', condition: () => currentLevelId >= 13 },
+    { time: 'CASE #002 - 02:00', event: 'Perubahan pertama relasi database terdeteksi pada relasi pemilik kendaraan.', condition: () => currentLevelId >= 14 }
   ];
 
   const events = allEvents.filter(e => e.condition());

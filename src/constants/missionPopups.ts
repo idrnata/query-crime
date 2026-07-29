@@ -60,6 +60,10 @@ export const MISSION_ACCEPTED_POPUPS: Record<number, MissionPopupData> = {
   13: {
     title: 'MISSION ACCEPTED',
     message: 'CASE002 RESMI DIBUKA\n\nStatus: OPEN\nPriority: LOW\nCase Type: Database Verification'
+  },
+  14: {
+    title: 'MISSION ACCEPTED',
+    message: 'Lanjutkan investigasi. Bandingkan seluruh sumber data yang ada.'
   }
 };
 

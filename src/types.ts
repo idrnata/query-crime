@@ -5,6 +5,8 @@ export interface Objective {
   availableTokens: string[];
   validateResult: (result: any[], query?: string) => boolean;
   hint?: string;
+  prefilledQuery?: string;
+  readOnlyQuery?: boolean;
 }
 
 export interface Level {

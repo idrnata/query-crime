@@ -54,7 +54,18 @@ export const ALL_EVIDENCE: EvidenceItem[] = [
   // Level 11
   { level: 11, id: 'tailing_pattern', label: 'Critical', value: 'Vehicle Tailing Pattern' },
   { level: 11, id: 'hq_visit', label: 'Suspicious', value: 'Police HQ Visit (XR)' },
-  { level: 11, id: 'admin_disable', label: 'Sabotage', value: 'Admin Camera Override' }
+  { level: 11, id: 'admin_disable', label: 'Sabotage', value: 'Admin Camera Override' },
+  // Level 12
+  { level: 12, id: 'hq_camera_log', label: 'HQ CCTV', value: 'Fleet B 7710 XR at Police HQ' },
+  { level: 12, id: 'badge_gate_access', label: 'Badge Log', value: 'Badge B-118 Visitor Entrance Access' },
+  { level: 12, id: 'personnel_yusuf', label: 'Personnel', value: 'Yusuf Hamdani (HQ Staff)' },
+  { level: 12, id: 'clean_suspect_record', label: 'Record Status', value: 'No Suspect Record (Yusuf)' },
+  // Level 13 (Case 002 Ch 01)
+  { level: 13, id: 'address_mismatch', label: 'Anomaly', value: 'Herlina Wijaya Address Mismatch' },
+  { level: 13, id: 'sync_log_pass', label: 'System Integrity', value: 'Replication & Sync Log PASS' },
+  // Level 14 (Case 002 Ch 02)
+  { level: 14, id: 'rendra_vehicle_mismatch', label: 'Relation Anomaly', value: 'Rendra Saputra / B-1824-QC Relation' },
+  { level: 14, id: 'manipulated_relation', label: 'Investigation Findings', value: 'Valid Individual Data, Manipulated Relations' }
 ];
 
 export interface EvidenceUnlockContext {
@@ -95,6 +106,17 @@ const ID_PREDICATES: Record<string, UnlockPredicate> = {
   camera_maint: (ctx) => ctx.notebookContent.includes('Maintenance?'),
   tailing_pattern: (ctx) => ctx.notebookContent.includes('mengikuti Budi'),
   admin_disable: (ctx) => ctx.currentObjectiveIndex >= 4,
+  // Level 12
+  hq_camera_log: (ctx) => ctx.currentObjectiveIndex >= 1,
+  badge_gate_access: (ctx) => ctx.currentObjectiveIndex >= 2,
+  personnel_yusuf: (ctx) => ctx.currentObjectiveIndex >= 3,
+  clean_suspect_record: (ctx) => ctx.isLevelComplete,
+  // Level 13
+  address_mismatch: (ctx) => ctx.currentObjectiveIndex >= 1,
+  sync_log_pass: (ctx) => ctx.isLevelComplete,
+  // Level 14
+  rendra_vehicle_mismatch: (ctx) => ctx.currentObjectiveIndex >= 1,
+  manipulated_relation: (ctx) => ctx.isLevelComplete,
 };
 
 export function isEvidenceUnlocked(item: EvidenceItem, ctx: EvidenceUnlockContext): boolean {

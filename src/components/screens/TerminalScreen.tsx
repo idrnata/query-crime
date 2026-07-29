@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Terminal, CornerDownLeft, Delete, Lightbulb } from 'lucide-react';
 import { getObjectiveHint } from '../../utils/hintHelper';
 
@@ -31,6 +31,12 @@ export const TerminalScreen: React.FC<TerminalScreenProps> = ({
   hintThreshold,
   onShowHint
 }) => {
+  useEffect(() => {
+    if (currentObjective?.prefilledQuery) {
+      setQueryString(currentObjective.prefilledQuery);
+    }
+  }, [currentObjective, setQueryString]);
+
   const hintText = getObjectiveHint(currentObjective);
   const hintUnlocked = failedAttempts >= hintThreshold;
   const attemptsRemaining = Math.max(0, hintThreshold - failedAttempts);
@@ -56,8 +62,9 @@ export const TerminalScreen: React.FC<TerminalScreenProps> = ({
         </div>
         <textarea
           value={queryString}
-          onChange={(e) => setQueryString(e.target.value)}
-          className="w-full h-32 bg-transparent border-2 border-[#1b2118] p-3 text-[16px] font-bold focus:outline-none focus:bg-[#7a996d] resize-none"
+          onChange={(e) => !currentObjective.readOnlyQuery && setQueryString(e.target.value)}
+          readOnly={currentObjective.readOnlyQuery}
+          className={`w-full h-32 bg-transparent border-2 border-[#1b2118] p-3 text-[16px] font-bold focus:outline-none focus:bg-[#7a996d] resize-none ${currentObjective.readOnlyQuery ? 'opacity-80 cursor-not-allowed' : ''}`}
           placeholder="SELECT * FROM..."
         />
         
@@ -94,57 +101,61 @@ export const TerminalScreen: React.FC<TerminalScreenProps> = ({
           </button>
         </div>
 
-        <div className="mt-6 text-xs font-bold mb-2 opacity-70">Shorthands:</div>
-        <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-wrap gap-2 content-start pb-4">
-          {(() => {
-            const baseKeywords = ['SELECT', '*', 'FROM', 'WHERE', '=', '>', '<', 'AND', 'OR', 'IS', 'NULL', 'ORDER', 'BY', 'ASC', 'DESC', ',', '.'];
-            if (currentLevelId > 1 || unlockedLevelIds.includes(2)) {
-              baseKeywords.push('JOIN', 'ON');
-            }
-            if (currentLevelId >= 4) {
-              baseKeywords.push('BETWEEN');
-            }
-            if (currentLevelId >= 5) {
-              baseKeywords.push('LEFT', 'JOIN');
-            }
-            if (currentLevelId >= 6) {
-              baseKeywords.push('LIKE', '%');
-            }
-            if (currentLevelId >= 7) {
-              baseKeywords.push('LIMIT');
-            }
-            if (currentLevelId >= 8) {
-              baseKeywords.push('GROUP', 'HAVING', 'COUNT');
-            }
-            if (currentLevelId >= 10) {
-              baseKeywords.push('WITH', 'AS');
-            }
-            if (currentLevelId >= 11) {
-              baseKeywords.push('OVER', 'ROW_NUMBER', 'LEAD', 'LAG');
-            }
-            
-            const tables = Object.keys(currentLevel.database);
-            const columns = new Set<string>();
-            tables.forEach(t => {
-              if (currentLevel.database[t] && currentLevel.database[t].length > 0) {
-                Object.keys(currentLevel.database[t][0]).forEach(c => columns.add(c));
-              }
-            });
+        {!currentObjective.readOnlyQuery && (
+          <>
+            <div className="mt-6 text-xs font-bold mb-2 opacity-70">Shorthands:</div>
+            <div className="flex-1 overflow-y-auto custom-scrollbar flex flex-wrap gap-2 content-start pb-4">
+              {(() => {
+                const baseKeywords = ['SELECT', '*', 'FROM', 'WHERE', '=', '>', '<', 'AND', 'OR', 'IS', 'NULL', 'ORDER', 'BY', 'ASC', 'DESC', ',', '.'];
+                if (currentLevelId > 1 || unlockedLevelIds.includes(2)) {
+                  baseKeywords.push('JOIN', 'ON');
+                }
+                if (currentLevelId >= 4) {
+                  baseKeywords.push('BETWEEN');
+                }
+                if (currentLevelId >= 5) {
+                  baseKeywords.push('LEFT', 'JOIN');
+                }
+                if (currentLevelId >= 6) {
+                  baseKeywords.push('LIKE', '%');
+                }
+                if (currentLevelId >= 7) {
+                  baseKeywords.push('LIMIT');
+                }
+                if (currentLevelId >= 8) {
+                  baseKeywords.push('GROUP', 'HAVING', 'COUNT');
+                }
+                if (currentLevelId >= 10) {
+                  baseKeywords.push('WITH', 'AS');
+                }
+                if (currentLevelId >= 11) {
+                  baseKeywords.push('OVER', 'ROW_NUMBER', 'LEAD', 'LAG');
+                }
+                
+                const tables = Object.keys(currentLevel.database);
+                const columns = new Set<string>();
+                tables.forEach(t => {
+                  if (currentLevel.database[t] && currentLevel.database[t].length > 0) {
+                    Object.keys(currentLevel.database[t][0]).forEach(c => columns.add(c));
+                  }
+                });
 
-            const values = currentObjective.availableTokens.filter(t => t.startsWith("'") || t.startsWith('"') || !isNaN(Number(t)));
-            const allShorthands = Array.from(new Set([...baseKeywords, ...tables, ...Array.from(columns), ...values]));
+                const values = currentObjective.availableTokens.filter(t => t.startsWith("'") || t.startsWith('"') || !isNaN(Number(t)));
+                const allShorthands = Array.from(new Set([...baseKeywords, ...tables, ...Array.from(columns), ...values]));
 
-            return allShorthands.map((token, idx) => (
-              <button
-                key={idx}
-                onClick={() => setQueryString(prev => (prev + (prev.endsWith(' ') || prev.length === 0 ? '' : ' ') + token))}
-                className="border border-[#1b2118] px-2 py-1 active:bg-[#1b2118] active:text-[#8cb07d] text-xs font-bold bg-[#8cb07d]"
-              >
-                {token}
-              </button>
-            ));
-          })()}
-        </div>
+                return allShorthands.map((token, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setQueryString(prev => (prev + (prev.endsWith(' ') || prev.length === 0 ? '' : ' ') + token))}
+                    className="border border-[#1b2118] px-2 py-1 active:bg-[#1b2118] active:text-[#8cb07d] text-xs font-bold bg-[#8cb07d]"
+                  >
+                    {token}
+                  </button>
+                ));
+              })()}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -78,6 +78,7 @@ export default function App() {
   const [isObjectiveMet, setIsObjectiveMet] = useState<boolean>(false);
   const [failedAttempts, setFailedAttempts] = useState<number>(0);
   const [hasShownCCTVWarning, setHasShownCCTVWarning] = useState<boolean>(false);
+  const [hasShownCh2Dialogue, setHasShownCh2Dialogue] = useState<boolean>(false);
   
   const [activeTable, setActiveTable] = useState<string>('');
   
@@ -445,6 +446,63 @@ export default function App() {
   useEffect(() => {
     if (currentLevelId !== 5) {
       setHasShownCCTVWarning(false);
+    }
+  }, [currentLevelId]);
+
+  // Show Chapter 2 dialogue when opening DB_LIST in Chapter 14 (Case002 Chapter 2)
+  useEffect(() => {
+    if (appState === 'DB_LIST' && currentLevelId === 14 && currentObjectiveIndex === 0 && !hasShownCh2Dialogue) {
+      setHasShownCh2Dialogue(true);
+      setPopup({
+        title: 'SUPERVISOR RAKA',
+        message: 'Apa yang kamu lihat?',
+        onClose: () => {
+          setPopup({
+            title: 'PLAYER',
+            message: 'Datanya benar.',
+            onClose: () => {
+              setPopup({
+                title: 'SUPERVISOR RAKA',
+                message: 'Lalu?',
+                onClose: () => {
+                  setPopup({
+                    title: 'PLAYER',
+                    message: '...',
+                    onClose: () => {
+                      setPopup({
+                        title: 'SUPERVISOR RAKA',
+                        message: 'Itulah masalahnya.\nKalau investigator mulai bingung...\n...database pasti lebih membingungkan.',
+                        onClose: () => {
+                          setPopup({
+                            title: 'PLAYER',
+                            message: 'Kalau begitu bagaimana cara melihat hubungan semuanya sekaligus?',
+                            onClose: () => {
+                              setPopup({
+                                title: 'SUPERVISOR RAKA',
+                                message: 'Tidak sekarang.',
+                                onClose: () => {
+                                  setPopup(null);
+                                  handleObjectiveComplete();
+                                }
+                              });
+                            }
+                          });
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  }, [appState, currentLevelId, currentObjectiveIndex, hasShownCh2Dialogue]);
+
+  useEffect(() => {
+    if (currentLevelId !== 14) {
+      setHasShownCh2Dialogue(false);
     }
   }, [currentLevelId]);
 
@@ -1011,6 +1069,54 @@ export default function App() {
               }
             });
           }, 2000);
+        } else if (currentLevelId === 14) {
+          setPopup({
+            title: 'PLAYER',
+            message: 'Ini jauh lebih cepat...',
+            onClose: () => {
+              setPopup({
+                title: 'SUPERVISOR RAKA',
+                message: 'SQL tidak membuatmu lebih pintar.\nSQL hanya membuatmu bisa bertanya dengan benar.',
+                onClose: () => {
+                  setNotebookContent(prev => prev + '\n\nSemua data lolos validasi.\nTetapi hubungan antar data menghasilkan identitas yang berbeda.\nIni bukan bug.\nIni pola.');
+                  setAppState('NOTEBOOK');
+                  setPopup({
+                    title: 'PLAYER',
+                    message: 'Kalau begitu... ada seseorang yang sengaja mengubah hubungan antar data?',
+                    onClose: () => {
+                      setPopup({
+                        title: 'SUPERVISOR RAKA',
+                        message: 'Aku belum tahu.',
+                        onClose: () => {
+                          setPopup({
+                            title: 'PLAYER',
+                            message: 'Tapi sekarang kita tahu... ini bukan kesalahan sistem.',
+                            onClose: () => {
+                              setPopup({
+                                title: 'SUPERVISOR RAKA',
+                                message: 'Dan itu jauh lebih buruk.',
+                                onClose: () => {
+                                  setPopup({
+                                    title: 'CASE FILE UPDATED',
+                                    message: 'Priority: LOW → MEDIUM\nCase Type: Database Verification → Active Investigation',
+                                    onClose: () => {
+                                      setPopup(null);
+                                      setIsLevelComplete(true);
+                                      setAppState('REPORT');
+                                    }
+                                  });
+                                }
+                              });
+                            }
+                          });
+                        }
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
         } else {
           setIsLevelComplete(true);
           showSupervisorPopup('Sekarang buat laporan.', () => {
@@ -1161,6 +1267,9 @@ export default function App() {
     let updatedNotebook = notebookContent;
     if (currentLevelId === 13) {
       updatedNotebook = notebookContent + '\n\nKalau ini memang bug... kenapa Pak Raka terlihat tidak yakin?';
+      setNotebookContent(updatedNotebook);
+    } else if (currentLevelId === 14) {
+      updatedNotebook = notebookContent + '\n\nSemua tabel terlihat benar.\nTapi aku mulai kehilangan hubungan antar datanya.\nMungkin masalahnya bukan isi tabel...\n...melainkan cara aku melihatnya.';
       setNotebookContent(updatedNotebook);
     }
     
