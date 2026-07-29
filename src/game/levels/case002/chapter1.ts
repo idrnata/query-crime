@@ -32,6 +32,13 @@ export const chapter1: Level = {
   objectives: [
     {
       id: 1,
+      story: 'Kalau ini memang bug, kenapa Pak Raka terlihat tidak yakin? Coba temui dia.',
+      goal: 'Hubungi Supervisor Raka lewat Contacts sebelum melanjutkan investigasi.',
+      availableTokens: [],
+      validateResult: () => true
+    },
+    {
+      id: 2,
       story: 'Raka minta kamu lihat sendiri laporannya. Mulai dari data kendaraan.',
       goal: 'Lihat seluruh data kendaraan di tabel vehicle.',
       availableTokens: ['SELECT', '*', 'FROM', 'vehicle'],
@@ -39,7 +46,7 @@ export const chapter1: Level = {
       validateResult: (res) => res && res.length === 3
     },
     {
-      id: 2,
+      id: 3,
       story: 'Bandingkan dengan data pemiliknya.',
       goal: 'Lihat seluruh data pemilik kendaraan di tabel owner.',
       availableTokens: ['SELECT', '*', 'FROM', 'owner'],
@@ -47,7 +54,7 @@ export const chapter1: Level = {
       validateResult: (res) => res && res.length === 3
     },
     {
-      id: 3,
+      id: 4,
       story: 'Sistem mencatat riwayat alamat secara terpisah. Mungkin ada jawabannya di sana.',
       goal: 'Lihat riwayat alamat di tabel address.',
       availableTokens: ['SELECT', '*', 'FROM', 'address'],
@@ -55,7 +62,7 @@ export const chapter1: Level = {
       validateResult: (res) => res && res.length === 2
     },
     {
-      id: 4,
+      id: 5,
       story: 'Cek juga log sinkronisasinya. Kalau ada bug, biasanya kelihatan di sini.',
       goal: 'Lihat log sinkronisasi di tabel sync_log.',
       availableTokens: ['SELECT', '*', 'FROM', 'sync_log'],

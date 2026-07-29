@@ -56,6 +56,10 @@ export const MISSION_ACCEPTED_POPUPS: Record<number, MissionPopupData> = {
   12: {
     title: 'INTERNAL AFFAIRS ACCESS',
     message: 'MISSION ACCEPTED\n\nNEW DATABASE UNLOCKED:\n- POLICE INTERNAL DATABASE\n  (personnel, badge_logs)'
+  },
+  13: {
+    title: 'MISSION ACCEPTED',
+    message: 'CASE002 RESMI DIBUKA\n\nStatus: OPEN\nPriority: LOW\nCase Type: Database Verification'
   }
 };
 

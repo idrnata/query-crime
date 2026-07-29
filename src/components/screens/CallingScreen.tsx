@@ -113,6 +113,21 @@ const RAKA_CH12_DIALOGUE: DialogueStep[] = [
   }
 ];
 
+const RAKA_C002_CH01_DIALOGUE: DialogueStep[] = [
+  {
+    text: "Aku harap ini cuma bug. Kalau benar bug, selesai hari ini.",
+    choices: [
+      { text: "Dan kalau bukan?", nextStep: 1 }
+    ]
+  },
+  {
+    text: "Kalau bukan... kita jangan membuat orang yang melakukannya sadar. [TUTUP TELEPON]",
+    choices: [
+      { text: "Dimengerti.", nextStep: -1 }
+    ]
+  }
+];
+
 // Registry dialog percakapan, keyed by `${contactId}:${callStep}`. Nambah
 // dialog baru = nambah 1 entri di sini, gak perlu nambah useState/boolean
 // flag/ternary baru di komponen ini. Kalau kombinasi contactId+callStep gak
@@ -122,6 +137,7 @@ const DIALOGUE_REGISTRY: Record<string, DialogueStep[]> = {
   'dina:0': DINA_DIALOGUE,
   'raka:666': RAKA_ENDING_DIALOGUE,
   'raka:1212': RAKA_CH12_DIALOGUE,
+  'raka:1300': RAKA_C002_CH01_DIALOGUE,
 };
 
 function getDialogueKey(contactId?: string, callStep?: number): string {

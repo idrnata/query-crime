@@ -1157,9 +1157,15 @@ export default function App() {
       newApps.push('EMAIL');
       triggerBlink('EMAIL');
     }
+
+    let updatedNotebook = notebookContent;
+    if (currentLevelId === 13) {
+      updatedNotebook = notebookContent + '\n\nKalau ini memang bug... kenapa Pak Raka terlihat tidak yakin?';
+      setNotebookContent(updatedNotebook);
+    }
     
     setUnlockedApps(newApps);
-    setMessages(prevMsgs => { saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission: true, unlockedApps: newApps, notebookContent, contacts, witnesses, messages: prevMsgs, stats }); return prevMsgs; });
+    setMessages(prevMsgs => { saveProgress({ levelId: currentLevelId, objectiveIndex: currentObjectiveIndex, unlockedLevelIds, hasAcceptedMission: true, unlockedApps: newApps, notebookContent: updatedNotebook, contacts, witnesses, messages: prevMsgs, stats }); return prevMsgs; });
     
     const { title: popupTitle, message: popupMessage } = getMissionAcceptedPopup(currentLevelId);
     
@@ -1495,6 +1501,13 @@ export default function App() {
                 setCallStep(0);
                 setTimeout(() => setCallStatus('CONNECTING'), 2000);
                 setTimeout(() => setCallStatus('ACTIVE'), 4000);
+              } else if (c.id === 'raka' && currentLevelId === 13 && currentObjectiveIndex === 0) {
+                setActiveCallContact(c);
+                setCallStatus('DIALING');
+                setAppState('CALLING');
+                setCallStep(1300);
+                setTimeout(() => setCallStatus('CONNECTING'), 1500);
+                setTimeout(() => setCallStatus('ACTIVE'), 3000);
               } else {
                 showSupervisorPopup('Nomor tidak dapat dihubungi atau sibuk.');
               }
@@ -1520,6 +1533,12 @@ export default function App() {
             callStep={callStep} 
             handleHangUp={() => {
               setCallStatus('IDLE');
+
+              if (activeCallContact?.id === 'raka' && currentLevelId === 13 && currentObjectiveIndex === 0) {
+                setAppState('CONTACTS');
+                handleObjectiveComplete();
+                return;
+              }
               
               if (activeCallContact?.id === 'raka' && callStep === 666) {
                 // Raka hung up. Layar Gelap.
