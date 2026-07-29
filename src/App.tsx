@@ -1174,7 +1174,12 @@ export default function App() {
       message: popupMessage,
       onClose: () => {
         setPopup(null);
-        setAppState('HOME');
+        if (currentLevelId === 13) {
+          triggerBlink('NOTEBOOK');
+          setAppState('NOTEBOOK');
+        } else {
+          setAppState('HOME');
+        }
       }
     });
   };
@@ -1240,6 +1245,8 @@ export default function App() {
     } else if (appState === 'CALLING') {
       setCallStatus('IDLE');
       setAppState('CONTACTS');
+    } else if (appState === 'NOTEBOOK' && currentLevelId === 13 && currentObjectiveIndex === 0) {
+      setAppState('CASE_FILES');
     } else if (appState !== 'HOME' && appState !== 'BOOT') {
       setAppState('MENU');
     }

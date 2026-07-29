@@ -28,7 +28,11 @@ export const TABLE_UNLOCK_RULES: TableUnlockRule[] = [
   { label: 'Camera Logs', minChapter: 11 },
   { label: 'System Logs', minChapter: 11 },
   { label: 'Personnel', minChapter: 12 },
-  { label: 'Badge Logs', minChapter: 12 }
+  { label: 'Badge Logs', minChapter: 12 },
+  { label: 'Vehicle', minChapter: 13 },
+  { label: 'Owner', minChapter: 13 },
+  { label: 'Address', minChapter: 13 },
+  { label: 'Sync Log', minChapter: 13 }
 ];
 
 export function isTableLocked(

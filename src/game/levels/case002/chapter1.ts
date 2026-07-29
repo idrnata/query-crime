@@ -16,16 +16,8 @@ export const chapter1: Level = {
     content: 'Case Type: Database Verification\nPriority: LOW\nSumber: Divisi Administrasi Database\nCatatan: Beberapa hubungan data kendaraan berubah setelah sinkronisasi malam. Dianggap bug sinkronisasi oleh tim IT.',
   },
   database: {
-    vehicle: [
-      { vehicle_plate: 'D 4123 QX', owner_id: 501, brand: 'Toyota', status: 'ACTIVE', registered_address: 'Jl. Melur Lama No. 9' },
-      { vehicle_plate: 'B 8842 KL', owner_id: 502, brand: 'Honda', status: 'ACTIVE', registered_address: 'Jl. Kenanga No. 5' },
-      { vehicle_plate: 'D 2210 RS', owner_id: 503, brand: 'Suzuki', status: 'ACTIVE', registered_address: 'Jl. Anggrek No. 12' }
-    ],
-    owner: [
-      { owner_id: 501, owner_name: 'Herlina Wijaya', address: 'Jl. Melur Baru No. 21', phone: '081233221100' },
-      { owner_id: 502, owner_name: 'Taufik Ramadhan', address: 'Jl. Kenanga No. 5', phone: '081244556677' },
-      { owner_id: 503, owner_name: 'Ningsih Saputra', address: 'Jl. Anggrek No. 12', phone: '081255667788' }
-    ],
+    vehicle: MASTER_REGISTRY.vehicle,
+    owner: MASTER_REGISTRY.owner,
     address: MASTER_REGISTRY.address,
     sync_log: MASTER_REGISTRY.sync_log
   },
