@@ -1117,6 +1117,18 @@ export default function App() {
               });
             }
           });
+        } else if (currentLevelId === 15) {
+          setNotebookContent(prev => prev + '\n\nSession berhasil ditemukan.\nTetapi identitas perangkat hilang.\nSeolah koneksi berasal dari tempat yang tidak dikenal.');
+          setAppState('NOTEBOOK');
+          setPopup({
+            title: 'SUPERVISOR RAKA',
+            message: 'Itu asumsi.\nYang kita tahu, Host tidak tercatat.\nItu fakta.\n\nInvestigasi tidak berjalan menggunakan dugaan.\nInvestigasi berjalan menggunakan fakta.',
+            onClose: () => {
+              setPopup(null);
+              setIsLevelComplete(true);
+              setAppState('REPORT');
+            }
+          });
         } else {
           setIsLevelComplete(true);
           showSupervisorPopup('Sekarang buat laporan.', () => {
@@ -1262,6 +1274,16 @@ export default function App() {
     if (currentLevelId === 10 && !newApps.includes('EMAIL')) {
       newApps.push('EMAIL');
       triggerBlink('EMAIL');
+    }
+    if (currentLevelId === 15) {
+      if (!newApps.includes('TIMELINE')) {
+        newApps.push('TIMELINE');
+        triggerBlink('TIMELINE');
+      }
+      if (!newApps.includes('EVIDENCE')) {
+        newApps.push('EVIDENCE');
+        triggerBlink('EVIDENCE');
+      }
     }
 
     let updatedNotebook = notebookContent;

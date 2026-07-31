@@ -64,6 +64,10 @@ export const MISSION_ACCEPTED_POPUPS: Record<number, MissionPopupData> = {
   14: {
     title: 'MISSION ACCEPTED',
     message: 'Lanjutkan investigasi. Bandingkan seluruh sumber data yang ada.'
+  },
+  15: {
+    title: 'MISSION ACCEPTED',
+    message: 'TIMELINE & EVIDENCE LOCKER UNLOCKED\n\nAnalyze the audit logs to build a chronological timeline of unauthorized changes.'
   }
 };
 

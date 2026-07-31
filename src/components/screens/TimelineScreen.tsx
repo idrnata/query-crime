@@ -32,7 +32,10 @@ export const TimelineScreen: React.FC<TimelineScreenProps> = ({ currentLevelId, 
     { time: '13:58', event: 'Badge B-118 (Yusuf Hamdani) dipindai di Visitor Entrance Police HQ.', condition: () => currentLevelId >= 12 },
     { time: '14:00', event: 'Armada PT Arunika Logistics (B 7710 XR) terdeteksi di Police HQ.', condition: () => currentLevelId >= 12 },
     { time: 'CASE #002 - 01:00', event: 'Catatan sinkronisasi alamat Herlina Wijaya menunjukkan perbedaan lokasi registered_address vs address.', condition: () => currentLevelId >= 13 },
-    { time: 'CASE #002 - 02:00', event: 'Perubahan pertama relasi database terdeteksi pada relasi pemilik kendaraan.', condition: () => currentLevelId >= 14 }
+    { time: 'CASE #002 - 02:00', event: 'Perubahan pertama relasi database terdeteksi pada relasi pemilik kendaraan.', condition: () => currentLevelId >= 14 },
+    { time: 'CASE #002 - 02:11', event: 'Login sesi system_sync tanpa identitas perangkat (Unknown Host).', condition: () => currentLevelId >= 15 && notebookContent.includes('identitas perangkat hilang') },
+    { time: 'CASE #002 - 02:13', event: 'Update tidak sah pada tabel relasi kendaraan.', condition: () => currentLevelId >= 15 && notebookContent.includes('Perubahan pertama terjadi pukul 02:13') },
+    { time: 'CASE #002 - 02:14', event: 'Aktivitas UPDATE menggunakan akun sistem (system_sync).', condition: () => currentLevelId >= 15 && notebookContent.includes('menggunakan akun sistem') }
   ];
 
   const events = allEvents.filter(e => e.condition());

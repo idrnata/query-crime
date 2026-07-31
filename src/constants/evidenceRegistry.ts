@@ -65,7 +65,11 @@ export const ALL_EVIDENCE: EvidenceItem[] = [
   { level: 13, id: 'sync_log_pass', label: 'System Integrity', value: 'Replication & Sync Log PASS' },
   // Level 14 (Case 002 Ch 02)
   { level: 14, id: 'rendra_vehicle_mismatch', label: 'Relation Anomaly', value: 'Rendra Saputra / B-1824-QC Relation' },
-  { level: 14, id: 'manipulated_relation', label: 'Investigation Findings', value: 'Valid Individual Data, Manipulated Relations' }
+  { level: 14, id: 'manipulated_relation', label: 'Investigation Findings', value: 'Valid Individual Data, Manipulated Relations' },
+  // Level 15 (Case 002 Ch 03)
+  { level: 15, id: 'audit_unauthorized_update', label: 'Anomaly', value: 'Unauthorized Update at 02:13' },
+  { level: 15, id: 'system_account_activity', label: 'Account Anomaly', value: 'system_sync Account UPDATE at 02:14' },
+  { level: 15, id: 'unknown_host_session', label: 'Session Anomaly', value: 'system_sync Session - Unknown Host' }
 ];
 
 export interface EvidenceUnlockContext {
@@ -117,6 +121,10 @@ const ID_PREDICATES: Record<string, UnlockPredicate> = {
   // Level 14
   rendra_vehicle_mismatch: (ctx) => ctx.currentObjectiveIndex >= 1,
   manipulated_relation: (ctx) => ctx.isLevelComplete,
+  // Level 15
+  audit_unauthorized_update: (ctx) => ctx.notebookContent.includes('Perubahan pertama terjadi pukul 02:13'),
+  system_account_activity: (ctx) => ctx.notebookContent.includes('menggunakan akun sistem'),
+  unknown_host_session: (ctx) => ctx.notebookContent.includes('identitas perangkat hilang'),
 };
 
 export function isEvidenceUnlocked(item: EvidenceItem, ctx: EvidenceUnlockContext): boolean {

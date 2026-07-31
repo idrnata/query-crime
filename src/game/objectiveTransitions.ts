@@ -79,6 +79,10 @@ export const OBJECTIVE_TRANSITIONS: Record<number, ChapterTransitions> = {
     1: { notebookAppend: 'B7710XR muncul di Police HQ pada 14:00.', showNotebookFirst: true, returnToTermAfterPopup: true },
     2: { notebookAppend: 'Badge B-118 digunakan pada 13:58 di Visitor Entrance.', showNotebookFirst: true, returnToTermAfterPopup: true },
     3: { notebookAppend: 'Pemilik Badge B-118: Yusuf Hamdani (Administrasi Umum).', showNotebookFirst: true, returnToTermAfterPopup: true }
+  },
+  15: {
+    1: { notebookAppend: 'Perubahan pertama terjadi pukul 02:13.\nTidak ada aktivitas resmi pada jam tersebut.', showNotebookFirst: true },
+    2: { notebookAppend: 'Aktivitas UPDATE dilakukan menggunakan akun sistem.\nJika benar...\n...seseorang mungkin berusaha menyembunyikan identitasnya.', showNotebookFirst: true }
   }
 };
 
